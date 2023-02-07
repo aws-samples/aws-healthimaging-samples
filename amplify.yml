@@ -1,0 +1,42 @@
+version: 1
+applications:
+  - appRoot: imaging-viewer-ui
+    env:
+      variables:
+        AMPLIFY_MONOREPO_APP_ROOT: imaging-viewer-ui
+        AMPLIFY_DIFF_DEPLOY: true
+        AMPLIFY_DIFF_BACKEND: true
+    backend:
+      phases:
+        preBuild:
+          commands:
+            - npm install -g @aws-amplify/cli@latest
+            - yum -y install jq sudo
+            - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+            - unzip -q /tmp/awscliv2.zip -d /tmp
+            - sudo /tmp/aws/install
+            - chmod +x ./amplify-build/checkIamAuthPermissions.sh
+            - chmod +x ./amplify-build/updateAmplifyRewriteRules.sh
+        build:
+          commands:
+            - amplifyPush --simple
+            # https://github.com/aws-amplify/amplify-cli/issues/10011
+            - ./amplify-build/checkIamAuthPermissions.sh || amplify push --yes --force
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci
+        build:
+          commands:
+            - npm run build
+        postBuild:
+          commands: 
+            - ./amplify-build/updateAmplifyRewriteRules.sh
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*

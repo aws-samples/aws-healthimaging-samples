@@ -1,0 +1,37 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "env": {
+            "Type": "String"
+        },
+        "functionsecureDeployBucketName": {
+            "Type": "String",
+            "Description": "Input parameter describing Name attribute for function/secureDeployBucket resource"
+        },
+        "functionsecureDeployBucketArn": {
+            "Type": "String",
+            "Description": "Input parameter describing Arn attribute for function/secureDeployBucket resource"
+        },
+        "functionsecureDeployBucketRegion": {
+            "Type": "String",
+            "Description": "Input parameter describing Region attribute for function/secureDeployBucket resource"
+        },
+        "functionsecureDeployBucketLambdaExecutionRole": {
+            "Type": "String",
+            "Description": "Input parameter describing LambdaExecutionRole attribute for function/secureDeployBucket resource"
+        }
+    },
+    "Resources": {
+        "BlockPublicAccess": {
+            "Type": "AWS::CloudFormation::CustomResource",
+            "Properties": {
+                "ServiceToken": {
+                    "Ref": "functionsecureDeployBucketArn"
+                }
+            },
+            "UpdateReplacePolicy": "Delete",
+            "DeletionPolicy": "Delete"
+        }
+    },
+    "Outputs": {}
+}

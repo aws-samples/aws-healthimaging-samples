@@ -1,0 +1,14 @@
+{
+  "name": "edge_signer",
+  "version": "1.0.0",
+  "description": "Lambda@Edge Signer for Amazon HealthLake Imaging",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "aws4": "^1.12.0",
+    "loglevel": "^1.8.1"
+  }
+}

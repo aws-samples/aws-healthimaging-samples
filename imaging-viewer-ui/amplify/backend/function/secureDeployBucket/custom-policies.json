@@ -1,0 +1,10 @@
+[
+    {
+        "Action": ["s3:PutBucketPublicAccessBlock"],
+        "Resource": ["arn:aws:s3:::amplify-*-deployment"]
+    },
+    {
+        "Action": ["cloudformation:DescribeStacks"],
+        "Resource": ["arn:aws:cloudformation:*:*:stack/amplify-*"]
+    }
+]

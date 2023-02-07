@@ -1,0 +1,12 @@
+{
+  "devn": {
+    "categories": {
+      "function": {
+        "secureDeployBucket": {}
+      },
+      "auth": {
+        "imagingViewerUiAuth": {}
+      }
+    }
+  }
+}

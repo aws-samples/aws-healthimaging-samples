@@ -1,0 +1,24 @@
+{
+  "name": "amazon-cloudfront-image-frame-delivery",
+  "version": "0.1.0",
+  "bin": {
+    "amazon-cloudfront-image-frame-delivery": "bin/amazon-cloudfront-image-frame-delivery.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/node": "18.13.0",
+    "aws-cdk": "2.64.0",
+    "cdk-nag": "^2.22.4",
+    "ts-node": "^10.9.1",
+    "typescript": "~4.9.5"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.64.0",
+    "constructs": "^10.1.248",
+    "source-map-support": "^0.5.21"
+  }
+}
