@@ -9,10 +9,10 @@
   "license": "MIT",
   "dependencies": {
     "@fastify/auth": "^4.2.0",
-    "@fastify/cors": "^8.2.0",
+    "@fastify/cors": "^8.2.1",
     "aws-jwt-verify": "^3.4.0",
-    "aws-sdk": "^2.1316.0",
-    "fastify": "^4.13.0",
+    "aws-sdk": "^2.1342.0",
+    "fastify": "^4.15.0",
     "loglevel": "^1.8.1",
     "loglevel-plugin-prefix": "^0.8.4",
     "memcached": "^2.2.2",
