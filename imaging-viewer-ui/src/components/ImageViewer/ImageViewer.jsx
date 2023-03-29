@@ -422,9 +422,9 @@ export default function ImageViewer() {
                         <SelectDatastore
                             selectedDatastore={selectedDatastore}
                             setSelectedDatastore={setSelectedDatastore}
-                            disabled={isSomethingLoading || Object.keys(imageSetMetadata)?.length > 0}
+                            disabled={isSomethingLoading || Object.keys(imageSetMetadata || {})?.length > 0}
                         />
-                        {Object.keys(imageSetMetadata)?.length === 0 ? (
+                        {Object.keys(imageSetMetadata || {})?.length === 0 ? (
                             <Input
                                 placeholder="Enter ImageSet ID"
                                 value={imageSetId}
