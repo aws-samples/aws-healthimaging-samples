@@ -16,7 +16,7 @@ export const columnDefs = [
     {
         id: 'DICOMStudyDate',
         header: 'Study Date',
-        cell: (e) => dayjs(e.DICOMStudyDate + e.DICOMStudyTime).format('YYYY-MM-DD hh:mm A'),
+        cell: (e) => dayjs(e.DICOMStudyDate + e.DICOMStudyTime).format('YYYY-MM-DD H:mm'),
         sortingField: 'DICOMStudyDate',
     },
     {
@@ -77,13 +77,13 @@ export const columnDefs = [
     {
         id: 'createdAt',
         header: 'Created At',
-        cell: (e) => dayjs.unix(e.createdAt).format('YYYY-MM-DD hh:mm A'),
+        cell: (e) => dayjs.unix(e.createdAt).format('YYYY-MM-DD H:mm'),
         sortingField: 'createdAt',
     },
     {
         id: 'updatedAt',
         header: 'Updated At',
-        cell: (e) => dayjs.unix(e.updatedAt).format('YYYY-MM-DD hh:mm A'),
+        cell: (e) => dayjs.unix(e.updatedAt).format('YYYY-MM-DD H:mm'),
         sortingField: 'updatedAt',
     },
     {

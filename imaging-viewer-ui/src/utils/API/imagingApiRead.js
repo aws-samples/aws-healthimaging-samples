@@ -32,15 +32,36 @@ async function listDicomImportJobs({ datastoreId }) {
     });
 }
 
-// Get DICOM study metadata
-async function getDicomStudyMetadata({ datastoreId, imageSetId }) {
-    let metadata = await medicalImagingGet({
+async function getImageSet({ datastoreId, imageSetId }) {
+    return await medicalImagingGet({
         config: config,
-        url: config.endpoint + `/runtime/datastore/${datastoreId}/imageset?imageSetId=${imageSetId}`,
+        url: config.endpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}`,
+        name: 'Get image set',
+    });
+}
+
+async function listImageSetVersions({ datastoreId, imageSetId }) {
+    return await medicalImagingGet({
+        config: config,
+        url: config.endpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/versions`,
+        name: 'List image set versions',
+    });
+}
+
+// Get DICOM study metadata
+async function getDicomStudyMetadata({ datastoreId, imageSetId, versionId = null }) {
+    let metadataUrl = config.endpoint + `/runtime/datastore/${datastoreId}/imageset?imageSetId=${imageSetId}`;
+    if (versionId) {
+        const versionInt = parseInt(versionId);
+        if (typeof versionInt === 'number') {
+            metadataUrl += `&version=${versionInt}`;
+        }
+    }
+    return await medicalImagingGet({
+        config: config,
+        url: metadataUrl,
         name: 'Get DICOM study metadata',
     });
-
-    return metadata;
 }
 
 // Get DICOM frame
@@ -108,4 +129,13 @@ async function searchImageSets({ datastoreId, data = {}, maxResults = null, next
     });
 }
 
-export { updateConfig, listDatastores, listDicomImportJobs, getDicomStudyMetadata, getDicomFrame, searchImageSets };
+export {
+    updateConfig,
+    listDatastores,
+    listDicomImportJobs,
+    getImageSet,
+    listImageSetVersions,
+    getDicomStudyMetadata,
+    getDicomFrame,
+    searchImageSets,
+};

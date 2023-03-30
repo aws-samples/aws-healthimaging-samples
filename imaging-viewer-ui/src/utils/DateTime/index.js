@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
 
 function displayUnixDate(epoch) {
-    return epoch == null ? '' : dayjs.unix(epoch).format('YYYY-MM-DD hh:mm A');
+    return epoch == null ? '' : dayjs.unix(epoch).format('YYYY-MM-DD H:mm');
 }
 
 function nowTime() {
-    return dayjs().format('h:mm A')
+    return dayjs().format('H:mm')
 }
 
 export { displayUnixDate, nowTime };

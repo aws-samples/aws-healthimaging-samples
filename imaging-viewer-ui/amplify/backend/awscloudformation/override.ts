@@ -24,6 +24,8 @@ export function override(resources: AmplifyRootStackTemplate) {
                             'medical-imaging:GetDICOMImportJob',
                             'medical-imaging:ListDICOMImportJobs',
                             'medical-imaging:ListTagsForResource',
+                            'medical-imaging:GetImageSet',
+                            'medical-imaging:ListImageSetVersions',
                             'medical-imaging:GetImageSetMetadata',
                             'medical-imaging:GetImageFrame',
                             'medical-imaging:SearchImageSets',
