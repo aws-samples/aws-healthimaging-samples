@@ -10,24 +10,29 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import { CodeEditor, Container } from '@cloudscape-design/components';
 
 // App
-import { MetadataViewerHeader, MetadataViewerSearch } from './MetadataViewerComponents';
+import { buildVersionOption, MetadataViewerHeader, MetadataViewerSearch } from './MetadataViewerComponents';
 import { useDataStoreImageSetInput } from '../../hooks/useDataStoreImageSetInput';
 import { CODE_EDITOR_I18N, THEMES } from './metadataConsts';
 import { DATA_STORE_ID_REGEX, IMAGESET_ID_REGEX } from '../../consts/apiRegex';
-import { getDicomStudyMetadata } from '../../utils/API/imagingApiRead';
+import { getDicomStudyMetadata, listImageSetVersions } from '../../utils/API/imagingApiRead';
 
 // Ace Editor
 import 'ace-builds/css/ace.css';
 import 'ace-builds/css/theme/dawn.css';
 import 'ace-builds/css/theme/tomorrow_night_bright.css';
 
+// Flashbar topic
+const ERROR_MESSAGE_TOPIC = 'Metadata';
+
 export default function MetadataViewer() {
-    const { appTheme, buildCrumb } = useContext(AppContext);
+    const { addFlashMessage, appTheme, buildCrumb } = useContext(AppContext);
 
     const [ace, setAce] = useState(undefined); // ace editor object
     const [aceLoading, setAceLoading] = useState(true); // ace editor loading
     const [metadataLoading, setMetadataLoading] = useState(false); // true while the metadata is being retrieved
     const [imageSetMetadata, setImageSetMetadata] = useState(''); // ImageSet metadata json
+    const [imageSetVersions, setImageSetVersions] = useState([]); // ImageSet versions
+    const [selectedVersion, setSelectedVersion] = useState(null); // selected ImageSet version
     const [preferences, setPreferences] = useState({
         wrapLines: true,
         theme: appTheme === 'theme.light' ? 'dawn' : 'tomorrow_night_bright',
@@ -44,7 +49,7 @@ export default function MetadataViewer() {
         verifyImageSetId,
     } = useDataStoreImageSetInput();
 
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const location = useLocation();
 
     const isSomethingLoading = useMemo(() => aceLoading || metadataLoading, [aceLoading, metadataLoading]);
@@ -82,37 +87,113 @@ export default function MetadataViewer() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [appTheme]);
 
+    // Get ImageSet versions
+    const getImageSetVersions = useCallback(
+        async (datastoreId, imageSetId, versionId = 'LATEST') => {
+            try {
+                const listImageSetVersionsRsp = await listImageSetVersions({
+                    datastoreId: datastoreId,
+                    imageSetId: imageSetId,
+                });
+                // extract and sort image set versions. [0] is the lowest versionId
+                const imageSetVersions =
+                    listImageSetVersionsRsp.data?.imageSetPropertiesList.sort((a, b) => {
+                        return parseInt(a.versionId) - parseInt(b.versionId);
+                    }) || [];
+                // set selected version to latest if nothing is passed (default = LATEST), or if nul is passed
+                if (versionId === 'LATEST' || versionId === null) {
+                    setSelectedVersion(buildVersionOption(imageSetVersions.slice(-1)[0]));
+                } else if (versionId) {
+                    const selectedVersion = imageSetVersions.find((v) => v.versionId === versionId.toString());
+                    if (typeof selectedVersion !== 'undefined') setSelectedVersion(buildVersionOption(selectedVersion));
+                }
+                setImageSetVersions(imageSetVersions);
+            } catch (error) {
+                addFlashMessage({
+                    header: ERROR_MESSAGE_TOPIC,
+                    content: error.response?.data?.message.toString() || error.toString(),
+                    type: 'error',
+                });
+            }
+        },
+        [addFlashMessage]
+    );
+
     // Get metadata from the API
-    const getMetadata = useCallback(async (datastoreId, imageSetId) => {
-        setMetadataLoading(true);
-
-        if (!datastoreId || !imageSetId) return;
-
-        const metadataResult = await getDicomStudyMetadata({
-            datastoreId: datastoreId,
-            imageSetId: imageSetId,
-        });
-        setImageSetMetadata(JSON.stringify(metadataResult.data, null, 2));
-        setMetadataLoading(false);
-    }, []);
+    const getMetadata = useCallback(
+        async (datastoreId, imageSetId, versionId = null) => {
+            setMetadataLoading(true);
+            if (!datastoreId || !imageSetId) return;
+            try {
+                const metadataResult = await getDicomStudyMetadata({
+                    datastoreId: datastoreId,
+                    imageSetId: imageSetId,
+                    versionId: versionId,
+                });
+                setImageSetMetadata(JSON.stringify(metadataResult.data, null, 2));
+            } catch (error) {
+                addFlashMessage({
+                    header: ERROR_MESSAGE_TOPIC,
+                    content: error.response?.data?.message.toString() || error.toString(),
+                    type: 'error',
+                });
+            }
+            setMetadataLoading(false);
+        },
+        [addFlashMessage]
+    );
 
     // Load metadata if search params are present
     useEffect(() => {
         const datastoreId = searchParams.get('datastoreId');
         const imageSetId = searchParams.get('imageSetId');
-
+        const versionId = searchParams.get('versionId');
         if (!aceLoading && DATA_STORE_ID_REGEX.test(datastoreId) && IMAGESET_ID_REGEX.test(imageSetId)) {
             setImageSetId(imageSetId);
-            getMetadata(datastoreId, imageSetId);
+            getImageSetVersions(datastoreId, imageSetId, versionId);
+            getMetadata(datastoreId, imageSetId, versionId);
         }
-    }, [aceLoading, getMetadata, searchParams, setImageSetId]);
+    }, [aceLoading, getImageSetVersions, getMetadata, searchParams, setImageSetId]);
 
-    // Handle Submit button
+    // Handle reset button
+    function handleReset() {
+        setImageSetMetadata('');
+        setImageSetVersions([]);
+        setSelectedVersion(null);
+        setImageSetId('');
+        setSearchParams();
+    }
+
+    // Handle Retrieve Metadata/Submit button - always get the latest version
     function handleRetrieveMetadata() {
         setErrorText('');
         if (!verifyDatastoreId()) return;
         if (!verifyImageSetId()) return;
+        setSearchParams((currentSearchParams) => {
+            const newSearchParams = {
+                ...currentSearchParams,
+                datastoreId: selectedDatastore.value,
+                imageSetId: imageSetId,
+            };
+            return newSearchParams;
+        });
+        getImageSetVersions(selectedDatastore.value, imageSetId, 'LATEST');
         getMetadata(selectedDatastore.value, imageSetId);
+    }
+
+    // Handle change select ImageSet version
+    function handleChangeVersion(version) {
+        setSearchParams((currentSearchParams) => {
+            const newSearchParams = {
+                ...currentSearchParams,
+                datastoreId: selectedDatastore.value,
+                imageSetId: imageSetId,
+                versionId: version.value,
+            };
+            return newSearchParams;
+        });
+        setSelectedVersion(version);
+        getMetadata(selectedDatastore.value, imageSetId, version.value);
     }
 
     return (
@@ -121,6 +202,8 @@ export default function MetadataViewer() {
                 <MetadataViewerHeader
                     isSomethingLoading={isSomethingLoading}
                     handleRetrieveMetadata={handleRetrieveMetadata}
+                    resetEnabled={imageSetMetadata.length > 0}
+                    handleReset={handleReset}
                 />
             }
         >
@@ -129,6 +212,9 @@ export default function MetadataViewer() {
                 setSelectedDatastore={setSelectedDatastore}
                 imageSetId={imageSetId}
                 setImageSetId={setImageSetId}
+                imageSetVersions={imageSetVersions}
+                selectedVersion={selectedVersion}
+                handleChangeVersion={handleChangeVersion}
                 errorText={errorText}
                 isSomethingLoading={isSomethingLoading}
             />

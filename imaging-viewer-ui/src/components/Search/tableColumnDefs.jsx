@@ -16,7 +16,7 @@ export const columnDefs = [
     {
         id: 'DICOMStudyDate',
         header: 'Study Date',
-        cell: (e) => dayjs(e.DICOMStudyDate + e.DICOMStudyTime).format('YYYY-MM-DD hh:mm A'),
+        cell: (e) => dayjs(e.DICOMStudyDate + e.DICOMStudyTime).format('YYYY-MM-DD H:mm'),
         sortingField: 'DICOMStudyDate',
     },
     {
@@ -75,16 +75,16 @@ export const columnDefs = [
         sortingField: 'DICOMPatientBirthDate',
     },
     {
-        id: 'creationDate',
+        id: 'createdAt',
         header: 'Created At',
-        cell: (e) => dayjs(e.creationDate).format('YYYY-MM-DD hh:mm A'),
-        sortingField: 'creationDate',
+        cell: (e) => dayjs.unix(e.createdAt).format('YYYY-MM-DD H:mm'),
+        sortingField: 'createdAt',
     },
     {
-        id: 'lastUpdatedDate',
+        id: 'updatedAt',
         header: 'Updated At',
-        cell: (e) => dayjs(e.lastUpdatedDate).format('YYYY-MM-DD hh:mm A'),
-        sortingField: 'lastUpdatedDate',
+        cell: (e) => dayjs.unix(e.updatedAt).format('YYYY-MM-DD H:mm'),
+        sortingField: 'updatedAt',
     },
     {
         id: 'version',

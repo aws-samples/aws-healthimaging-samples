@@ -13,7 +13,7 @@ function SelectDatastore({ selectedDatastore, setSelectedDatastore, disabled = f
     const { getDatastores, datastores, datastoreLoadStatus } = useContext(AppContext);
 
     // Router
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     // Build select options from datastores
     const datastoreSelectOptions = useMemo(() => {
@@ -31,6 +31,21 @@ function SelectDatastore({ selectedDatastore, setSelectedDatastore, disabled = f
             });
     }, [datastores]);
 
+    // Handle changing selected datastore
+    // * update selectedDatastore
+    // * update search params with the datastore ID
+    // selectedDatastore object - { value: datastoreId, label: niceName }
+    function handleChangeDatastore(selectedDatastore) {
+        setSelectedDatastore(selectedDatastore);
+        setSearchParams((currentSearchParams) => {
+            const newSearchParams = {
+                ...currentSearchParams,
+                datastoreId: selectedDatastore.value,
+            };
+            return newSearchParams;
+        });
+    }
+
     // Automatically select a datastore if there is no datastore selected
     useEffect(() => {
         if (selectedDatastore != null || datastoreSelectOptions?.length === 0) return;
@@ -47,7 +62,7 @@ function SelectDatastore({ selectedDatastore, setSelectedDatastore, disabled = f
     return (
         <Select
             selectedOption={selectedDatastore}
-            onChange={({ detail }) => setSelectedDatastore(detail.selectedOption)}
+            onChange={({ detail }) => handleChangeDatastore(detail.selectedOption)}
             loadingText="Loading data stores"
             placeholder="Select a data store"
             errorText="Error getting data stores"
