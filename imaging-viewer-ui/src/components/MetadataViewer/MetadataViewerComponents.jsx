@@ -1,17 +1,31 @@
-import { useMemo, memo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 
 // Router
 import { useNavigate } from 'react-router-dom';
 
 // Cloudscape
-import { Button, ColumnLayout, Form, Header, Input, Link, Select } from '@cloudscape-design/components';
+import {
+    Button,
+    ColumnLayout,
+    Form,
+    Header,
+    Input,
+    Link,
+    Popover,
+    Select,
+    SpaceBetween,
+    Spinner,
+} from '@cloudscape-design/components';
 
 // Dates
 import dayjs from 'dayjs';
 
 // App
 import SelectDatastore from '../../common/SelectDatastore';
+import KeyValuePair from '../../common/KeyValuePair';
+import { getImageSet } from '../../utils/API/imagingApiRead';
 
+// Metadata viewer header description. Not exported
 const HeaderDescription = memo(function HeaderDescription() {
     const navigate = useNavigate();
     return (
@@ -22,15 +36,26 @@ const HeaderDescription = memo(function HeaderDescription() {
     );
 });
 
-const MetadataViewerHeader = memo(function MetadataViewerHeader({ isSomethingLoading, handleRetrieveMetadata }) {
+// Metadata viewer header
+const MetadataViewerHeader = memo(function MetadataViewerHeader({
+    isSomethingLoading,
+    handleRetrieveMetadata,
+    resetEnabled,
+    handleReset,
+}) {
     return (
         <Header
             variant="awsui-h1-sticky"
             description={<HeaderDescription />}
             actions={
-                <Button variant="primary" disabled={isSomethingLoading} onClick={() => handleRetrieveMetadata()}>
-                    Retrieve Metadata
-                </Button>
+                <SpaceBetween direction="horizontal" size="xs">
+                    <Button disabled={!resetEnabled} onClick={() => handleReset()}>
+                        Reset
+                    </Button>
+                    <Button variant="primary" disabled={isSomethingLoading} onClick={() => handleRetrieveMetadata()}>
+                        Retrieve Metadata
+                    </Button>
+                </SpaceBetween>
             }
         >
             Metadata Viewer
@@ -38,6 +63,7 @@ const MetadataViewerHeader = memo(function MetadataViewerHeader({ isSomethingLoa
     );
 });
 
+// Create a <Select /> option object from an imageSetVersion object
 function buildVersionOption(imageSetVersion) {
     let tags = [
         `Updated at: ${dayjs.unix(imageSetVersion.updatedAt).format('YYYY-MM-DD H:mm')}`,
@@ -51,6 +77,83 @@ function buildVersionOption(imageSetVersion) {
     };
 }
 
+// Image set ID object
+// When metadata is not loaded (versionsLoaded = false) - <Input />
+// When metadata is loaded (versionsLoaded = true) - popover with imageset information
+function ImageSetId({ selectedDatastore, isSomethingLoading, imageSetId, setImageSetId, versionsLoaded }) {
+    const [imageSetDetails, setImageSetDetails] = useState(<Spinner />);
+    useEffect(() => {
+        async function getImageSetDetails() {
+            if (!selectedDatastore?.value || !imageSetId) return;
+            const imageSetDetails = await getImageSet({
+                datastoreId: selectedDatastore.value,
+                imageSetId: imageSetId,
+            });
+            setImageSetDetails(
+                <SpaceBetween size="m">
+                    <KeyValuePair center={false} label="ImageSet ID">
+                        {imageSetDetails.data.imageSetId}
+                    </KeyValuePair>
+                    <KeyValuePair center={false} label="Datastore ID">
+                        {imageSetDetails.data.datastoreId}
+                    </KeyValuePair>
+                    <KeyValuePair center={false} label="State">
+                        {imageSetDetails.data.imageSetState}
+                    </KeyValuePair>
+                    <KeyValuePair center={false} label="Workflow Status">
+                        {imageSetDetails.data.imageSetWorkflowStatus}
+                    </KeyValuePair>
+                    <KeyValuePair center={false} label="Created At">
+                        {dayjs.unix(imageSetDetails.data.createdAt).format('YYYY-MM-DD H:mm')}
+                    </KeyValuePair>
+                    <KeyValuePair center={false} label="Updated At">
+                        {dayjs.unix(imageSetDetails.data.updatedAt).format('YYYY-MM-DD H:mm')}
+                    </KeyValuePair>
+                    {imageSetDetails.data.message && (
+                        <KeyValuePair center={false} label="Message">
+                            {imageSetDetails.data.message}
+                        </KeyValuePair>
+                    )}
+                </SpaceBetween>
+            );
+        }
+        if (selectedDatastore == null || !imageSetId) return;
+        getImageSetDetails();
+    }, [selectedDatastore, imageSetId]);
+
+    if (versionsLoaded) {
+        return (
+            <div
+                style={{
+                    height: '100%',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                }}
+            >
+                <Popover
+                    dismissAriaLabel="Close"
+                    fixedWidth
+                    size="medium"
+                    content={imageSetDetails}
+                >
+                    {imageSetId}
+                </Popover>
+            </div>
+        );
+    } else {
+        return (
+            <Input
+                placeholder="Enter ImageSet ID"
+                disabled={isSomethingLoading}
+                value={imageSetId}
+                onChange={({ detail }) => setImageSetId(detail.value)}
+            />
+        );
+    }
+}
+
+// Metadata viewer search row
 const MetadataViewerSearch = memo(function MetadataViewerSearch({
     selectedDatastore,
     setSelectedDatastore,
@@ -63,6 +166,7 @@ const MetadataViewerSearch = memo(function MetadataViewerSearch({
     isSomethingLoading,
 }) {
     const versionOptions = useMemo(() => imageSetVersions.map((v) => buildVersionOption(v)), [imageSetVersions]);
+
     return (
         <form style={{ paddingBottom: '1em', width: '100%' }} onSubmit={(e) => e.preventDefault()}>
             <Form errorText={errorText}>
@@ -72,11 +176,12 @@ const MetadataViewerSearch = memo(function MetadataViewerSearch({
                         setSelectedDatastore={setSelectedDatastore}
                         disabled={isSomethingLoading}
                     />
-                    <Input
-                        placeholder="Enter ImageSet ID"
-                        disabled={isSomethingLoading}
-                        value={imageSetId}
-                        onChange={({ detail }) => setImageSetId(detail.value)}
+                    <ImageSetId
+                        selectedDatastore={selectedDatastore}
+                        isSomethingLoading={isSomethingLoading}
+                        imageSetId={imageSetId}
+                        setImageSetId={setImageSetId}
+                        versionsLoaded={imageSetVersions.length > 0}
                     />
                     <Select
                         selectedOption={selectedVersion}
