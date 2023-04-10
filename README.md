@@ -22,6 +22,10 @@ This [AWS Amplify](https://aws.amazon.com/amplify/) project deploys a frontend U
 
 This example demonstrates how to use the Amazon HealthLake Imaging Pixel Data Verification feature to ensure the image you decoded matches the original DICOM P10 Image.
 
+### [S3 StoreSCP](s3-storescp)
+
+This AWS CDK project implements a DICOM [StoreSCP](https://dicom.nema.org/medical/dicom/current/output/html/part04.html#sect_B.2.2) listener capable of receiving DIMSE messages and storing the received SOP instances as DICOM Part10 files on Amazon S3. The listener is deployed as service on [AWS ECS Fargate](https://aws.amazon.com/fargate/). DICOM Part10 files stored on S3 can be then imported into [Amazon HealthLake Imaging](https://aws.amazon.com/healthlake/imaging/).
+
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.

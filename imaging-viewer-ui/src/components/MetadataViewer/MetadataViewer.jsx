@@ -155,6 +155,15 @@ export default function MetadataViewer() {
         }
     }, [aceLoading, getImageSetVersions, getMetadata, searchParams, setImageSetId]);
 
+    // Handle reset button
+    function handleReset() {
+        setImageSetMetadata('');
+        setImageSetVersions([]);
+        setSelectedVersion(null);
+        setImageSetId('');
+        setSearchParams();
+    }
+
     // Handle Retrieve Metadata/Submit button - always get the latest version
     function handleRetrieveMetadata() {
         setErrorText('');
@@ -193,6 +202,8 @@ export default function MetadataViewer() {
                 <MetadataViewerHeader
                     isSomethingLoading={isSomethingLoading}
                     handleRetrieveMetadata={handleRetrieveMetadata}
+                    resetEnabled={imageSetMetadata.length > 0}
+                    handleReset={handleReset}
                 />
             }
         >
