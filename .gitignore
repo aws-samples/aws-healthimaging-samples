@@ -5,9 +5,12 @@
 .cdk.staging
 cdk.out
 
-# CDK asset staging directory
-.cdk.staging
-cdk.out
+# python cache and venv
+__pycache__
+.pytest_cache
+.venv
+*.swp
+*.egg-info
 
 # dependencies
 node_modules
