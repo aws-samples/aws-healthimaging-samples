@@ -9,7 +9,7 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "aws-sdk": "^2.1342.0",
+        "aws-sdk": "^2.1367.0",
         "crc-32": "^1.2.2"
     }
 }
