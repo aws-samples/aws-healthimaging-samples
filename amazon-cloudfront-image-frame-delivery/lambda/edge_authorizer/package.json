@@ -8,7 +8,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "aws-jwt-verify": "^3.4.0",
+    "aws-jwt-verify": "^4.0.0",
     "loglevel": "^1.8.1"
   }
 }
