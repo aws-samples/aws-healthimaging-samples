@@ -101,7 +101,7 @@ function ImageSetId({ selectedDatastore, isSomethingLoading, imageSetId, setImag
                         {imageSetDetails.data.imageSetState}
                     </KeyValuePair>
                     <KeyValuePair center={false} label="Workflow Status">
-                        {imageSetDetails.data.imageSetWorkflowStatus}
+                        {imageSetDetails.data.imageSetWorkflowStatus || '---'}
                     </KeyValuePair>
                     <KeyValuePair center={false} label="Created At">
                         {dayjs.unix(imageSetDetails.data.createdAt).format('YYYY-MM-DD H:mm')}
@@ -131,12 +131,7 @@ function ImageSetId({ selectedDatastore, isSomethingLoading, imageSetId, setImag
                     alignItems: 'center',
                 }}
             >
-                <Popover
-                    dismissAriaLabel="Close"
-                    fixedWidth
-                    size="medium"
-                    content={imageSetDetails}
-                >
+                <Popover header="Image Set Details" fixedWidth size="medium" content={imageSetDetails}>
                     {imageSetId}
                 </Popover>
             </div>

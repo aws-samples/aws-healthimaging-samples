@@ -6,7 +6,8 @@ import { Auth } from 'aws-amplify';
 
 let config = {
     region: '',
-    endpoint: '',
+    controlPlaneEndpoint: null,
+    dataPlaneEndpoint: null,
     apiTiming: false,
 };
 
@@ -14,11 +15,16 @@ function updateConfig(newSetting) {
     config = { ...config, ...newSetting };
 }
 
+/**
+ * Control Plane
+ * https://healthlake-imaging.us-east-1.amazonaws.com
+ */
+
 // List datastores
 async function listDatastores() {
     return await medicalImagingGet({
         config: config,
-        url: config.endpoint + '/datastore',
+        url: config.controlPlaneEndpoint + '/datastore',
         name: 'List datastore',
     });
 }
@@ -27,15 +33,20 @@ async function listDatastores() {
 async function listDicomImportJobs({ datastoreId }) {
     return await medicalImagingGet({
         config: config,
-        url: config.endpoint + `/listDICOMImportJobs/datastore/${datastoreId}`,
+        url: config.controlPlaneEndpoint + `/listDICOMImportJobs/datastore/${datastoreId}`,
         name: 'List DICOM import jobs',
     });
 }
 
+/**
+ * Data Plane
+ * https://runtime-healthlake-imaging.us-east-1.amazonaws.com
+ */
+
 async function getImageSet({ datastoreId, imageSetId }) {
     return await medicalImagingGet({
         config: config,
-        url: config.endpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}`,
+        url: config.dataPlaneEndpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}`,
         name: 'Get image set',
     });
 }
@@ -43,14 +54,14 @@ async function getImageSet({ datastoreId, imageSetId }) {
 async function listImageSetVersions({ datastoreId, imageSetId }) {
     return await medicalImagingGet({
         config: config,
-        url: config.endpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/versions`,
+        url: config.dataPlaneEndpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/versions`,
         name: 'List image set versions',
     });
 }
 
 // Get DICOM study metadata
 async function getDicomStudyMetadata({ datastoreId, imageSetId, versionId = null }) {
-    let metadataUrl = config.endpoint + `/runtime/datastore/${datastoreId}/imageset?imageSetId=${imageSetId}`;
+    let metadataUrl = config.dataPlaneEndpoint + `/runtime/datastore/${datastoreId}/imageset?imageSetId=${imageSetId}`;
     if (versionId) {
         const versionInt = parseInt(versionId);
         if (typeof versionInt === 'number') {
@@ -74,7 +85,7 @@ async function getDicomFrame({
     imageFrameOverrideUrl = null,
     imageFrameOverrideAuth = 'cognito_jwt',
 }) {
-    const endpoint = imageFrameOverrideUrl || config.endpoint;
+    const endpoint = imageFrameOverrideUrl || config.dataPlaneEndpoint;
 
     // If using a custom endpoint and auth is Cognito JWT, append the session token to the end of the URL
     let urlSuffix = '';
@@ -114,7 +125,7 @@ async function searchImageSets({ datastoreId, data = {}, maxResults = null, next
     // nextToken is an ASCII string between 1 and 8192 characters
     if (nextToken && (nextToken?.length < 1 || nextToken?.length > 8192)) nextToken = null;
     // Build search URL
-    let searchUrl = config.endpoint + '/runtime/datastore/' + datastoreId;
+    let searchUrl = config.dataPlaneEndpoint + '/runtime/datastore/' + datastoreId;
     let queryString = [`maxResults=${maxResults}`, `nextToken=${nextToken}`]
         .filter((val) => {
             if (val.split('=')?.[1] !== 'null') return true;

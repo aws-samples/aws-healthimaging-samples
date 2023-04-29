@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, createContext, Suspense, lazy } from 'react';
+import { useState, useCallback, createContext, Suspense, lazy } from 'react';
 
 // Cloudscape
 import { AppLayout, Box, BreadcrumbGroup, Flashbar, SideNavigation } from '@cloudscape-design/components';
@@ -14,16 +14,18 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import dayjs from 'dayjs';
 import { isUserAuth } from '../../utils/Auth';
 import { nowTime } from '../../utils/DateTime';
-import { updateConfig, listDatastores } from '../../utils/API/imagingApiRead';
+import { listDatastores } from '../../utils/API/imagingApiRead';
 
 // App
-import { DEFAULT_SETTINGS } from './defaultSettings';
 import { sideNavItems } from './sideNavItems';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
 import SuspenseLoader from '../SuspenseLoader';
 import TopNav from '../TopNav';
 import Welcome from '../Welcome';
 import ToolsContent from '../ToolsContent';
+
+// Hooks
+import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useSettings } from '../../hooks/useSettings';
 
 // Configure AWS Amplify
 import awsExports from '../../aws-exports';
@@ -48,7 +50,7 @@ export default function App() {
         card: true, // status for Card component: true, false
         select: 'loading', // status for Select component: pending, loading, finished, error
     }); // datastore loading status based on component
-    const [appSettings, setAppSettings] = useLocalStorage('App-Settings', DEFAULT_SETTINGS);
+    const [appSettings, setAppSettings] = useSettings();
 
     const [appTheme, setAppTheme] = useLocalStorage('App-Theme', 'theme.light');
 
@@ -143,18 +145,6 @@ export default function App() {
         buildCrumb(e.detail.href, e.detail.crumbText || e.detail.text);
         navigate(e.detail.href);
     }
-
-    // update API config with app settings
-    useEffect(() => {
-        const region = appSettings['app.region']?.value || 'us-east-1';
-        const endpoint = appSettings['app.serviceEndpointOverride'] ? appSettings['app.serviceEndpointOverride'] : `https://medical-imaging.${region}.amazonaws.com`;
-        const apiTiming = appSettings['app.apiTiming']?.value || false;
-        updateConfig({
-            region: region,
-            endpoint: endpoint,
-            apiTiming: apiTiming,
-        });
-    }, [appSettings]);
 
     // Set default context values
     const appContextValue = {

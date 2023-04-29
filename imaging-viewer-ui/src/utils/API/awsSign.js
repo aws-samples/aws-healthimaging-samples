@@ -18,7 +18,7 @@ async function getCreds() {
  * Helper Functions
  *******************/
 export async function medicalImagingGet({ config, url, axiosArgs, returnUrl = false, sign = true }) {
-    if (!config.region || !config.endpoint) throw new Error('API configuration not set');
+    if (!config.region || !url) throw new Error('API configuration not set');
     const serviceInfo = {
         service: 'medical-imaging',
         region: config.region,
@@ -40,7 +40,7 @@ export async function medicalImagingGet({ config, url, axiosArgs, returnUrl = fa
 }
 
 export async function medicalImagingPost({ config, url, data = {}, axiosArgs, returnReq = false }) {
-    if (!config.region || !config.endpoint) throw new Error('API configuration not set.');
+    if (!config.region || !url) throw new Error('API configuration not set.');
     const serviceInfo = {
         service: 'medical-imaging',
         region: config.region,

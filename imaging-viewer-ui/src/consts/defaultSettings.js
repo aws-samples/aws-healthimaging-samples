@@ -1,6 +1,7 @@
 const DEFAULT_SETTINGS = {
     'app.region': { label: 'US East (N. Virginia)', value: 'us-east-1' },
-    'app.serviceEndpointOverride': '',
+    'app.controlPlaneEndpointOverride': '',
+    'app.dataPlaneEndpointOverride': '',
     'app.apiTiming': { label: 'Off', value: false },
     'viewer.tlmProxyUrl': '',
     'viewer.tlmProxyAuth': {
