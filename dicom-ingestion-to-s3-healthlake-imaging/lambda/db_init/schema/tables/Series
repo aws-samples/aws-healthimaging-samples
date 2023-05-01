@@ -1,0 +1,21 @@
+DROP TABLE IF EXISTS `Series`;
+CREATE TABLE `Series` (
+	`seriesid` bigint NOT NULL AUTO_INCREMENT,
+	`studyid` bigint NOT NULL,
+	`d0020000e` varchar(255) UNIQUE,
+	`d00080031` varchar(255) ,
+	`d00080021` varchar(255) ,
+	`d0008103e` varchar(255) ,
+	`d0008103f` varchar(255) ,
+	`d00200011` varchar(255) ,
+	`d00080015` varchar(255) ,
+	`d00080060` varchar(255) ,
+	`d00081050` varchar(255) ,
+	`d00081052` varchar(255) ,
+	`d00102210` varchar(255) ,
+	`d00180015` varchar(255) ,
+	`d00181030` varchar(255) ,
+	`d00185100` varchar(255) ,
+	`imagecount` INT, PRIMARY KEY (seriesid));
+CREATE INDEX `Series.d0020000e` ON `Series` (`d0020000e`);
+CREATE INDEX `Series.studyid` ON `Series` (`studyid`);

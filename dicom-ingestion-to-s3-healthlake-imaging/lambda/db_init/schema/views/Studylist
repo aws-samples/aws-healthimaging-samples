@@ -1,0 +1,32 @@
+DROP VIEW IF EXISTS Studylist;
+CREATE VIEW Studylist AS SELECT 
+    Study.studyid ,
+    Study.d0020000d ,
+	Study.d00080061 ,
+	Study.d00080050 ,
+	Study.d00081060 ,
+	Study.d00080020 ,
+	Study.d00080030 ,
+	Study.d00080032 ,
+	Study.d00080090 ,
+	Study.d0008009C ,
+	Study.d00081030 ,
+	Study.d00080005 ,
+	Study.d00080051 ,
+	Study.d00081032 ,
+	Study.d00321033 ,
+	Study.seriescount ,
+	Study.totalimagecount,
+	Study.inferenced ,
+  
+	/*patient*/
+    Patient.patientid ,
+	Patient.d00100010 ,
+	Patient.d00100020 ,
+	Patient.d00100021 ,	
+	Patient.d00100030 ,	
+	Patient.d00100040 
+
+
+
+     from Study , Patient where Study.patientid = Patient.patientid ;

@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS SQSmsg;
+CREATE TABLE SQSmsg (
+`sqsmsgid` bigint NOT NULL AUTO_INCREMENT,
+`msg` VARCHAR(255),
+`logtime` bigint,
+PRIMARY KEY (`sqsmsgid`));

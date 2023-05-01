@@ -1,0 +1,90 @@
+/*****  InsertupdateSeries StoreProc ****/
+DROP PROCEDURE IF EXISTS InsertUpdateSeries;
+CREATE PROCEDURE InsertUpdateSeries
+(
+	/*series*/
+	IN d0020000e varchar(255) ,
+	IN d00080031 varchar(255) ,
+	IN d00080021 varchar(255) ,
+	IN d0008103e varchar(255) ,
+	IN d0008103f varchar(255) ,
+	IN d00200011 varchar(255) ,
+	IN d00080015 varchar(255) ,
+	IN d00080060 varchar(255) ,
+	IN d00081050 varchar(255) ,
+	IN d00081052 varchar(255) ,
+	IN d00102210 varchar(255) ,
+	IN d00180015 varchar(255) ,
+	IN d00181030 varchar(255) ,
+	IN d00185100 varchar(255) ,
+	IN instudyid bigint,
+    /* returned value */
+    OUT outseriesid bigint,
+	OUT outnewseries boolean
+) 
+BEGIN
+	SET outseriesid = NULL;
+	SELECT seriesid INTO outseriesid FROM Series WHERE Series.d0020000e = d0020000e;
+	SELECT outseriesid;
+	IF outseriesid IS NULL THEN
+		SET outnewseries = TRUE;
+		INSERT INTO Series (
+			Series.seriesid ,
+			Series.studyid ,
+			Series.d0020000e ,
+			Series.d00080031 ,
+			Series.d00080021 ,
+			Series.d0008103e ,
+			Series.d0008103f ,
+			Series.d00200011 ,
+			Series.d00080015 ,
+			Series.d00080060 ,
+			Series.d00081050 ,
+			Series.d00081052 ,
+			Series.d00102210 ,
+			Series.d00180015 ,
+			Series.d00181030 ,
+			Series.d00185100,
+			Series.imagecount
+		)
+		VALUES
+		(
+			NULL ,
+			instudyid ,
+			d0020000e  ,
+			d00080031  ,
+			d00080021  ,
+			d0008103e  ,
+			d0008103f  ,
+			d00200011  ,
+			d00080015  ,
+			d00080060  ,
+			d00081050  ,
+			d00081052  ,
+			d00102210  ,
+			d00180015  ,
+			d00181030  ,
+			d00185100  ,
+			0
+		);
+		SET outseriesid = LAST_INSERT_ID();
+	ELSE
+		SET outnewseries = FALSE;
+		UPDATE Series SET
+			Series.studyid = instudyid ,
+			Series.d00080031 = d00080031 ,
+			Series.d00080021 = d00080021 ,
+			Series.d0008103e = d0008103e ,
+			Series.d0008103f = d0008103f ,
+			Series.d00200011 = d00200011 ,
+			Series.d00080015 = d00080015 ,
+			Series.d00080060 = d00080060 ,
+			Series.d00081050 = d00081050 ,
+			Series.d00081052 = d00081052 ,
+			Series.d00102210 = d00102210 ,
+			Series.d00180015 = d00180015 ,
+			Series.d00181030 = d00181030 ,
+			Series.d00185100 = d00185100
+		WHERE Series.seriesid = outseriesid;
+	END IF;	
+END;

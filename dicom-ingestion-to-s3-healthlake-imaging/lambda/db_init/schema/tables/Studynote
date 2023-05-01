@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS Studynote;
+CREATE TABLE Studynote (
+	`studynoteid` bigint NOT NULL AUTO_INCREMENT,
+	`studyid` bigint,	
+	`username` varchar(32) NOT NULL,
+	`date` DATETIME NULL,
+	`notecontent` TEXT  NULL,
+	PRIMARY KEY (`studynoteid`));
+CREATE INDEX `Studynote.studyid` ON `Studynote` (`studyid`);

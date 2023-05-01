@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS Edgelocation;
+CREATE TABLE Edgelocation (
+
+	`edgelocationid` bigint NOT NULL AUTO_INCREMENT,
+	`locationname` varchar(255) ,
+	`datastoreid` varchar(32) ,
+	PRIMARY KEY (edgelocationid));
+CREATE INDEX `Edgelocation.datastoreid` ON `Edgelocation` (`datastoreid`);

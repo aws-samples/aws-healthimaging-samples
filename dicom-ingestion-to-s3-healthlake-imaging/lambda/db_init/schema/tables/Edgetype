@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS Edgetype;
+CREATE TABLE Edgetype (
+	`edgetypeid` bigint NOT NULL AUTO_INCREMENT,
+	`edgetype` varchar(255) ,
+	PRIMARY KEY (edgetypeid));
+CREATE INDEX `Edgetype.edgetypeid` ON `Edgetype` (`edgetypeid`);

@@ -1,0 +1,24 @@
+DROP TABLE IF EXISTS `Study`;
+CREATE TABLE `Study` (
+  `studyid` BIGINT NOT NULL AUTO_INCREMENT,
+  `patientid` BIGINT NOT NULL,
+  `d0020000d` varchar(255) UNIQUE,
+  `d00080061` varchar(255),
+  `d00080050` varchar(255),
+  `d00081060` varchar(255),
+  `d00080020` date,
+  `d00080030` time,
+  `d00080032` time,
+  `d00080090` varchar(255),
+  `d0008009C` varchar(255),
+  `d00081030` varchar(255),
+  `d00080005` varchar(255),
+  `d00080051` varchar(255),
+  `d00081032` varchar(255),
+  `d00321033` varchar(255),
+  `seriescount` INT,
+  `totalimagecount` INT,  
+  `inferenced` varchar(255),
+  PRIMARY KEY (studyid));
+  CREATE INDEX `Study.d0020000d` ON `Study` (`d0020000d`);
+  CREATE INDEX `Study.patientid` ON `Study` (`patientid`);
