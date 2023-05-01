@@ -1,0 +1,35 @@
+DROP TABLE IF EXISTS Instance;
+CREATE TABLE `Instance` (
+	`instanceid` bigint NOT NULL AUTO_INCREMENT,
+	`seriesid` bigint NOT NULL,
+	`d00080012` varchar(255) ,
+	`d00080008` varchar(255) ,
+	`d00080013` varchar(255) ,
+	`d00080016` varchar(255) ,
+	`d00080018` varchar(255) UNIQUE,
+	`d00200013` varchar(255) ,
+	`d00200037` varchar(255) ,
+	`d00200032` varchar(255) ,
+	`d00080032` time ,
+	`d00080022` date ,
+	`d00080023` varchar(255) ,
+	`d00082218` varchar(255) ,
+	`d00200012` varchar(255) ,
+	`d00200020` varchar(255) ,
+	`d00204000` varchar(255) ,
+	`d00080301` varchar(255) ,
+	`d00280302` varchar(255) ,
+	`d20500020` varchar(255) ,
+	`d00880200` varchar(255) , 
+	`d00280002`  varchar(255) , /* sample per pixel */
+	`d00280004`  varchar(255) , /* Photometric Intepretation */
+	`d00280010`  varchar(255) , /* Number of rows */
+	`d00280011`  varchar(255) , /* number of columns */
+	`d00280100`  varchar(255) , /* Bits allocated */
+	`d00280102`  varchar(255) , /* High Bit */
+	`d00280103`  varchar(255) , /* pixel representation */
+	`d00281052`  varchar(255) , /* Rescale Interept */
+	`d00281053`  varchar(255) , /* Rescale Slope */	
+	PRIMARY KEY (instanceid));
+CREATE INDEX `Instance.d00080018` ON `Instance` (`d00080018`);
+CREATE INDEX `Instance.seriesid` ON `Instance` (`seriedid`);

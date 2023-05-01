@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS Inferencerequest;
+CREATE TABLE Inferencerequest (
+`inferencerequestid` bigint NOT NULL AUTO_INCREMENT,
+`correlation_id` varchar(255),
+`studyid` bigint,
+`status` int,
+`inferencemodelid` int,
+`starttime` bigint,
+`endtime` bigint,
+PRIMARY KEY (`inferencerequestid`));
+CREATE INDEX `Inferencerequest.studyid` ON `Inferencerequest` (`studyid`);
+CREATE INDEX `Inferencerequest.correlation_id` ON `Inferencerequest` (`correlation_id`);

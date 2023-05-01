@@ -1,0 +1,23 @@
+/*****  UpdateModalitiesInStudy StoreProc ****/
+DROP PROCEDURE IF EXISTS UpdateModalitiesInStudy;
+CREATE PROCEDURE UpdateModalitiesInStudy
+(
+
+	IN instudyid bigint,
+    IN d00080060 varchar(255)
+) 
+BEGIN
+    DECLARE studymodality VARCHAR(255);
+    DECLARE isModPresent boolean;
+    SET isModPresent = FALSE;
+    SET studymodality = NULL;
+    SELECT Study.d00080061 INTO studymodality FROM Study WHERE Study.studyid = instudyid;
+    IF studymodality IS NULL THEN
+        UPDATE Study SET Study.d00080061 = d00080060 WHERE Study.studyid = instudyid;
+    ELSE
+        SET isModPresent = (SELECT LOCATE(d00080060, (SELECT Study.d00080061 from Study where Study.studyid =  instudyid),1));
+        IF ( isModPresent = 0 ) THEN
+            UPDATE Study SET Study.d00080061 = (SELECT CONCAT(studymodality , "/" , d00080060 )) where Study.studyid = instudyid;
+        END IF;
+    END IF;
+END

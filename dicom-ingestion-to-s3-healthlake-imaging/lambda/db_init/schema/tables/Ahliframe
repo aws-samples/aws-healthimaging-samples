@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS Ahliframe;
+CREATE TABLE Ahliframe (
+	`frameid` bigint NOT NULL AUTO_INCREMENT,
+	`instanceid` bigint NOT NULL,
+	`imageframeid` varchar(32) NOT NULL,
+	`imagesetid` varchar(32) NOT NULL,
+	PRIMARY KEY (`frameid`));

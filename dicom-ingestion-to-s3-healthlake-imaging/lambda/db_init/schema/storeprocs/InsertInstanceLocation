@@ -1,0 +1,28 @@
+DROP PROCEDURE IF EXISTS InsertInstanceLocation;
+CREATE PROCEDURE InsertInstanceLocation
+(
+	IN instanceid bigint,
+    IN bucketname varchar(255),
+    IN region varchar(255),
+    IN filekey nvarchar(2048)
+) 
+BEGIN
+    INSERT INTO Instancelocation 
+        (   `instanceid` ,
+            `bucketname` ,
+            `region` ,
+            `filekey` 
+        ) 
+        VALUES 
+        ( 
+            instanceid ,
+            bucketname ,
+            region ,
+            filekey
+        ) ON DUPLICATE KEY UPDATE
+
+        `instanceid` = instanceid ,
+        `bucketname` = bucketname ,
+        `region` = region ,
+        `filekey` = filekey;
+END;

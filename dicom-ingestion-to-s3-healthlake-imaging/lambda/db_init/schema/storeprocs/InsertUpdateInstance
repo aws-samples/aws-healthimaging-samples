@@ -1,0 +1,139 @@
+DROP PROCEDURE IF EXISTS InsertUpdateInstance;
+CREATE PROCEDURE InsertUpdateInstance
+(
+	/*Instance */
+	IN d00080012 varchar(255) ,
+	IN d00080008 varchar(255) ,
+	IN d00080013 varchar(255) ,
+	IN d00080016 varchar(255) ,
+	IN d00080018 varchar(255) ,
+	IN d00200013 varchar(255) ,
+	IN d00200037 varchar(255) ,
+	IN d00200032 varchar(255) ,
+	IN d00080032 time ,
+	IN d00080022 date ,
+	IN d00080023 varchar(255) ,
+	IN d00082218 varchar(255) ,
+	IN d00200012 varchar(255) ,
+	IN d00200020 varchar(255) ,
+	IN d00204000 varchar(255) ,
+	IN d00080301 varchar(255) ,
+	IN d00280302 varchar(255) ,
+	IN d20500020 varchar(255) ,
+	IN d00880200 varchar(255) ,
+	IN d00280002 varchar(255) , /* sample per pixel */
+	IN d00280004 varchar(255) , /* Photometric Intepretation */
+	IN d00280010 varchar(255) , /* Number of rows */
+	IN d00280011 varchar(255) , /* number of columns */
+	IN d00280100 varchar(255) , /* Bits allocated */
+	IN d00280102 varchar(255) , /* High Bit */
+	IN d00280103 varchar(255) , /* pixel representation */
+	IN d00281052 varchar(255) , /* Rescale Interept */
+	IN d00281053 varchar(255) , /* Rescale Slope */
+	IN inseriesid bigint ,
+	OUT outinstanceid bigint ,
+	OUT outnewinstance boolean
+
+) 
+BEGIN
+	SET outinstanceid = NULL;
+	SELECT instanceid INTO outinstanceid FROM Instance WHERE Instance.d00080018 = d00080018;
+	IF outinstanceid IS NULL THEN
+		SET outnewinstance = TRUE;
+		INSERT INTO Instance 
+		(
+			Instance.seriesid ,
+			Instance.d00080012 ,
+			Instance.d00080008 ,
+			Instance.d00080013 ,
+			Instance.d00080016 ,
+			Instance.d00080018 ,
+			Instance.d00200013 ,
+			Instance.d00200037 ,
+			Instance.d00200032 ,
+			Instance.d00080032 ,
+			Instance.d00080022 ,
+			Instance.d00080023 ,
+			Instance.d00082218 ,
+			Instance.d00200012 ,
+			Instance.d00200020 ,
+			Instance.d00204000 ,
+			Instance.d00080301 ,
+			Instance.d00280302 ,
+			Instance.d20500020 ,
+			Instance.d00880200 ,
+			Instance.d00280002 ,
+			Instance.d00280004 ,
+			Instance.d00280010 ,
+			Instance.d00280011 ,
+			Instance.d00280100 ,
+			Instance.d00280102 ,
+			Instance.d00280103 ,
+			Instance.d00281052 ,
+			Instance.d00281053  
+		)
+		VALUES (
+			inseriesid ,
+			d00080012 ,
+			d00080008 ,
+			d00080013 ,
+			d00080016 ,
+			d00080018 ,
+			d00200013 ,
+			d00200037 ,
+			d00200032 ,
+			d00080032 ,
+			d00080022 ,
+			d00080023 ,
+			d00082218 ,
+			d00200012 ,
+			d00200020 ,
+			d00204000 ,
+			d00080301 ,
+			d00280302 ,
+			d20500020 ,
+			d00880200 ,
+			d00280002 ,
+			d00280004 ,
+			d00280010 ,
+			d00280011 ,
+			d00280100 ,
+			d00280102 ,
+			d00280103 ,
+			d00281052 ,
+			d00281053 
+		);
+		SET outinstanceid = LAST_INSERT_ID();
+	ELSE
+		SET outnewinstance = FALSE;
+		UPDATE Instance SET
+		Instance.`d00080012` = d00080012 ,
+		Instance.`d00080008` = d00080008 ,
+		Instance.`d00080013` = d00080013 ,
+		Instance.`d00080016` = d00080016 ,
+		Instance.`d00200013` = d00200013 ,
+		Instance.`d00200037` = d00200037 ,
+		Instance.`d00200032` = d00200032 ,
+		Instance.`d00080032` = d00080032 ,
+		Instance.`d00080022` = d00080022 ,
+		Instance.`d00080023` = d00080023 ,
+		Instance.`d00082218` = d00082218 ,
+		Instance.`d00200012` = d00200012 ,
+		Instance.`d00200020` = d00200020 ,
+		Instance.`d00204000` = d00204000 ,
+		Instance.`d00080301` = d00080301 ,
+		Instance.`d00280302` = d00280302 ,
+		Instance.`d20500020` = d20500020 ,
+		Instance.`d00880200` = d00880200 ,
+		Instance.`d00280002` = d00280002 ,
+		Instance.`d00280004` = d00280004 ,
+		Instance.`d00280010` = d00280010 ,
+		Instance.`d00280011` = d00280011 ,
+		Instance.`d00280100` = d00280100 ,
+		Instance.`d00280102` = d00280102 ,
+		Instance.`d00280103` = d00280103 ,
+		Instance.`d00281052` = d00281052 ,
+		Instance.`d00281053` = d00281053 
+		WHERE Instance.instanceid = outinstanceid;
+	END IF;
+END;
