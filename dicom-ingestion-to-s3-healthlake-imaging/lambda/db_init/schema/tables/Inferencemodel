@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS Inferencemodel;
+CREATE TABLE Inferencemodel (
+`inferencemodelid` bigint NOT NULL AUTO_INCREMENT,
+`type` varchar(255),
+`workflowid` varchar(255),
+`name` varchar(255),
+PRIMARY KEY (`inferencemodelid`));

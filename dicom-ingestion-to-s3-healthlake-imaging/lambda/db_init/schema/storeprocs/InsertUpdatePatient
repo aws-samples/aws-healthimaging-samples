@@ -1,0 +1,47 @@
+/*****  InsertupdateSeries StoreProc ****/
+DROP PROCEDURE IF EXISTS InsertUpdatePatient;
+CREATE PROCEDURE InsertUpdatePatient
+(
+	/*patient*/
+	IN d00100010 varchar(255),
+	IN d00100020 varchar(255),	
+    IN d00100021 varchar(255),
+	IN d00100030 date,	
+	IN d00100040 varchar(255),
+    OUT outpatientid bigint
+
+) 
+BEGIN
+    IF (d00100030 IS NULL) THEN
+        SET d00100030 = '1900-01-01';
+    END IF;
+    SET outpatientid = NULL;
+    SELECT patientid INTO outpatientid FROM Patient where Patient.d00100020 = d00100020;
+    IF outpatientid IS NULL then
+        INSERT INTO Patient (
+            Patient.patientid ,
+            Patient.d00100010 ,
+            Patient.d00100020 ,
+            Patient.d00100021 ,	
+            Patient.d00100030 ,	
+            Patient.d00100040
+        )
+        VALUES
+        (
+            NULL ,
+            d00100010 ,
+            d00100020 ,
+            d00100021 ,	
+            d00100030 ,	
+            d00100040
+        ); 
+        SET outpatientid = LAST_INSERT_ID();       
+    ELSE
+        UPDATE Patient SET
+            Patient.d00100010 = d00100010 ,
+            Patient.d00100021 = d00100021 ,	
+            Patient.d00100030 = d00100030 ,	
+            Patient.d00100040 = d00100040 
+        WHERE Patient.patientid = outpatientid;
+    END IF;
+END;

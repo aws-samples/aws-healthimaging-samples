@@ -1,0 +1,7 @@
+-- Create the Ahliimageset table
+DROP TABLE IF EXISTS Ahliimageset;
+CREATE TABLE Ahliimageset (
+	`seriesid` varchar(64) NULL,
+	`imagesetid` varchar(32) NOT NULL,
+	`datastoreid` varchar(32) NOT NULL,
+	PRIMARY KEY (`imagesetid`));

@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS DICOMEntity;
+CREATE TABLE DICOMEntity (
+
+	`dicomentityid` bigint NOT NULL AUTO_INCREMENT,
+	`edgelocationid` bigint ,
+	`impersonatedclientae` varchar(255),
+	`aetitle` varchar(255) ,
+	`hostname` varchar(255) ,
+	`port` int ,
+	`send` boolean,
+	`receive` boolean,
+	`query` boolean,
+	PRIMARY KEY (dicomentityid));

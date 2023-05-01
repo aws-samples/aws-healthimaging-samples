@@ -1,0 +1,82 @@
+/*****  InsertupdateSeries StoreProc ****/
+DROP PROCEDURE IF EXISTS InsertUpdateStudy; 
+CREATE PROCEDURE InsertUpdateStudy
+(
+	/*study*/
+	IN d0020000d varchar(255),
+	IN d00080061 varchar(255),
+	IN d00080050 varchar(255),
+	IN d00081060 varchar(255),
+	IN d00080020 date,
+	IN d00080030 time,
+	IN d00080090 varchar(255),
+	IN d0008009C varchar(255),
+	IN d00081030 varchar(255),
+	IN d00080005 varchar(255),
+	IN d00080051 varchar(255),
+	IN d00081032 varchar(255),
+	IN d00321033 varchar(255),
+    IN inpatientid bigint,
+    OUT outstudyid bigint ) 
+BEGIN
+    SET outstudyid = NULL;
+    SELECT studyid INTO outstudyid FROM Study where Study.d0020000d = d0020000d;
+    IF outstudyid IS NULL THEN
+        INSERT INTO Study
+        (       
+            Study.studyid ,   
+            Study.patientid ,
+            Study.d0020000d ,
+            Study.d00080050 ,
+            Study.d00081060 ,
+            Study.d00080020 ,
+            Study.d00080030 ,
+            Study.d00080032 ,
+            Study.d00080090 ,
+            Study.d0008009C ,
+            Study.d00081030 ,
+            Study.d00080005 ,
+            Study.d00080051 ,
+            Study.d00081032 ,
+            Study.d00321033 ,
+            Study.seriescount ,
+            Study.totalimagecount 
+        ) 
+        VALUES 
+        (
+            NULL ,
+            inpatientid ,
+            d0020000d ,
+            d00080050 ,
+            d00081060 ,
+            d00080020 ,
+            d00080030 ,
+            d00080032 ,
+            d00080090 ,
+            d0008009C ,
+            d00081030 ,
+            d00080005 ,
+            d00080051 ,
+            d00081032 ,
+            d00321033 ,
+            0 ,
+            0 
+        );
+        SET outstudyid = LAST_INSERT_ID();
+    ELSE
+        UPDATE Study SET 
+        `d00080050` = d00080050 ,
+        `d00081060` = d00081060 ,
+        `d00080020` = d00080020 ,
+        `d00080030` = d00080030 ,
+        `d00080032` = d00080032 ,
+        `d00080090` = d00080090 ,
+        `d0008009C` = d0008009C ,
+        `d00081030` = d00081030 ,
+        `d00080005` = d00080005 ,
+        `d00080051` = d00080051 ,
+        `d00081032` = d00081032 ,
+        `d00321033` = d00321033 
+        WHERE Study.studyid = outstudyid;
+    END IF; 
+END;

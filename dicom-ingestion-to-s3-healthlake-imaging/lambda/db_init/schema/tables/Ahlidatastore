@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS Ahlidatastore;
+CREATE TABLE Ahlidatastore (
+	`datastoreid` bigint NOT NULL AUTO_INCREMENT,
+	`ahlidatastoreid` varchar(32) NOT NULL,
+	`ahlidatastorename` varchar(64) NULL,
+	`ahlidatastorarn` varchar(2048) NULL,
+	PRIMARY KEY (`datastoreid`));
