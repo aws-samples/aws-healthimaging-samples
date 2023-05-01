@@ -1,0 +1,15 @@
+DROP TABLE IF EXISTS DICOMAuditTrail;
+CREATE TABLE DICOMAuditTrail (
+
+	`auditid` bigint NOT NULL AUTO_INCREMENT,
+	`operation` varchar(255) ,
+	`operatondescription` varchar(4000) ,
+	`userid` varchar(255),
+	`objectid` varchar(255) ,
+	`objecttype` varchar(255) ,
+	`destination` varchar(255) ,
+	`origin` varchar(255) ,
+	`operationdtart` varchar(255) ,
+	`operationrnd` varchar(255) ,
+	`status` varchar(255) ,
+	PRIMARY KEY (auditid));

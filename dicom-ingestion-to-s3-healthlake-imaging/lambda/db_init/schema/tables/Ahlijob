@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS Ahlijob;
+CREATE TABLE Ahlijob (
+	`jobid` bigint NOT NULL AUTO_INCREMENT,
+	`importjobid` varchar(32) NULL,
+	`ahlidatastoreid` varchar(32) NULL,
+	`status` INT,
+	`importlocation` varchar(2048),
+  	`resultlocation` varchar(2048),
+	`submittedat` datetime,
+	`endedat` datetime,
+	`insertedat` datetime,
+	PRIMARY KEY (`jobid`));
+CREATE INDEX `Ahlijob.importjobid` ON `Ahlijob` (`importjobid`);

@@ -1,0 +1,21 @@
+DROP TABLE IF EXISTS Transfer;
+CREATE TABLE Transfer (
+	`transferid` bigint NOT NULL AUTO_INCREMENT,
+	`jobid` varchar(255),
+	`studyid` bigint,
+	`srcedgelocationid` varchar(255),
+	`srcdicomentity`  varchar(255),
+	`dstedgelocationid` varchar(255),
+	`dstdicomentity` varchar(255),
+	`trigger` varchar(255) ,
+	`status` varchar(255) ,
+	`description` varchar(4000) ,
+	`starttime` bigint,
+	`endtime` bigint,
+	`objectcount` int,
+	`objectsentcount` int,
+	`direction` varchar(255),
+	PRIMARY KEY (transferid));
+
+CREATE INDEX `Transfer.studyid` ON `Transfer` (`studyid`);
+CREATE INDEX `Transfer.jobid` ON `Transfer` (`jobid`);
