@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS `Patient`;
+CREATE TABLE `Patient` (
+	`patientid` BIGINT NOT NULL AUTO_INCREMENT, 
+	`d00100010` varchar(255),
+	`d00100020` varchar(255) UNIQUE,
+	`d00100021` varchar(255),	
+	`d00100030` date,	
+	`d00100040` varchar(255), 
+	PRIMARY KEY (patientid));
+CREATE INDEX `Patient.d00100020` ON `Patient` (`d00100020`);

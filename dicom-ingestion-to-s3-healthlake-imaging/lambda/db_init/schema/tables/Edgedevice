@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS Edgedevice;
+CREATE TABLE Edgedevice (
+
+	`edid` bigint NOT NULL AUTO_INCREMENT,
+	`edgedeviceid` varchar(255) , 
+	`edgelocationid` bigint,
+	`edgetypeid` bigint, 
+	PRIMARY KEY (edid));
