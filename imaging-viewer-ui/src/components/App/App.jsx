@@ -33,6 +33,7 @@ Amplify.configure(awsExports);
 
 // Lazy components
 const Datastores = lazy(() => import('../Datastores'));
+const DatastoresDetails = lazy(() => import('../DatastoresDetails'));
 const Search = lazy(() => import('../Search'));
 const MetadataViewer = lazy(() => import('../MetadataViewer'));
 const ImageViewer = lazy(() => import('../ImageViewer'));
@@ -50,6 +51,7 @@ export default function App() {
         card: true, // status for Card component: true, false
         select: 'loading', // status for Select component: pending, loading, finished, error
     }); // datastore loading status based on component
+    const [toolsOpen, setToolsOpen] = useState(false); // whether the tools drawer is open
     const [appSettings, setAppSettings] = useSettings();
 
     const [appTheme, setAppTheme] = useLocalStorage('App-Theme', 'theme.light');
@@ -63,9 +65,14 @@ export default function App() {
     // Build and set crumbs from a link and text
     // Text can be a literal string or an array of strings
     // Returns an array of breadcrumbs (object: text, href)
-    const buildCrumb = useCallback((href, text) => {
-        setActiveHref(href);
+    const buildCrumb = useCallback((href, text = null) => {
         const hrefArray = ['/', ...href.split('/').filter((h) => h !== '')];
+        // Only set the first two elements of href as the active href
+        if (hrefArray.length <= 2) {
+            setActiveHref(href);
+        } else {
+            setActiveHref(hrefArray.slice(0, 2).join(''));
+        }
         setActiveBreadcrumbs(
             hrefArray.map((h, i) => {
                 // build full href from beginning to index
@@ -142,7 +149,7 @@ export default function App() {
             window.open(e.detail.href, '_blank', 'noopener');
             return;
         }
-        buildCrumb(e.detail.href, e.detail.crumbText || e.detail.text);
+        if (e.detail.href === '/') buildCrumb(e.detail.href, e.detail.text);
         navigate(e.detail.href);
     }
 
@@ -152,6 +159,7 @@ export default function App() {
         user: user,
         buildCrumb: buildCrumb,
         addFlashMessage: addFlashMessage,
+        setToolsOpen: setToolsOpen,
         datastores: datastores,
         datastoreLoadStatus: datastoreLoadStatus,
         getDatastores: getDatastores,
@@ -163,6 +171,8 @@ export default function App() {
             <TopNav signOut={signOut} setAppTheme={setAppTheme} />
             <AppLayout
                 tools={<ToolsContent />}
+                toolsOpen={toolsOpen}
+                onToolsChange={({ detail }) => setToolsOpen(detail.open)}
                 notifications={
                     <Box>
                         <Flashbar items={flashbarItems} />
@@ -176,6 +186,7 @@ export default function App() {
                             <Routes>
                                 <Route index element={<Welcome />} />
                                 <Route path="/datastores" element={<Datastores />} />
+                                <Route path="/datastores/:datastoreId" element={<DatastoresDetails />} />
                                 <Route path="/search" element={<Search />} />
                                 <Route path="/metadata" element={<MetadataViewer />} />
                                 <Route path="/viewer" element={<ImageViewer />} />

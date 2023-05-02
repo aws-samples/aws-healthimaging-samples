@@ -38,6 +38,15 @@ async function listDicomImportJobs({ datastoreId }) {
     });
 }
 
+// List tags for resource
+async function listTagsForResource({ resourceArn }) {
+    return await medicalImagingGet({
+        config: config,
+        url: config.controlPlaneEndpoint + `/tags/${encodeURIComponent(resourceArn)}`,
+        name: 'List tags for resource ARN',
+    });
+}
+
 /**
  * Data Plane
  * https://runtime-healthlake-imaging.us-east-1.amazonaws.com
@@ -144,6 +153,7 @@ export {
     updateConfig,
     listDatastores,
     listDicomImportJobs,
+    listTagsForResource,
     getImageSet,
     listImageSetVersions,
     getDicomStudyMetadata,

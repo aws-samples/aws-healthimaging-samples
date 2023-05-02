@@ -39,7 +39,7 @@ export default function Search() {
 
     // Set crumbs
     useEffect(() => {
-        buildCrumb(location.pathname, ['Search']);
+        buildCrumb(location.pathname, 'Search');
     }, [buildCrumb, location]);
 
     // Search studies using nativeSearch()

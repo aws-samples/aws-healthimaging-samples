@@ -56,7 +56,7 @@ export default function MetadataViewer() {
 
     // Set crumbs
     useEffect(() => {
-        buildCrumb(location.pathname, ['Metadata Viewer']);
+        buildCrumb(location.pathname, 'Metadata Viewer');
     }, [buildCrumb, location]);
 
     // Load Ace editor

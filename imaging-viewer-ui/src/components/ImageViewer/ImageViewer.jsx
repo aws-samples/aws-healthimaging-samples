@@ -87,7 +87,7 @@ export default function ImageViewer() {
 
     // Set crumbs
     useEffect(() => {
-        buildCrumb(location.pathname, ['Image Viewer']);
+        buildCrumb(location.pathname, 'Image Viewer');
     }, [buildCrumb, location]);
 
     // update imageLoader's load method
