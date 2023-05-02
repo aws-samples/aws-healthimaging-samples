@@ -1,6 +1,9 @@
 // Helper functions
 import { medicalImagingGet, medicalImagingPost } from './awsSign';
 
+// Buffer
+import { Buffer } from 'buffer';
+
 // AWS
 import { Auth } from 'aws-amplify';
 
@@ -84,6 +87,34 @@ async function getDicomStudyMetadata({ datastoreId, imageSetId, versionId = null
     });
 }
 
+async function updateImageSetMetadata({
+    datastoreId,
+    imageSetId,
+    latestVersionId,
+    removableAttributes = {},
+    updatableAttributes = {},
+}) {
+    if (Object.keys(removableAttributes) === 0 && Object.keys(updatableAttributes) === 0) return;
+
+    console.debug('updatableAttributes', updatableAttributes);
+
+    let updateItemBlob = Buffer.from(JSON.stringify(updatableAttributes)).toString('base64');
+    let updateUpdateable = { updatableAttributes: updateItemBlob };
+    let dicomUpdates = {
+        DICOMUpdates: updateUpdateable,
+    };
+
+    const updateImageSetMetadtaUrl =
+        config.dataPlaneEndpoint +
+        `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/metadata?latestVersion=${latestVersionId}`;
+
+    return await medicalImagingPost({
+        config: config,
+        url: updateImageSetMetadtaUrl,
+        data: dicomUpdates,
+    });
+}
+
 // Get DICOM frame
 // Pass in returnUrl to only return the sigv4-signed image frame URL
 async function getDicomFrame({
@@ -157,6 +188,7 @@ export {
     getImageSet,
     listImageSetVersions,
     getDicomStudyMetadata,
+    updateImageSetMetadata,
     getDicomFrame,
     searchImageSets,
 };

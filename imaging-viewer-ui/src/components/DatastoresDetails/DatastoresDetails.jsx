@@ -18,8 +18,7 @@ import {
 } from '@cloudscape-design/components';
 
 // App
-import { DatastoreConfiguration } from './DatastoreConfiguration';
-import { DatastoreTags } from './DatastoreTags';
+import { DatastoreConfiguration, DatastoreTags } from './datastoreDetailsComponents';
 
 export default function DatastoresDetails() {
     const { buildCrumb, datastoreLoadStatus, datastores } = useContext(AppContext);

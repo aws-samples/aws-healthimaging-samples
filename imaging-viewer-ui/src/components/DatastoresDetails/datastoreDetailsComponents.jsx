@@ -1,3 +1,5 @@
+import { useState, useEffect, useContext } from 'react';
+
 // Cloudscape
 import { Box, Button, ColumnLayout, Container, Header, Popover, StatusIndicator } from '@cloudscape-design/components';
 
@@ -6,6 +8,13 @@ import clipboard from 'clipboardy';
 
 // Utils
 import { displayUnixDate } from '../../utils/DateTime';
+
+// API
+import { listTagsForResource } from '../../utils/API/imagingApiRead';
+
+// App
+import { AppContext } from '../App';
+import { TagViewer } from './datastoreTag';
 
 // Top of the page datastore config
 export function DatastoreConfiguration({ datastore }) {
@@ -95,4 +104,25 @@ export function DatastoreConfiguration({ datastore }) {
             <ContainerDetails />
         </Container>
     );
+}
+
+// Bottom of page Tab element - tags
+export function DatastoreTags({ datastoreArn }) {
+    const [loading, setLoading] = useState(false);
+    const [tags, setTags] = useState([]);
+
+    const { setToolsOpen } = useContext(AppContext);
+
+    useEffect(() => {
+        if (!datastoreArn) return;
+        async function getTagsForDatastore() {
+            setLoading(true);
+            const tags = await listTagsForResource({ resourceArn: datastoreArn });
+            if (tags?.data?.tags) setTags(Object.entries(tags.data.tags).map(([key, value]) => ({ key, value })));
+            setLoading(false);
+        }
+        getTagsForDatastore();
+    }, [datastoreArn]);
+
+    return <TagViewer tags={tags} loading={loading} setToolsOpen={setToolsOpen} />;
 }

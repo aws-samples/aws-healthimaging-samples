@@ -27,6 +27,8 @@ import ToolsContent from '../ToolsContent';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useSettings } from '../../hooks/useSettings';
 
+import Debug from '../Debug';
+
 // Configure AWS Amplify
 import awsExports from '../../aws-exports';
 Amplify.configure(awsExports);
@@ -185,6 +187,7 @@ export default function App() {
                         {isUserAuth(user) ? (
                             <Routes>
                                 <Route index element={<Welcome />} />
+                                <Route path="/debug" element={<Debug />} />
                                 <Route path="/datastores" element={<Datastores />} />
                                 <Route path="/datastores/:datastoreId" element={<DatastoresDetails />} />
                                 <Route path="/search" element={<Search />} />

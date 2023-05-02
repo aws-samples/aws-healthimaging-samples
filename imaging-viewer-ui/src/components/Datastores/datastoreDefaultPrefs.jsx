@@ -13,7 +13,6 @@ export function cardDefinitions(navigate) {
         header: (d) => (
             <>
                 {d.datastoreStatus !== 'DELETED' ? (
-                    // <Link onFollow={() => navigate(`/search?datastoreId=${d.datastoreId}`)} fontSize="heading-s">
                     <Link onFollow={() => navigate(`/datastores/${d.datastoreId}`)} fontSize="heading-s">
                         {d.datastoreName}
                     </Link>
