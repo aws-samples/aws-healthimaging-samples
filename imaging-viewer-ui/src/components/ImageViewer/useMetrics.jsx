@@ -65,8 +65,7 @@ export function useMetrics() {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '15px',
-                    padding: '1em 0 1em 0',
+                    paddingBottom: '1em',
                 }}
             >
                 <SpaceBetween direction="horizontal" size="xl">

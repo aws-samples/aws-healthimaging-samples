@@ -7,7 +7,15 @@ import { AppContext } from '../App';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 // Cloudscape
-import { ColumnLayout, Container, Form, Input, Toggle } from '@cloudscape-design/components';
+import {
+    ColumnLayout,
+    Container,
+    ContentLayout,
+    Form,
+    Input,
+    SpaceBetween,
+    Toggle,
+} from '@cloudscape-design/components';
 
 // Cornerstone
 import cornerstone from 'cornerstone-core';
@@ -390,98 +398,108 @@ export default function ImageViewer() {
     }, []);
 
     return (
-        <Container
+        <ContentLayout
             header={
-                <ViewerContainerHeader
-                    formDirty={formDirty}
-                    isLoading={loadMetrics.framesLoaded < loadMetrics.totalFramesToLoad}
-                    handleReset={handleReset}
-                    handleLoadImageSet={handleLoadImageSet}
-                />
+                <SpaceBetween size="m">
+                    <ViewerContainerHeader
+                        formDirty={formDirty}
+                        isLoading={loadMetrics.framesLoaded < loadMetrics.totalFramesToLoad}
+                        handleReset={handleReset}
+                        handleLoadImageSet={handleLoadImageSet}
+                    />
+                    <form onSubmit={(e) => e.preventDefault()}>
+                        <Form errorText={errorText}>
+                            <ColumnLayout columns={3}>
+                                <LoadMethodSelection
+                                    selectedLoadMethod={selectedLoadMethod}
+                                    handleChange={(selectedOption) => {
+                                        imageLoader.updateConfig({
+                                            loadMethod: selectedOption.value,
+                                        });
+                                        setSelectedLoadMethod(selectedOption);
+                                        displayImages();
+                                    }}
+                                    disabled={isSomethingLoading}
+                                    options={[
+                                        { label: 'Load: Default', value: 'default' },
+                                        { label: 'Load: Progressive', value: 'progressive' },
+                                        { label: 'Load: Tile Level Markers', value: 'tlm', disabled: !tlmProxyUrl },
+                                    ]}
+                                />
+                                <SelectDatastore
+                                    selectedDatastore={selectedDatastore}
+                                    setSelectedDatastore={setSelectedDatastore}
+                                    disabled={isSomethingLoading || Object.keys(imageSetMetadata || {})?.length > 0}
+                                />
+                                {Object.keys(imageSetMetadata || {})?.length === 0 ? (
+                                    <Input
+                                        placeholder="Enter ImageSet ID"
+                                        value={imageSetId}
+                                        onChange={({ detail }) => setImageSetId(detail.value)}
+                                        disabled={isSomethingLoading}
+                                    />
+                                ) : (
+                                    <div
+                                        id="imageSetId"
+                                        style={{ display: 'flex', alignItems: 'center', height: '100%' }}
+                                    >
+                                        <strong>{studyNiceName}</strong>
+                                    </div>
+                                )}
+                                <SeriesSelect
+                                    selectedSeries={selectedSeries}
+                                    handleChange={(selectedOption) => {
+                                        setSelectedSeries(selectedOption);
+                                        displayImages(undefined, undefined, undefined, selectedOption.value, undefined);
+                                    }}
+                                    seriesOptions={seriesOptions}
+                                    seriesStatusType={seriesStatusType}
+                                />
+                                <div
+                                    id="autoLoadToggle"
+                                    style={{ display: 'flex', alignItems: 'center', height: '100%' }}
+                                >
+                                    <Toggle
+                                        onChange={({ detail }) => {
+                                            setAutoDisplayFirstSeries(detail.checked);
+                                        }}
+                                        checked={autoDisplayFirstSeries}
+                                    >
+                                        Automatically Display First Series
+                                    </Toggle>
+                                </div>
+                                {selectedLoadMethod.value === 'tlm' && (
+                                    <TlmLevelSelect
+                                        selectedLevel={selectedLevel}
+                                        handleChange={(selectedOption) => {
+                                            setSelectedLevel(selectedOption);
+                                            imageLoader.updateConfig({
+                                                tlmDecodeLevel: selectedOption.value,
+                                            });
+                                            displayImages();
+                                        }}
+                                        setSelectedLevel={setSelectedLevel}
+                                        levelOptions={levelOptions}
+                                        updateConfig={imageLoader.updateConfig}
+                                    />
+                                )}
+                            </ColumnLayout>
+                        </Form>
+                    </form>
+                </SpaceBetween>
             }
         >
-            <form onSubmit={(e) => e.preventDefault()}>
-                <Form errorText={errorText}>
-                    <ColumnLayout columns={3}>
-                        <LoadMethodSelection
-                            selectedLoadMethod={selectedLoadMethod}
-                            handleChange={(selectedOption) => {
-                                imageLoader.updateConfig({
-                                    loadMethod: selectedOption.value,
-                                });
-                                setSelectedLoadMethod(selectedOption);
-                                displayImages();
-                            }}
-                            disabled={isSomethingLoading}
-                            options={[
-                                { label: 'Load: Default', value: 'default' },
-                                { label: 'Load: Progressive', value: 'progressive' },
-                                { label: 'Load: Tile Level Markers', value: 'tlm', disabled: !tlmProxyUrl },
-                            ]}
-                        />
-                        <SelectDatastore
-                            selectedDatastore={selectedDatastore}
-                            setSelectedDatastore={setSelectedDatastore}
-                            disabled={isSomethingLoading || Object.keys(imageSetMetadata || {})?.length > 0}
-                        />
-                        {Object.keys(imageSetMetadata || {})?.length === 0 ? (
-                            <Input
-                                placeholder="Enter ImageSet ID"
-                                value={imageSetId}
-                                onChange={({ detail }) => setImageSetId(detail.value)}
-                                disabled={isSomethingLoading}
-                            />
-                        ) : (
-                            <div id="imageSetId" style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                                <strong>{studyNiceName}</strong>
-                            </div>
-                        )}
-                        <SeriesSelect
-                            selectedSeries={selectedSeries}
-                            handleChange={(selectedOption) => {
-                                setSelectedSeries(selectedOption);
-                                displayImages(undefined, undefined, undefined, selectedOption.value, undefined);
-                            }}
-                            seriesOptions={seriesOptions}
-                            seriesStatusType={seriesStatusType}
-                        />
-                        <div id="autoLoadToggle" style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-                            <Toggle
-                                onChange={({ detail }) => {
-                                    setAutoDisplayFirstSeries(detail.checked);
-                                }}
-                                checked={autoDisplayFirstSeries}
-                            >
-                                Automatically Display First Series
-                            </Toggle>
-                        </div>
-                        {selectedLoadMethod.value === 'tlm' && (
-                            <TlmLevelSelect
-                                selectedLevel={selectedLevel}
-                                handleChange={(selectedOption) => {
-                                    setSelectedLevel(selectedOption);
-                                    imageLoader.updateConfig({
-                                        tlmDecodeLevel: selectedOption.value,
-                                    });
-                                    displayImages();
-                                }}
-                                setSelectedLevel={setSelectedLevel}
-                                levelOptions={levelOptions}
-                                updateConfig={imageLoader.updateConfig}
-                            />
-                        )}
-                    </ColumnLayout>
-                </Form>
-            </form>
-            <Metrics />
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
-                <div
-                    ref={imageBoxRef}
-                    style={{ aspectRatio: '1 / 1', width: '100%' }}
-                    onContextMenu={(e) => e.preventDefault()}
-                    onMouseDown={(e) => e.preventDefault()}
-                />
-            </div>
-        </Container>
+            <Container>
+                <Metrics />
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+                    <div
+                        ref={imageBoxRef}
+                        style={{ aspectRatio: '1 / 1', width: '100%' }}
+                        onContextMenu={(e) => e.preventDefault()}
+                        onMouseDown={(e) => e.preventDefault()}
+                    />
+                </div>
+            </Container>
+        </ContentLayout>
     );
 }

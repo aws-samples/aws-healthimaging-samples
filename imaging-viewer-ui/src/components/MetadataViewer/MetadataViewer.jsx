@@ -7,7 +7,7 @@ import { AppContext } from '../App';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 // Cloudscape
-import { CodeEditor, Container } from '@cloudscape-design/components';
+import { CodeEditor, Container, ContentLayout, SpaceBetween } from '@cloudscape-design/components';
 
 // App
 import { buildVersionOption, MetadataViewerHeader, MetadataViewerSearch } from './MetadataViewerComponents';
@@ -197,37 +197,41 @@ export default function MetadataViewer() {
     }
 
     return (
-        <Container
+        <ContentLayout
             header={
-                <MetadataViewerHeader
-                    isSomethingLoading={isSomethingLoading}
-                    handleRetrieveMetadata={handleRetrieveMetadata}
-                    resetEnabled={imageSetMetadata.length > 0}
-                    handleReset={handleReset}
-                />
+                <SpaceBetween size="m">
+                    <MetadataViewerHeader
+                        isSomethingLoading={isSomethingLoading}
+                        handleRetrieveMetadata={handleRetrieveMetadata}
+                        resetEnabled={imageSetMetadata.length > 0}
+                        handleReset={handleReset}
+                    />
+                    <MetadataViewerSearch
+                        selectedDatastore={selectedDatastore}
+                        setSelectedDatastore={setSelectedDatastore}
+                        imageSetId={imageSetId}
+                        setImageSetId={setImageSetId}
+                        imageSetVersions={imageSetVersions}
+                        selectedVersion={selectedVersion}
+                        handleChangeVersion={handleChangeVersion}
+                        errorText={errorText}
+                        isSomethingLoading={isSomethingLoading}
+                    />
+                </SpaceBetween>
             }
         >
-            <MetadataViewerSearch
-                selectedDatastore={selectedDatastore}
-                setSelectedDatastore={setSelectedDatastore}
-                imageSetId={imageSetId}
-                setImageSetId={setImageSetId}
-                imageSetVersions={imageSetVersions}
-                selectedVersion={selectedVersion}
-                handleChangeVersion={handleChangeVersion}
-                errorText={errorText}
-                isSomethingLoading={isSomethingLoading}
-            />
-            <CodeEditor
-                ace={ace}
-                loading={isSomethingLoading}
-                value={imageSetMetadata}
-                language={'json'}
-                preferences={preferences}
-                onPreferencesChange={(e) => setPreferences(e.detail)}
-                i18nStrings={CODE_EDITOR_I18N}
-                themes={THEMES}
-            />
-        </Container>
+            <Container>
+                <CodeEditor
+                    ace={ace}
+                    loading={isSomethingLoading}
+                    value={imageSetMetadata}
+                    language={'json'}
+                    preferences={preferences}
+                    onPreferencesChange={(e) => setPreferences(e.detail)}
+                    i18nStrings={CODE_EDITOR_I18N}
+                    themes={THEMES}
+                />
+            </Container>
+        </ContentLayout>
     );
 }

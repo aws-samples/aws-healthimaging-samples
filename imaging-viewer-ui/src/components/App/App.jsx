@@ -163,7 +163,7 @@ export default function App() {
             <TopNav signOut={signOut} setAppTheme={setAppTheme} />
             <AppLayout
                 tools={<ToolsContent />}
-                contentHeader={
+                notifications={
                     <Box>
                         <Flashbar items={flashbarItems} />
                     </Box>
