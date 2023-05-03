@@ -1,5 +1,5 @@
 // Helper functions
-import { medicalImagingGet, medicalImagingPost } from './awsSign';
+import { medicalImagingGet, medicalImagingPost, medicalImagingDelete } from './awsSign';
 
 // Buffer
 import { Buffer } from 'buffer';
@@ -19,7 +19,7 @@ function updateConfig(newSetting) {
 }
 
 /**
- * Control Plane
+ * Control Plane Read
  * https://healthlake-imaging.us-east-1.amazonaws.com
  */
 
@@ -47,6 +47,31 @@ async function listTagsForResource({ resourceArn }) {
         config: config,
         url: config.controlPlaneEndpoint + `/tags/${encodeURIComponent(resourceArn)}`,
         name: 'List tags for resource ARN',
+    });
+}
+
+/**
+ * Control Plane Write
+ */
+
+// Tag resource
+async function tagResource({ resourceArn, tags }) {
+    return await medicalImagingPost({
+        config: config,
+        url: config.controlPlaneEndpoint + `/tags/${encodeURIComponent(resourceArn)}`,
+        data: { tags: tags },
+    });
+}
+
+// Untag resource
+async function untagResource({ resourceArn, tags }) {
+    if ([0, undefined].includes(tags?.length)) return;
+
+    const tagKeys = tags.map((t) => `tagKeys=${t}`).join('&');
+    const untagResourceUrl = config.controlPlaneEndpoint + `/tags/${encodeURIComponent(resourceArn)}?${tagKeys}`;
+    return await medicalImagingDelete({
+        config: config,
+        url: untagResourceUrl,
     });
 }
 
@@ -84,34 +109,6 @@ async function getDicomStudyMetadata({ datastoreId, imageSetId, versionId = null
         config: config,
         url: metadataUrl,
         name: 'Get DICOM study metadata',
-    });
-}
-
-async function updateImageSetMetadata({
-    datastoreId,
-    imageSetId,
-    latestVersionId,
-    removableAttributes = {},
-    updatableAttributes = {},
-}) {
-    if (Object.keys(removableAttributes) === 0 && Object.keys(updatableAttributes) === 0) return;
-
-    console.debug('updatableAttributes', updatableAttributes);
-
-    let updateItemBlob = Buffer.from(JSON.stringify(updatableAttributes)).toString('base64');
-    let updateUpdateable = { updatableAttributes: updateItemBlob };
-    let dicomUpdates = {
-        DICOMUpdates: updateUpdateable,
-    };
-
-    const updateImageSetMetadtaUrl =
-        config.dataPlaneEndpoint +
-        `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/metadata?latestVersion=${latestVersionId}`;
-
-    return await medicalImagingPost({
-        config: config,
-        url: updateImageSetMetadtaUrl,
-        data: dicomUpdates,
     });
 }
 
@@ -180,15 +177,49 @@ async function searchImageSets({ datastoreId, data = {}, maxResults = null, next
     });
 }
 
+/**
+ * Control Plane Write
+ */
+
+// Update or remove imageset metadata
+// TODO: currently only supports update
+async function updateImageSetMetadata({
+    datastoreId,
+    imageSetId,
+    latestVersionId,
+    removableAttributes = {},
+    updatableAttributes = {},
+}) {
+    if (Object.keys(removableAttributes) === 0 && Object.keys(updatableAttributes) === 0) return;
+
+    let updateItemBlob = Buffer.from(JSON.stringify(updatableAttributes)).toString('base64');
+    let updateUpdateable = { updatableAttributes: updateItemBlob };
+    let dicomUpdates = {
+        DICOMUpdates: updateUpdateable,
+    };
+
+    const updateImageSetMetadtaUrl =
+        config.dataPlaneEndpoint +
+        `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/metadata?latestVersion=${latestVersionId}`;
+
+    return await medicalImagingPost({
+        config: config,
+        url: updateImageSetMetadtaUrl,
+        data: dicomUpdates,
+    });
+}
+
 export {
     updateConfig,
     listDatastores,
     listDicomImportJobs,
     listTagsForResource,
+    tagResource,
+    untagResource,
     getImageSet,
     listImageSetVersions,
     getDicomStudyMetadata,
-    updateImageSetMetadata,
     getDicomFrame,
     searchImageSets,
+    updateImageSetMetadata,
 };

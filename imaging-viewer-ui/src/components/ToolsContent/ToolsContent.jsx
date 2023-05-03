@@ -99,6 +99,39 @@ export default function ToolsContent() {
                 </div>
             </HelpPanel>
         );
+    } else if (/^\/datastores\/\w+\/tags$/.test(location.pathname)) {
+        return (
+            <HelpPanel
+                header={<h2>Datastore Tags</h2>}
+                footer={
+                    <Footer
+                        additionalLinks={[
+                            {
+                                name: 'AWS Tagging',
+                                url: 'https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html',
+                            },
+                            {
+                                name: 'Role Based Access Control',
+                                url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction_attribute-based-access-control.html',
+                            },
+                            {
+                                name: 'Attribute Based Access Control',
+                                url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction_attribute-based-access-control.html',
+                            },
+                        ]}
+                    />
+                }
+            >
+                <div>
+                    <p>
+                        Tags are words or phrases that you can use to identify and organize your AWS resources. You can
+                        add multiple tags to each resource, and each tag includes a key and a value that you define. For
+                        example, the key might be "domain" and the value might be "example.com". You can search and
+                        filter your resources based on the tags you add.
+                    </p>
+                </div>
+            </HelpPanel>
+        );
     } else if (location.pathname === '/search') {
         return (
             <HelpPanel header={<h2>ImageSet Search</h2>} footer={<Footer />}>

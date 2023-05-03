@@ -23,7 +23,7 @@ import dayjs from 'dayjs';
 // App
 import SelectDatastore from '../../common/SelectDatastore';
 import KeyValuePair from '../../common/KeyValuePair';
-import { getImageSet } from '../../utils/API/imagingApiRead';
+import { getImageSet } from '../../utils/HealthLakeImagingAPI';
 
 // Metadata viewer header description. Not exported
 const HeaderDescription = memo(function HeaderDescription() {

@@ -1,6 +1,8 @@
-import { Button } from '@cloudscape-design/components';
+// This component can be used to test API calls, etc.
 
-import { listDatastores, updateImageSetMetadata } from '../../utils/API/imagingApiRead';
+import { Button, Container, ContentLayout, Header, SpaceBetween } from '@cloudscape-design/components';
+
+import { listDatastores, updateImageSetMetadata } from '../../utils/HealthLakeImagingAPI';
 
 export default function Debug() {
     async function getDatastores() {
@@ -28,14 +30,17 @@ export default function Debug() {
             latestVersionId: latestVersionId,
             updatableAttributes: updateItem,
         });
-
         console.debug('updateRsp', updateRsp);
     }
 
     return (
-        <div>
-            <Button onClick={() => getDatastores()}>Get Datastores</Button>;
-            <Button onClick={() => testUpdate()}>Update Metadata</Button>;
-        </div>
+        <ContentLayout header={<Header variant="h1">Debug</Header>}>
+            <Container>
+                <SpaceBetween direction="horizontal" size="m">
+                    <Button onClick={() => getDatastores()}>Get Datastores</Button>
+                    <Button onClick={() => testUpdate()}>Update Metadata</Button>
+                </SpaceBetween>
+            </Container>
+        </ContentLayout>
     );
 }

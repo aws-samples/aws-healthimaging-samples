@@ -14,7 +14,7 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import dayjs from 'dayjs';
 import { isUserAuth } from '../../utils/Auth';
 import { nowTime } from '../../utils/DateTime';
-import { listDatastores } from '../../utils/API/imagingApiRead';
+import { listDatastores } from '../../utils/HealthLakeImagingAPI';
 
 // App
 import { sideNavItems } from './sideNavItems';
@@ -189,7 +189,7 @@ export default function App() {
                                 <Route index element={<Welcome />} />
                                 <Route path="/debug" element={<Debug />} />
                                 <Route path="/datastores" element={<Datastores />} />
-                                <Route path="/datastores/:datastoreId" element={<DatastoresDetails />} />
+                                <Route path="/datastores/:datastoreId/*" element={<DatastoresDetails />} />
                                 <Route path="/search" element={<Search />} />
                                 <Route path="/metadata" element={<MetadataViewer />} />
                                 <Route path="/viewer" element={<ImageViewer />} />

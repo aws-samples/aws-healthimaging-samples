@@ -14,7 +14,7 @@ import { Button, Pagination, Table, TextFilter } from '@cloudscape-design/compon
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { columnDefs } from './tableColumnDefs';
 import { DEFAULT_PREFERENCES } from './tablePrefs';
-import { searchImageSets } from '../../utils/API/imagingApiRead';
+import { searchImageSets } from '../../utils/HealthLakeImagingAPI';
 import { TableHeader, TablePreferences } from './SearchTableComponents';
 import TableEmptyState from '../../common/Table/TableEmptyState';
 

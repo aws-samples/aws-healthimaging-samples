@@ -12,7 +12,7 @@ export function override(resources: AmplifyRootStackTemplate) {
     authRole.policies = [
         ...basePolicies,
         {
-            policyName: 'medical-imaging',
+            policyName: 'medical-imaging-read-only',
             policyDocument: {
                 Version: '2012-10-17',
                 Statement: [
@@ -29,7 +29,23 @@ export function override(resources: AmplifyRootStackTemplate) {
                             'medical-imaging:GetImageSetMetadata',
                             'medical-imaging:GetImageFrame',
                             'medical-imaging:SearchImageSets',
+                        ],
+                        Effect: 'Allow',
+                    },
+                ],
+            },
+        },
+        {
+            policyName: 'medical-imaging-read-write',
+            policyDocument: {
+                Version: '2012-10-17',
+                Statement: [
+                    {
+                        Resource: '*',
+                        Action: [
                             'medical-imaging:UpdateImageSetMetadata',
+                            'medical-imaging:TagResource',
+                            'medical-imaging:UntagResource',
                         ],
                         Effect: 'Allow',
                     },

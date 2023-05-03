@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { useLocalStorage } from './useLocalStorage';
 import { DEFAULT_SETTINGS } from '../consts/defaultSettings';
-import { updateConfig } from '../utils/API/imagingApiRead';
+import { updateConfig } from '../utils/HealthLakeImagingAPI';
 
 export function useSettings() {
     const [appSettings, setAppSettings] = useLocalStorage('App-Settings', DEFAULT_SETTINGS);

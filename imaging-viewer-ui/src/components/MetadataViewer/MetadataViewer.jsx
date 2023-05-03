@@ -14,7 +14,7 @@ import { buildVersionOption, MetadataViewerHeader, MetadataViewerSearch } from '
 import { useDataStoreImageSetInput } from '../../hooks/useDataStoreImageSetInput';
 import { CODE_EDITOR_I18N, THEMES } from './metadataConsts';
 import { DATA_STORE_ID_REGEX, IMAGESET_ID_REGEX } from '../../consts/apiRegex';
-import { getDicomStudyMetadata, listImageSetVersions } from '../../utils/API/imagingApiRead';
+import { getDicomStudyMetadata, listImageSetVersions } from '../../utils/HealthLakeImagingAPI';
 
 // Ace Editor
 import 'ace-builds/css/ace.css';

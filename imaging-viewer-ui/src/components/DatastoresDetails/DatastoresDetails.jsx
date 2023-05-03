@@ -18,7 +18,8 @@ import {
 } from '@cloudscape-design/components';
 
 // App
-import { DatastoreConfiguration, DatastoreTags } from './datastoreDetailsComponents';
+import { DatastoreConfiguration } from './datastoreDetails';
+import { DatastoreTags } from './datastoreTag';
 
 export default function DatastoresDetails() {
     const { buildCrumb, datastoreLoadStatus, datastores } = useContext(AppContext);
@@ -40,7 +41,11 @@ export default function DatastoresDetails() {
 
     // Tabs
     const tabs = [
-        { label: 'Tags', id: 'tab-tags', content: <DatastoreTags datastoreArn={activeDatastore?.datastoreArn} /> },
+        {
+            label: 'Tags',
+            id: 'tab-tags',
+            content: <DatastoreTags datastoreArn={activeDatastore?.datastoreArn} />,
+        },
     ];
 
     return (
