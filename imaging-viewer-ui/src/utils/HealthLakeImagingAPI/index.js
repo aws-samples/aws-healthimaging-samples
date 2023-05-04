@@ -1,12 +1,16 @@
 // Helper functions
-import { medicalImagingGet, medicalImagingPost } from './awsSign';
+import { medicalImagingGet, medicalImagingPost, medicalImagingDelete } from './awsSign';
+
+// Buffer
+import { Buffer } from 'buffer';
 
 // AWS
 import { Auth } from 'aws-amplify';
 
 let config = {
     region: '',
-    endpoint: '',
+    controlPlaneEndpoint: null,
+    dataPlaneEndpoint: null,
     apiTiming: false,
 };
 
@@ -14,11 +18,16 @@ function updateConfig(newSetting) {
     config = { ...config, ...newSetting };
 }
 
+/**
+ * Control Plane Read
+ * https://healthlake-imaging.us-east-1.amazonaws.com
+ */
+
 // List datastores
 async function listDatastores() {
     return await medicalImagingGet({
         config: config,
-        url: config.endpoint + '/datastore',
+        url: config.controlPlaneEndpoint + '/datastore',
         name: 'List datastore',
     });
 }
@@ -27,15 +36,54 @@ async function listDatastores() {
 async function listDicomImportJobs({ datastoreId }) {
     return await medicalImagingGet({
         config: config,
-        url: config.endpoint + `/listDICOMImportJobs/datastore/${datastoreId}`,
+        url: config.controlPlaneEndpoint + `/listDICOMImportJobs/datastore/${datastoreId}`,
         name: 'List DICOM import jobs',
     });
 }
 
+// List tags for resource
+async function listTagsForResource({ resourceArn }) {
+    return await medicalImagingGet({
+        config: config,
+        url: config.controlPlaneEndpoint + `/tags/${encodeURIComponent(resourceArn)}`,
+        name: 'List tags for resource ARN',
+    });
+}
+
+/**
+ * Control Plane Write
+ */
+
+// Tag resource
+async function tagResource({ resourceArn, tags }) {
+    return await medicalImagingPost({
+        config: config,
+        url: config.controlPlaneEndpoint + `/tags/${encodeURIComponent(resourceArn)}`,
+        data: { tags: tags },
+    });
+}
+
+// Untag resource
+async function untagResource({ resourceArn, tags }) {
+    if ([0, undefined].includes(tags?.length)) return;
+
+    const tagKeys = tags.map((t) => `tagKeys=${t}`).join('&');
+    const untagResourceUrl = config.controlPlaneEndpoint + `/tags/${encodeURIComponent(resourceArn)}?${tagKeys}`;
+    return await medicalImagingDelete({
+        config: config,
+        url: untagResourceUrl,
+    });
+}
+
+/**
+ * Data Plane
+ * https://runtime-healthlake-imaging.us-east-1.amazonaws.com
+ */
+
 async function getImageSet({ datastoreId, imageSetId }) {
     return await medicalImagingGet({
         config: config,
-        url: config.endpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}`,
+        url: config.dataPlaneEndpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}`,
         name: 'Get image set',
     });
 }
@@ -43,14 +91,14 @@ async function getImageSet({ datastoreId, imageSetId }) {
 async function listImageSetVersions({ datastoreId, imageSetId }) {
     return await medicalImagingGet({
         config: config,
-        url: config.endpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/versions`,
+        url: config.dataPlaneEndpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/versions`,
         name: 'List image set versions',
     });
 }
 
 // Get DICOM study metadata
 async function getDicomStudyMetadata({ datastoreId, imageSetId, versionId = null }) {
-    let metadataUrl = config.endpoint + `/runtime/datastore/${datastoreId}/imageset?imageSetId=${imageSetId}`;
+    let metadataUrl = config.dataPlaneEndpoint + `/runtime/datastore/${datastoreId}/imageset?imageSetId=${imageSetId}`;
     if (versionId) {
         const versionInt = parseInt(versionId);
         if (typeof versionInt === 'number') {
@@ -74,7 +122,7 @@ async function getDicomFrame({
     imageFrameOverrideUrl = null,
     imageFrameOverrideAuth = 'cognito_jwt',
 }) {
-    const endpoint = imageFrameOverrideUrl || config.endpoint;
+    const endpoint = imageFrameOverrideUrl || config.dataPlaneEndpoint;
 
     // If using a custom endpoint and auth is Cognito JWT, append the session token to the end of the URL
     let urlSuffix = '';
@@ -114,7 +162,7 @@ async function searchImageSets({ datastoreId, data = {}, maxResults = null, next
     // nextToken is an ASCII string between 1 and 8192 characters
     if (nextToken && (nextToken?.length < 1 || nextToken?.length > 8192)) nextToken = null;
     // Build search URL
-    let searchUrl = config.endpoint + '/runtime/datastore/' + datastoreId;
+    let searchUrl = config.dataPlaneEndpoint + '/runtime/datastore/' + datastoreId;
     let queryString = [`maxResults=${maxResults}`, `nextToken=${nextToken}`]
         .filter((val) => {
             if (val.split('=')?.[1] !== 'null') return true;
@@ -129,13 +177,58 @@ async function searchImageSets({ datastoreId, data = {}, maxResults = null, next
     });
 }
 
+/**
+ * Control Plane Write
+ */
+
+// Update or remove imageset metadata
+async function updateImageSetMetadata({
+    datastoreId,
+    imageSetId,
+    latestVersionId,
+    removableAttributes = {},
+    updatableAttributes = {},
+}) {
+    if (Object.keys(removableAttributes).length === 0 && Object.keys(updatableAttributes).length === 0) return;
+
+    let dicomUpdates = {
+        DICOMUpdates: {},
+    };
+
+    if (Object.keys(removableAttributes).length > 0) {
+        dicomUpdates.DICOMUpdates.removableAttributes = Buffer.from(JSON.stringify(removableAttributes)).toString(
+            'base64'
+        );
+    }
+
+    if (Object.keys(updatableAttributes).length > 0) {
+        dicomUpdates.DICOMUpdates.updatableAttributes = Buffer.from(JSON.stringify(updatableAttributes)).toString(
+            'base64'
+        );
+    }
+
+    const updateImageSetMetadtaUrl =
+        config.dataPlaneEndpoint +
+        `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/metadata?latestVersion=${latestVersionId}`;
+
+    return await medicalImagingPost({
+        config: config,
+        url: updateImageSetMetadtaUrl,
+        data: dicomUpdates,
+    });
+}
+
 export {
     updateConfig,
     listDatastores,
     listDicomImportJobs,
+    listTagsForResource,
+    tagResource,
+    untagResource,
     getImageSet,
     listImageSetVersions,
     getDicomStudyMetadata,
     getDicomFrame,
     searchImageSets,
+    updateImageSetMetadata,
 };

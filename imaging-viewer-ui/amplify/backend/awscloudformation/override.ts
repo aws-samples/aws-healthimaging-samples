@@ -35,5 +35,22 @@ export function override(resources: AmplifyRootStackTemplate) {
                 ],
             },
         },
+        {
+            policyName: 'medical-imaging-read-write',
+            policyDocument: {
+                Version: '2012-10-17',
+                Statement: [
+                    {
+                        Resource: '*',
+                        Action: [
+                            'medical-imaging:UpdateImageSetMetadata',
+                            'medical-imaging:TagResource',
+                            'medical-imaging:UntagResource',
+                        ],
+                        Effect: 'Allow',
+                    },
+                ],
+            },
+        },
     ];
 }

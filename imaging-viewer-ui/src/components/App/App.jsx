@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, createContext, Suspense, lazy } from 'react';
+import { useState, useCallback, createContext, Suspense, lazy } from 'react';
 
 // Cloudscape
 import { AppLayout, Box, BreadcrumbGroup, Flashbar, SideNavigation } from '@cloudscape-design/components';
@@ -14,16 +14,20 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import dayjs from 'dayjs';
 import { isUserAuth } from '../../utils/Auth';
 import { nowTime } from '../../utils/DateTime';
-import { updateConfig, listDatastores } from '../../utils/API/imagingApiRead';
+import { listDatastores } from '../../utils/HealthLakeImagingAPI';
 
 // App
-import { DEFAULT_SETTINGS } from './defaultSettings';
 import { sideNavItems } from './sideNavItems';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
 import SuspenseLoader from '../SuspenseLoader';
 import TopNav from '../TopNav';
 import Welcome from '../Welcome';
 import ToolsContent from '../ToolsContent';
+
+// Hooks
+import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useSettings } from '../../hooks/useSettings';
+
+import Debug from '../Debug';
 
 // Configure AWS Amplify
 import awsExports from '../../aws-exports';
@@ -31,8 +35,9 @@ Amplify.configure(awsExports);
 
 // Lazy components
 const Datastores = lazy(() => import('../Datastores'));
+const DatastoresDetails = lazy(() => import('../DatastoresDetails'));
 const Search = lazy(() => import('../Search'));
-const MetadataViewer = lazy(() => import('../MetadataViewer'));
+const Metadata = lazy(() => import('../Metadata'));
 const ImageViewer = lazy(() => import('../ImageViewer'));
 const Settings = lazy(() => import('../Settings'));
 
@@ -48,7 +53,8 @@ export default function App() {
         card: true, // status for Card component: true, false
         select: 'loading', // status for Select component: pending, loading, finished, error
     }); // datastore loading status based on component
-    const [appSettings, setAppSettings] = useLocalStorage('App-Settings', DEFAULT_SETTINGS);
+    const [toolsOpen, setToolsOpen] = useState(false); // whether the tools drawer is open
+    const [appSettings, setAppSettings] = useSettings();
 
     const [appTheme, setAppTheme] = useLocalStorage('App-Theme', 'theme.light');
 
@@ -61,9 +67,14 @@ export default function App() {
     // Build and set crumbs from a link and text
     // Text can be a literal string or an array of strings
     // Returns an array of breadcrumbs (object: text, href)
-    const buildCrumb = useCallback((href, text) => {
-        setActiveHref(href);
+    const buildCrumb = useCallback((href, text = null) => {
         const hrefArray = ['/', ...href.split('/').filter((h) => h !== '')];
+        // Only set the first two elements of href as the active href
+        if (hrefArray.length <= 2) {
+            setActiveHref(href);
+        } else {
+            setActiveHref(hrefArray.slice(0, 2).join(''));
+        }
         setActiveBreadcrumbs(
             hrefArray.map((h, i) => {
                 // build full href from beginning to index
@@ -140,21 +151,9 @@ export default function App() {
             window.open(e.detail.href, '_blank', 'noopener');
             return;
         }
-        buildCrumb(e.detail.href, e.detail.crumbText || e.detail.text);
+        if (e.detail.href === '/') buildCrumb(e.detail.href, e.detail.text);
         navigate(e.detail.href);
     }
-
-    // update API config with app settings
-    useEffect(() => {
-        const region = appSettings['app.region']?.value || 'us-east-1';
-        const endpoint = appSettings['app.serviceEndpointOverride'] ? appSettings['app.serviceEndpointOverride'] : `https://medical-imaging.${region}.amazonaws.com`;
-        const apiTiming = appSettings['app.apiTiming']?.value || false;
-        updateConfig({
-            region: region,
-            endpoint: endpoint,
-            apiTiming: apiTiming,
-        });
-    }, [appSettings]);
 
     // Set default context values
     const appContextValue = {
@@ -162,6 +161,7 @@ export default function App() {
         user: user,
         buildCrumb: buildCrumb,
         addFlashMessage: addFlashMessage,
+        setToolsOpen: setToolsOpen,
         datastores: datastores,
         datastoreLoadStatus: datastoreLoadStatus,
         getDatastores: getDatastores,
@@ -173,7 +173,9 @@ export default function App() {
             <TopNav signOut={signOut} setAppTheme={setAppTheme} />
             <AppLayout
                 tools={<ToolsContent />}
-                contentHeader={
+                toolsOpen={toolsOpen}
+                onToolsChange={({ detail }) => setToolsOpen(detail.open)}
+                notifications={
                     <Box>
                         <Flashbar items={flashbarItems} />
                     </Box>
@@ -185,9 +187,12 @@ export default function App() {
                         {isUserAuth(user) ? (
                             <Routes>
                                 <Route index element={<Welcome />} />
+                                <Route path="/debug" element={<Debug />} />
                                 <Route path="/datastores" element={<Datastores />} />
+                                <Route path="/datastores/:datastoreId/*" element={<DatastoresDetails />} />
                                 <Route path="/search" element={<Search />} />
-                                <Route path="/metadata" element={<MetadataViewer />} />
+                                <Route path="/metadata" element={<Metadata />} />
+                                <Route path="/metadata/edit" element={<Metadata />} />
                                 <Route path="/viewer" element={<ImageViewer />} />
                                 <Route path="/settings" element={<Settings setAppSettings={setAppSettings} />} />
                                 <Route path="*" element={<Navigate to="/" replace />} />

@@ -7,7 +7,7 @@ import { AppContext } from '../App';
 import isUserAuth from '../../utils/Auth/isUserAuth';
 
 // Cloudscape
-import { Alert, Box, Container, Header, Icon } from '@cloudscape-design/components';
+import { Alert, Box, Container, ContentLayout, Header, Icon } from '@cloudscape-design/components';
 
 function Welcome() {
     const { user } = useContext(AppContext);
@@ -75,9 +75,11 @@ function Welcome() {
     }
 
     return (
-        <Container header={<Header variant="h2">Amazon HealthLake Imaging Sample Viewer</Header>} footer={<Footer />}>
-            <Content />
-        </Container>
+        <ContentLayout header={<Header variant="h2">Amazon HealthLake Imaging Sample Viewer</Header>}>
+            <Container footer={<Footer />}>
+                <Content />
+            </Container>
+        </ContentLayout>
     );
 }
 
