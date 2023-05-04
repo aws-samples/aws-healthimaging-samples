@@ -1,7 +1,7 @@
 // App
 import workerPool from './workerPool';
-import { getDicomFrame } from '../../../utils/API/imagingApiRead';
-import { getFrameTlmUrl } from '../../../utils/API/tlmProxy';
+import { getDicomFrame } from '../../../utils/HealthLakeImagingAPI';
+import { getFrameTlmUrl } from '../../../utils/TileLevelMarkerProxy';
 
 // imageId is a URI built in ImageViewer.jsx using index.makeImageId
 function loadImageId(imageId, config) {

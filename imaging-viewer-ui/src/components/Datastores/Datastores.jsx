@@ -31,9 +31,10 @@ function Datastores() {
     // Router
     const location = useLocation();
     const navigate = useNavigate();
+
     // Set crumbs
     useEffect(() => {
-        buildCrumb(location.pathname, 'Datastores');
+        buildCrumb(location.pathname, 'Data Stores');
     }, [buildCrumb, location]);
 
     const { items, actions, filteredItemsCount, collectionProps, filterProps, paginationProps } = useCollection(
@@ -73,7 +74,6 @@ function Datastores() {
             variant="full-page"
             stickyHeader={true}
             cardDefinition={cardDefinitions(navigate)}
-            // cardDefinition={CARD_DEFINITIONS}
             visibleSections={preferences.visibleContent}
             loading={datastoreLoadStatus.card}
             loadingText="Loading datastores"
