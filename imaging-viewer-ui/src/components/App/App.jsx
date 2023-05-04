@@ -37,7 +37,7 @@ Amplify.configure(awsExports);
 const Datastores = lazy(() => import('../Datastores'));
 const DatastoresDetails = lazy(() => import('../DatastoresDetails'));
 const Search = lazy(() => import('../Search'));
-const MetadataViewer = lazy(() => import('../MetadataViewer'));
+const Metadata = lazy(() => import('../Metadata'));
 const ImageViewer = lazy(() => import('../ImageViewer'));
 const Settings = lazy(() => import('../Settings'));
 
@@ -191,7 +191,8 @@ export default function App() {
                                 <Route path="/datastores" element={<Datastores />} />
                                 <Route path="/datastores/:datastoreId/*" element={<DatastoresDetails />} />
                                 <Route path="/search" element={<Search />} />
-                                <Route path="/metadata" element={<MetadataViewer />} />
+                                <Route path="/metadata" element={<Metadata />} />
+                                <Route path="/metadata/edit" element={<Metadata />} />
                                 <Route path="/viewer" element={<ImageViewer />} />
                                 <Route path="/settings" element={<Settings setAppSettings={setAppSettings} />} />
                                 <Route path="*" element={<Navigate to="/" replace />} />

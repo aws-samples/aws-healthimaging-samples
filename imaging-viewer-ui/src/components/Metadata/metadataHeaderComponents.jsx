@@ -25,23 +25,26 @@ import SelectDatastore from '../../common/SelectDatastore';
 import KeyValuePair from '../../common/KeyValuePair';
 import { getImageSet } from '../../utils/HealthLakeImagingAPI';
 
-// Metadata viewer header description. Not exported
+// Metadata header description. Not exported
 const HeaderDescription = memo(function HeaderDescription() {
     const navigate = useNavigate();
     return (
         <>
             Select a data store and specify and ImageSet ID or use the{' '}
-            <Link onFollow={() => navigate('/search')}>search feature</Link>.
+            <Link onFollow={() => navigate('/search')}>search feature</Link>. <br /> The latest metadata version can be
+            edited.
         </>
     );
 });
 
-// Metadata viewer header
+// Metadata header
 const MetadataViewerHeader = memo(function MetadataViewerHeader({
     isSomethingLoading,
     handleRetrieveMetadata,
+    editEnabled,
     resetEnabled,
     handleReset,
+    navigate,
 }) {
     return (
         <Header
@@ -52,13 +55,19 @@ const MetadataViewerHeader = memo(function MetadataViewerHeader({
                     <Button disabled={!resetEnabled} onClick={() => handleReset()}>
                         Reset
                     </Button>
+                    <Button
+                        disabled={!editEnabled}
+                        onClick={() => navigate({ pathname: 'edit', search: window.location.search })}
+                    >
+                        Edit
+                    </Button>
                     <Button variant="primary" disabled={isSomethingLoading} onClick={() => handleRetrieveMetadata()}>
                         Retrieve Metadata
                     </Button>
                 </SpaceBetween>
             }
         >
-            Metadata Viewer
+            Metadata
         </Header>
     );
 });
@@ -67,14 +76,18 @@ const MetadataViewerHeader = memo(function MetadataViewerHeader({
 function buildVersionOption(imageSetVersion) {
     let tags = [
         `Updated at: ${dayjs.unix(imageSetVersion.updatedAt).format('YYYY-MM-DD H:mm')}`,
-        `Created at: ${dayjs.unix(imageSetVersion.createdAt).format('YYYY-MM-DD H:mm')}`,
+        // `Created at: ${dayjs.unix(imageSetVersion.createdAt).format('YYYY-MM-DD H:mm')}`,
     ];
+    if (imageSetVersion.ImageSetWorkflowStatus === 'UPDATING')
+        tags.push(`Status: ${imageSetVersion.ImageSetWorkflowStatus}`);
     if (imageSetVersion.message) tags.push(`Message: ${imageSetVersion.message}`);
-    return {
+    let selectOption = {
         label: `Version ${imageSetVersion.versionId}`,
         value: imageSetVersion.versionId,
         tags: tags,
     };
+    if (imageSetVersion.ImageSetWorkflowStatus === 'UPDATING') selectOption.disabled = true;
+    return selectOption;
 }
 
 // Image set ID object
@@ -148,7 +161,7 @@ function ImageSetId({ selectedDatastore, isSomethingLoading, imageSetId, setImag
     }
 }
 
-// Metadata viewer search row
+// Metadata search row
 const MetadataViewerSearch = memo(function MetadataViewerSearch({
     selectedDatastore,
     setSelectedDatastore,
@@ -160,7 +173,10 @@ const MetadataViewerSearch = memo(function MetadataViewerSearch({
     errorText,
     isSomethingLoading,
 }) {
-    const versionOptions = useMemo(() => imageSetVersions.map((v) => buildVersionOption(v)), [imageSetVersions]);
+    const versionOptions = useMemo(
+        () => imageSetVersions.map((v) => buildVersionOption(v)).sort((a, b) => Number(b.value) - Number(a.value)),
+        [imageSetVersions]
+    );
 
     return (
         <form style={{ paddingBottom: '1em', width: '100%' }} onSubmit={(e) => e.preventDefault()}>

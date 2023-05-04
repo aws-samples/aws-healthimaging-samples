@@ -182,7 +182,6 @@ async function searchImageSets({ datastoreId, data = {}, maxResults = null, next
  */
 
 // Update or remove imageset metadata
-// TODO: currently only supports update
 async function updateImageSetMetadata({
     datastoreId,
     imageSetId,
@@ -190,13 +189,23 @@ async function updateImageSetMetadata({
     removableAttributes = {},
     updatableAttributes = {},
 }) {
-    if (Object.keys(removableAttributes) === 0 && Object.keys(updatableAttributes) === 0) return;
+    if (Object.keys(removableAttributes).length === 0 && Object.keys(updatableAttributes).length === 0) return;
 
-    let updateItemBlob = Buffer.from(JSON.stringify(updatableAttributes)).toString('base64');
-    let updateUpdateable = { updatableAttributes: updateItemBlob };
     let dicomUpdates = {
-        DICOMUpdates: updateUpdateable,
+        DICOMUpdates: {},
     };
+
+    if (Object.keys(removableAttributes).length > 0) {
+        dicomUpdates.DICOMUpdates.removableAttributes = Buffer.from(JSON.stringify(removableAttributes)).toString(
+            'base64'
+        );
+    }
+
+    if (Object.keys(updatableAttributes).length > 0) {
+        dicomUpdates.DICOMUpdates.updatableAttributes = Buffer.from(JSON.stringify(updatableAttributes)).toString(
+            'base64'
+        );
+    }
 
     const updateImageSetMetadtaUrl =
         config.dataPlaneEndpoint +

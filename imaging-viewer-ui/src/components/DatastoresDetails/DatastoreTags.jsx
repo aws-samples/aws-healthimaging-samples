@@ -9,6 +9,7 @@ import { Box, Button, Container, Header, Link, SpaceBetween, Table, TagEditor } 
 // App
 import { AppContext } from '../App';
 import { tagDescription, tagTableColumnDefinitions, tagEditorI18n } from './datastoreTagConsts';
+import { keyValueToObj } from '../../utils/Array';
 
 // API
 import { listTagsForResource, tagResource, untagResource } from '../../utils/HealthLakeImagingAPI';
@@ -28,10 +29,7 @@ function TagEdit({ datastoreArn, existingTags, loading, setToolsOpen, navigate }
 
         if (newUpdateTags.length > 0) {
             // convert array of objects with key/value keys into an object of key/value pairs
-            const newUpdateTagsData = newUpdateTags.reduce(
-                (obj, item) => Object.assign(obj, { [item.key]: item.value }),
-                {}
-            );
+            const newUpdateTagsData = keyValueToObj(newUpdateTags);
             await tagResource({ resourceArn: datastoreArn, tags: newUpdateTagsData });
         }
 

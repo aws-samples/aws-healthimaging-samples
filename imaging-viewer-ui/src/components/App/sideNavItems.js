@@ -14,7 +14,7 @@ const sideNavItems = [
     },
     {
         type: 'link',
-        text: 'Metadata Viewer',
+        text: 'Metadata',
         href: '/metadata',
     },
     {
