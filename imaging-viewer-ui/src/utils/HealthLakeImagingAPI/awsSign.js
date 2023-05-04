@@ -18,7 +18,7 @@ async function getCreds() {
  * Helper Functions
  *******************/
 export async function medicalImagingGet({ config, url, axiosArgs, returnUrl = false, sign = true }) {
-    if (!config.region || !config.endpoint) throw new Error('API configuration not set');
+    if (!config.region || !url) throw new Error('API configuration not set');
     const serviceInfo = {
         service: 'medical-imaging',
         region: config.region,
@@ -39,33 +39,55 @@ export async function medicalImagingGet({ config, url, axiosArgs, returnUrl = fa
     };
 }
 
-export async function medicalImagingPost({ config, url, data = {}, axiosArgs, returnReq = false }) {
-    if (!config.region || !config.endpoint) throw new Error('API configuration not set.');
+async function medicalImagingVerb({ config, verb, url, data = {}, axiosArgs, returnReq = false }) {
+    if (!config.region || !url) throw new Error('API configuration not set.');
     const serviceInfo = {
         service: 'medical-imaging',
         region: config.region,
     };
 
-    const request = {
-        method: 'POST',
+    let request = {
+        method: verb,
         url: url,
-        data: JSON.stringify(data),
         headers: {
             'Content-Type': 'application/json',
         },
     };
+    if (data) request.data = JSON.stringify(data);
+
     const start = performance.now();
     let signedReq = Signer.sign(request, await getCreds(), serviceInfo);
     // Remove the host header, as we have signedReq.url
     delete signedReq.headers?.host;
     // Return signed request immediately if returnUrl is set, otherwise get the result
     if (returnReq) return signedReq;
-    const postResult = await axios({ ...signedReq }, { ...axiosArgs });
+    const verbResult = await axios({ ...signedReq }, { ...axiosArgs });
     const end = performance.now();
     if (config.apiTiming) console.debug(`Time: ${end - start}ms for URL ${url}`);
 
     return {
         fetchTime: end - start,
-        ...postResult,
+        ...verbResult,
     };
+}
+
+export async function medicalImagingPost({ config, url, data = {}, axiosArgs, returnReq = false }) {
+    return medicalImagingVerb({
+        config: config,
+        verb: 'POST',
+        url: url,
+        data: data,
+        axiosArgs: axiosArgs,
+        returnReq: returnReq,
+    });
+}
+
+export async function medicalImagingDelete({ config, url, axiosArgs, returnReq = false }) {
+    return medicalImagingVerb({
+        config: config,
+        verb: 'DELETE',
+        url: url,
+        axiosArgs: axiosArgs,
+        returnReq: returnReq,
+    });
 }

@@ -161,7 +161,7 @@ Amplify deploys a public-accessible website. When you first visit the site, sele
 -   [@cloudscape-design/components](https://github.com/cloudscape-design/components)
 -   [@cloudscape-design/global-styles](https://github.com/cloudscape-design/global-styles)
 
-### Metadata Viewer
+### Metadata
 
 -   [ace-builds](https://github.com/ajaxorg/ace-builds)
 

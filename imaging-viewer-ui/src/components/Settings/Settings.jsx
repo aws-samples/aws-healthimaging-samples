@@ -18,7 +18,7 @@ import {
 } from '@cloudscape-design/components';
 
 // App
-import { DEFAULT_SETTINGS } from '../App/defaultSettings';
+import { DEFAULT_SETTINGS } from '../../consts/defaultSettings';
 import { appRegionOptions, tlmAuthOptions, imageFrameOverrideAuthOptions, onOffOptions } from './selectOptions';
 import { SettingsSelect, SettingsInput } from './FormComponents';
 
@@ -28,6 +28,7 @@ export default function Settings({ setAppSettings }) {
 
     const [isSaving, setIsSaving] = useState(false);
     const [settings, setSettings] = useState(appSettings); // make a copy of appSettings, write back it after form validation
+
     function updateSettings(settingKey, value) {
         setSettings((prevSettings) => ({
             ...prevSettings,
@@ -139,10 +140,19 @@ export default function Settings({ setAppSettings }) {
                         <ExpandableSection headerText="Advanced">
                             <SpaceBetween direction="vertical" size="m">
                                 <SettingsInput
-                                    label="Service Endpoint Override"
-                                    description="Input an Amazon HealthLake Imaging endpiont URL here to override the default (https://medical-imaging.<region>.amazonaws.com)."
-                                    placeholder="https://service-endpoint-url"
-                                    settingKey="app.serviceEndpointOverride"
+                                    label="Control Plane Endpoint Override"
+                                    description="Override the default control plane endpoint URL (https://healthlake-imaging.<region>.amazonaws.com)."
+                                    placeholder="https://healthlake-imaging.us-east-1.amazonaws.com"
+                                    settingKey="app.controlPlaneEndpointOverride"
+                                    settings={settings}
+                                    updateSettings={updateSettings}
+                                    inputArgs={{ inputMode: 'url', type: 'url' }}
+                                />
+                                <SettingsInput
+                                    label="Data Plane Endpoint Override"
+                                    description="Override the default data plane endpoint URL (https://runtime-healthlake-imaging.<region>.amazonaws.com)."
+                                    placeholder="https://runtime-healthlake-imaging.us-east-1.amazonaws.com"
+                                    settingKey="app.dataPlaneEndpointOverride"
                                     settings={settings}
                                     updateSettings={updateSettings}
                                     inputArgs={{ inputMode: 'url', type: 'url' }}

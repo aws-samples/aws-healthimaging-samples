@@ -1,5 +1,5 @@
 // App
-import { getDicomStudyMetadata } from '../../../utils/API/imagingApiRead';
+import { getDicomStudyMetadata } from '../../../utils/HealthLakeImagingAPI';
 
 // Get ImageSet metadata using helper function
 // 1. Update config.collections with ImageSet key with metadata data
