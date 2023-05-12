@@ -1,0 +1,268 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Amazon HealthLake Imaging Sample Viewer UI Amplify Permissions Boundary and User Access Policies
+
+Resources:
+    PermissionsBoundaryPolicy:
+        Type: AWS::IAM::ManagedPolicy
+        Properties:
+            Description: Permission boundary for Amazon HealthLake Imaging Sample Viewer UI via Amplify
+            PolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                    - Sid: AmazonHealthLakeImaging
+                      Effect: Allow
+                      Action: medical-imaging:*
+                      Resource: '*'
+                    - Sid: BlockPublicAccess
+                      Effect: Allow
+                      Action: s3:PutBucketPublicAccessBlock
+                      Resource: arn:aws:s3:::amplify-*-deployment
+                    - Sid: GetAmplifyStackDetails
+                      Effect: Allow
+                      Action: cloudformation:DescribeStacks
+                      Resource: arn:aws:cloudformation:*:*:stack/amplify-*
+                    - Sid: AmplifyCognitoIdentityCustomResource
+                      Effect: Allow
+                      Action: cognito-idp:DescribeUserPoolClient
+                      Resource: arn:aws:cognito-idp:*:*:userpool/*
+                    - Sid: AmplifyIamAuthUnauthRoles
+                      Effect: Allow
+                      Action:
+                          - iam:GetRole
+                          - iam:UpdateAssumeRolePolicy
+                      Resource:
+                          - arn:aws:iam::*:role/amplify-*-authRole
+                          - arn:aws:iam::*:role/amplify-*-unauthRole
+                    - Sid: AmplifyCustomResourceLogging
+                      Effect: Allow
+                      Action:
+                          - logs:CreateLogGroup
+                          - logs:CreateLogStream
+                          - logs:PutLogEvents
+                      Resource: arn:aws:logs:*:*:*
+    UserAccessPolicy:
+        Type: AWS::IAM::ManagedPolicy
+        Properties:
+            Description: IAM policy to be able to deploy the Imaging Sample Viewer UI via AWS Amplify CLI
+            PolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                    - Sid: AmplifyReadOnly
+                      Effect: Allow
+                      Action:
+                          - amplify:Get*
+                          - amplify:List*
+                          - apigateway:Get*
+                          - cloudformation:Describe*
+                          - cloudformation:List*
+                          - cloudformation:Get*
+                          - cognito-identity:Describe*
+                          - cognito-identity:GetIdentityPoolRoles
+                          - cognito-identity:ListIdentityPools
+                          - cognito-idp:GetUserPoolMfaConfig
+                          - cognito-idp:List*
+                          - iam:GetPolicy
+                          - iam:GetRole
+                          - iam:GetRolePolicy
+                          - iam:GetUser
+                          - lambda:Get*
+                          - lambda:List*
+                          - logs:DescribeLogStreams
+                          - logs:GetLogEvents
+                          - s3:GetBucketLocation
+                          - s3:GetObject
+                          - s3:ListAllMyBuckets
+                          - s3:ListBucket
+                          - s3:ListBucketVersions
+                      Resource: '*'
+                    - Sid: AmplifyCreateIamRolesWithPermissionBoundary
+                      Effect: Allow
+                      Action:
+                          - iam:CreateRole
+                          - iam:PutRolePolicy
+                      Resource:
+                          - arn:aws:iam::*:role/amplify-*-authRole
+                          - arn:aws:iam::*:role/amplify-*-authRole-idp
+                          - arn:aws:iam::*:role/amplify-*-unauthRole
+                          - arn:aws:iam::*:role/*LambdaRole*
+                      Condition:
+                          ArnLike:
+                              iam:PermissionsBoundary: !Ref PermissionsBoundaryPolicy
+                    - Sid: AmplifyIamDeleteRole
+                      Effect: Allow
+                      Action:
+                          - iam:DeleteRole
+                          - iam:DeleteRolePolicy
+                      Resource:
+                          - arn:aws:iam::*:role/amplify-*
+                          - arn:aws:iam::*:role/*LambdaRole*
+                    - Sid: AmplifyAuthLambdaPassRole
+                      Effect: Allow
+                      Action:
+                          - iam:PassRole
+                      Resource:
+                          - arn:aws:iam::*:role/*LambdaRole*
+                      Condition:
+                          StringEquals:
+                              iam:PassedToService: lambda.amazonaws.com
+                    - Sid: AmplifyAuthCognitoPassRole
+                      Effect: Allow
+                      Action:
+                          - iam:PassRole
+                      Resource:
+                          - arn:aws:iam::*:role/amplify-*-authRole
+                          - arn:aws:iam::*:role/amplify-*-authRole-idp
+                          - arn:aws:iam::*:role/amplify-*-unauthRole
+                    - Sid: AmplifyIamTag
+                      Effect: Allow
+                      Action:
+                          - iam:TagRole
+                      Resource:
+                          - arn:aws:iam::*:role/amplify-*
+                          - arn:aws:iam::*:role/*LambdaRole*
+                    - Sid: DenyPermissionsBoundaryDeletion
+                      Effect: Deny
+                      Action: iam:DeleteRolePermissionsBoundary
+                      Resource: '*'
+                      Condition:
+                          ArnLike:
+                              iam:PermissionsBoundary: !Ref PermissionsBoundaryPolicy
+                    - Sid: DenyPolicyChange
+                      Effect: Deny
+                      Action:
+                          - iam:CreatePolicyVersion
+                          - iam:DeletePolicyVersion
+                          - iam:DetachRolePolicy
+                          - iam:SetDefaultPolicyVersion
+                      Resource: !Ref PermissionsBoundaryPolicy
+                    - Sid: AmplifyS3
+                      Effect: Allow
+                      Action:
+                          - s3:CreateBucket
+                          - s3:DeleteBucket
+                          - s3:DeleteBucketPolicy
+                          - s3:DeleteBucketWebsite
+                          - s3:DeleteObject
+                          - s3:DeleteObjectVersion
+                          - s3:PutBucketTagging
+                          - s3:PutBucketAcl
+                          - s3:PutBucketCORS
+                          - s3:PutBucketNotification
+                          - s3:PutBucketPolicy
+                          - s3:PutBucketWebsite
+                          - s3:PutEncryptionConfiguration
+                          - s3:PutObject
+                          - s3:PutObjectAcl
+                      Resource:
+                          - arn:*:s3:::amplify-*-deployment
+                          - arn:*:s3:::amplify-*-deployment/*
+                          - arn:*:s3:::*hostingbucket*
+                          - arn:*:s3:::*hostingbucket*/*
+                    - Sid: AmplifyCloudFormation
+                      Effect: Allow
+                      Action:
+                          - cloudformation:CreateStack
+                          - cloudformation:UpdateStack
+                          - cloudformation:DeleteStack
+                          - cloudformation:CreateChangeSet
+                          - cloudformation:ExecuteChangeSet
+                          - cloudformation:DeleteStackSet
+                          - cloudformation:CreateStackSet
+                          - cloudformation:UpdateStackSet
+                      Resource:
+                          - arn:aws:cloudformation:*:*:stack/amplify-*
+                    - Sid: AmplifyService
+                      Effect: Allow
+                      Action:
+                          - amplify:CreateApp
+                          - amplify:CreateBackendEnvironment
+                          - amplify:CreateBranch
+                          - amplify:CreateDeployment
+                          - amplify:DeleteApp
+                          - amplify:DeleteBackendEnvironment
+                          - amplify:DeleteBranch
+                          - amplify:StartDeployment
+                          - amplify:UpdateApp
+                      Resource:
+                          - '*'
+                    - Sid: AmplifyCliCognitoIdentity
+                      Effect: Allow
+                      Action:
+                          - cognito-identity:CreateIdentityPool
+                          - cognito-identity:DeleteIdentityPool
+                          - cognito-identity:SetIdentityPoolRoles
+                          - cognito-identity:TagResource
+                          - cognito-identity:UpdateIdentityPool
+                      Resource:
+                          - '*'
+                    - Sid: AmplifyCliCognitoIdp
+                      Effect: Allow
+                      Action:
+                          - cognito-idp:AdminAddUserToGroup
+                          - cognito-idp:AdminCreateUser
+                          - cognito-idp:CreateGroup
+                          - cognito-idp:CreateUserPool
+                          - cognito-idp:CreateUserPoolClient
+                          - cognito-idp:DeleteGroup
+                          - cognito-idp:DeleteUser
+                          - cognito-idp:DeleteUserPool
+                          - cognito-idp:DeleteUserPoolClient
+                          - cognito-idp:DescribeIdentityProvider
+                          - cognito-idp:DescribeUserPool
+                          - cognito-idp:DescribeUserPoolClient
+                          - cognito-idp:UpdateGroup
+                          - cognito-idp:UpdateUserPool
+                          - cognito-idp:UpdateUserPoolClient
+                      Resource:
+                          - '*'
+                    - Sid: AmplifyCliLambda
+                      Effect: Allow
+                      Action:
+                          - lambda:AddLayerVersionPermission
+                          - lambda:AddPermission
+                          - lambda:CreateEventSourceMapping
+                          - lambda:CreateFunction
+                          - lambda:DeleteEventSourceMapping
+                          - lambda:DeleteFunction
+                          - lambda:DeleteLayerVersion
+                          - lambda:InvokeAsync
+                          - lambda:InvokeFunction
+                          - lambda:PublishLayerVersion
+                          - lambda:TagResource
+                          - lambda:RemoveLayerVersionPermission
+                          - lambda:RemovePermission
+                          - lambda:UpdateFunctionCode
+                          - lambda:UpdateFunctionConfiguration
+                      Resource:
+                          - arn:aws:lambda:*:*:function:*
+                    - Sid: AmplifyCliCloudFront
+                      Effect: Allow
+                      Action:
+                          - cloudfront:CreateCloudFrontOriginAccessIdentity
+                          - cloudfront:CreateDistribution
+                          - cloudfront:DeleteCloudFrontOriginAccessIdentity
+                          - cloudfront:DeleteDistribution
+                          - cloudfront:GetCloudFrontOriginAccessIdentity
+                          - cloudfront:GetCloudFrontOriginAccessIdentityConfig
+                          - cloudfront:GetDistribution
+                          - cloudfront:GetDistributionConfig
+                          - cloudfront:TagResource
+                          - cloudfront:UntagResource
+                          - cloudfront:UpdateCloudFrontOriginAccessIdentity
+                          - cloudfront:UpdateDistribution
+                      Resource:
+                          - '*'
+                    - Sid: AmplifyCliSsmStore
+                      Effect: Allow
+                      Action:
+                          - ssm:PutParameter
+                          - ssm:DeleteParameter
+                      Resource: arn:aws:ssm:*:*:parameter/amplify*
+
+Outputs:
+    PermissionsBoundaryPolicyArn:
+        Description: Permissions boundary policy ARN. This should be used to initialize the Amplify project.
+        Value: !Ref PermissionsBoundaryPolicy
+    UserAccessPolicyArn:
+        Description: User access policy ARN. This should be attached to the developer/user's role.
+        Value: !Ref UserAccessPolicy
