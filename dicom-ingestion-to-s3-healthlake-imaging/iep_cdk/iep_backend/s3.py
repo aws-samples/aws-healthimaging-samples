@@ -14,7 +14,7 @@ from aws_cdk import (
 )
 
 class S3Bucket(Construct):
-    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, s3_acceleration : bool,  **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
 
@@ -36,6 +36,7 @@ class S3Bucket(Construct):
             auto_delete_objects=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             enforce_ssl=True,
+            transfer_acceleration=s3_acceleration
         )
 
         # self._gg_asset_bucket = s3.Bucket(

@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS `Instancelocation`;
 CREATE TABLE `Instancelocation` (
   `locationid` BIGINT NOT NULL AUTO_INCREMENT,
-  `instanceid` BIGINT NOT NULL,
+  `instanceid` BIGINT NOT NULL UNIQUE,
   `bucketname` varchar(255),
   `region` varchar(255),
   `filekey` varchar(255), PRIMARY KEY (locationid));

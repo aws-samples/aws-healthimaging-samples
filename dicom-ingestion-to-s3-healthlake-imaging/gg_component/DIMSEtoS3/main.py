@@ -40,6 +40,9 @@ from SQSReceiver import *
 from dicomObject import *
 
 
+# Config pynetdicom to log to a file.
+logger = logging.getLogger('pynetdicom')
+logger.setLevel(logging.CRITICAL)
 
 
 conn=None
@@ -268,7 +271,10 @@ def SQSSend(arg):
                     SQSInboundNotif.AddSendJob(jsonobj)
                     logging.debug(f"[SQSSend] - Deleting the notified instances for completed association :  {r[0]}")
                     dbq.Delete(dbq.DELETE_SOPS_PER_ASSOCIATION,(r[0],))
-                    cleanOutAssociationFolder(r[0])
+                    #trying external process for file deletion
+                    #cleanOutAssociationFolder(r[0])
+                    p = Process(target=cleanOutAssociationFolder , args = (r[0],))
+                    p.start()
                 except Exception as e:
                     logging.error(f"[SQSSend][ERROR] - Impossible to send to SQS : {e}")      
         sleep(1)
@@ -276,6 +282,7 @@ def SQSSend(arg):
 
 def cleanOutAssociationFolder(AssocId):
     try:
+        logging.debug(f"[cleanOutAssociationFolder] - Deleting the notified instances for completed association :  {AssocId}")
         shutil.rmtree(os.getcwd()+'/out/'+AssocId)
     except BaseException as err :
         logging.error(str(err))   
@@ -348,7 +355,7 @@ def handle_store(event: Event, destination):
 
 def storeObject(event, destination):
     if(sMonitor.getThrottleStatus()):
-        logging.debug("[soteObject] - Storage treshold reached. Throttling DICOM assocition by 5 seconds")
+        logging.debug("[soteObject] - Storage treshold reached. Throttling DICOM association by 5 seconds")
         time.sleep(5)
     try:
         os.makedirs(destination, exist_ok=True)
@@ -382,7 +389,7 @@ def storeObject(event, destination):
         dbq.Insert(dbq.INSERT_SOP , entry)
     except:
         logging.error("Cloud not insert the entry in the memory DB.")
-    DCMObjIdentifier=DICOMProfiler.GetFullHeader(ds)
+    #DCMObjIdentifier=DICOMProfiler.GetFullHeader(ds)
     return 0x0000
     
     
@@ -450,8 +457,11 @@ def main(argv):
             sys.exit("Exiting : No AWS_IOT_THING_NAME env variable defined.")
     try:
          ThreadCount = int(os.environ['THREADCOUNT'])
+         if ThreadCount == 0:
+             ThreadCount = int(os.cpu_count()) * 4 
+             logging.warning("[ServiceInit] - Defaulting to "+str(ThreadCount)+" threads")
     except:
-        ThreadCount = int(os.cpu_count()) * 2 
+        ThreadCount = int(os.cpu_count()) * 4 
         logging.warning("[ServiceInit] - Defaulting to "+str(ThreadCount)+" threads")
     try:
          aws_access_key = os.environ['AWS_ACCESS_KEY']
@@ -487,6 +497,7 @@ def main(argv):
     ]
     for uid in storage_sop_classes:
         ae.add_supported_context(uid, ALL_TRANSFER_SYNTAXES)
+    ae.maximum_associations = 100
 
     PrepareS3Threads()
     PrepareS3FetchThreads()   
@@ -534,6 +545,7 @@ def main(argv):
 
     logging.info("[ServiceInit] - Spawning DICOM interface on port "+str(dicom_port)+".")
     ae.start_server(("0.0.0.0", dicom_port), block=False, evt_handlers=handlers)
+    
     
 if __name__ == "__main__":
     logging.getLogger('botocore').setLevel(logging.CRITICAL)

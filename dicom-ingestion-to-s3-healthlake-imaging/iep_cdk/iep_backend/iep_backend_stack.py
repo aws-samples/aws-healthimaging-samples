@@ -41,6 +41,7 @@ class IepBackend(Stack):
         db_max_acu_capacity = config.DB_CONFIG["max_acu_capacity"]
         lambda_config = config.LAMBDA_CONFIG
         ahli_config = config.AHLI_CONFIG
+        s3_config = config.S3_CONFIG
         
         region = self.region
         account = self.account
@@ -73,13 +74,13 @@ class IepBackend(Stack):
         dicom_profiler_event_source = event_source.SqsEventSource(sqs_queues.getDICOMProfilerQueue() , batch_size=40 , enabled=True , max_batching_window=Duration.seconds(2) , max_concurrency=100 , report_batch_item_failures=True ) 
         fn_dicom_profiler.getFn().add_event_source(dicom_profiler_event_source)
 
-        self.buckets= S3Bucket(self, "IEP-Buckets")
+        self.buckets= S3Bucket(self, "IEP-Buckets" , s3_acceleration = s3_config['s3_acceleration'])
 
         self.buckets.getDICOMBucket().add_object_created_notification(s3n.SqsDestination(sqs_queues.getDICOMProfilerQueue()))
         self.buckets.getDICOMBucket().grant_read_write(role.getRole())
 
         #GreenGrass component
-        self.gg_component = GreenGrassComponent(self, "IEP-GG-Component",  dicom_destination_bucket=self.buckets.getDICOMBucket()  )
+        self.gg_component = GreenGrassComponent(self, "IEP-GG-Component",  dicom_destination_bucket=self.buckets.getDICOMBucket() , s3_acceleration= s3_config['s3_acceleration'] )
 
         #Create the AHLI datastore and import role  anf functions if AHLI is enabled.
         if (ahli_config["ahli_enabled"] == True):
