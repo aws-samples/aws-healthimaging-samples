@@ -8,13 +8,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@aws-amplify/cli-extensibility-helper": "^3.0.5",
-    "@aws-cdk/aws-cognito": "^1.201.0"
+    "@aws-amplify/cli-extensibility-helper": "^3.0.8",
+    "@aws-cdk/aws-cognito": "^1.203.0"
   },
   "resolutions": {
     "vm2": "^3.9.18"
   },
   "devDependencies": {
-    "typescript": "^5.0.4"
+    "typescript": "^5.1.3"
   }
 }
