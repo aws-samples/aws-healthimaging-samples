@@ -4,7 +4,30 @@ This monorepo provides examples on working with the [Amazon HealthLake Imaging](
 
 Amazon HealthLake Imaging is a new HIPAA-eligible capability that enables healthcare providers and their software partners to easily store, access, and analyze medical images at petabyte scale.
 
-## Projects
+- [Amazon HealthLake Imaging Samples](#amazon-healthlake-imaging-samples)
+  - [Ingestion](#ingestion)
+  - [Validate/Verify](#validateverify)
+  - [Delivery](#delivery)
+  - [Security](#security)
+  - [License](#license)
+
+## Ingestion
+
+### [S3 StoreSCP](s3-storescp)
+
+This AWS CDK project implements a DICOM [StoreSCP](https://dicom.nema.org/medical/dicom/current/output/html/part04.html#sect_B.2.2) listener capable of receiving DIMSE messages and storing the received SOP instances as DICOM Part10 files on Amazon S3. The listener is deployed as service on [AWS ECS Fargate](https://aws.amazon.com/fargate/). DICOM Part10 files stored on S3 can be then imported into [Amazon HealthLake Imaging](https://aws.amazon.com/healthlake/imaging/).
+
+### [DICOM Ingestion From On-Prem to Amazon HealthLake Imaging](dicom-ingestion-to-s3-healthlake-imaging/)
+
+This [AWS CDK](https://aws.amazon.com/cdk/) project allows to host a DICOM Service to receive data via DICOM-DIMSE and ingest it to S3 and HealthLake Imaging. The on-prem service is hosted as part of [AWS Greengrass IOT service](https://aws.amazon.com/greengrass/). The project also demonstrates how to profile DICOM data, index it into a database and manage a queue of import jobs into Amazon HealthLake Imaging.
+
+## Validate/Verify
+
+### [Pixel Data Verification](pixel-data-verification/)
+
+This example demonstrates how to use the Amazon HealthLake Imaging Pixel Data Verification feature to ensure the image you decoded matches the original DICOM P10 Image.
+
+## Delivery
 
 ### [Tile Level Marker (TLM) Proxy](tile-level-marker-proxy/)
 
@@ -17,18 +40,6 @@ This AWS CDK project allows you to retrieve image frames from [Amazon CloudFront
 ### [Amazon HealthLake Imaging Viewer UI](imaging-viewer-ui/)
 
 This [AWS Amplify](https://aws.amazon.com/amplify/) project deploys a frontend UI with backend authentication that allows you to view imageset metadata and image frames stored in Amazon HealthLake Imaging using progressive decoding. You can optionally integrate the [Tile Level Marker (TLM) Proxy](tile-level-marker-proxy/) and/or [Amazon CloudFront Image Frame Delivery](amazon-cloudfront-image-frame-delivery/) projects above to load image frames using an alternative method.
-
-### [Pixel Data Verification](pixel-data-verification/)
-
-This example demonstrates how to use the Amazon HealthLake Imaging Pixel Data Verification feature to ensure the image you decoded matches the original DICOM P10 Image.
-
-### [S3 StoreSCP](s3-storescp)
-
-This AWS CDK project implements a DICOM [StoreSCP](https://dicom.nema.org/medical/dicom/current/output/html/part04.html#sect_B.2.2) listener capable of receiving DIMSE messages and storing the received SOP instances as DICOM Part10 files on Amazon S3. The listener is deployed as service on [AWS ECS Fargate](https://aws.amazon.com/fargate/). DICOM Part10 files stored on S3 can be then imported into [Amazon HealthLake Imaging](https://aws.amazon.com/healthlake/imaging/).
-
-### [DICOM ingestion from on-prem to Amazon HealthLake Imaging](dicom-ingestion-to-s3-healthlake-imaging/)
-
-This [AWS CDK](https://aws.amazon.com/cdk/) project allows to host a DICOM Service to receive data via DICOM-DIMSE and ingest it to S3 and HealthLake Imaging. The on-prem service is hosted as part of [AWS Greengrass IOT service](https://aws.amazon.com/greengrass/). The project also demonstrates how to profile DICOM data, index it into a database and manage a queue of import jobs into Amazon HealthLake Imaging. 
 
 ## Security
 
