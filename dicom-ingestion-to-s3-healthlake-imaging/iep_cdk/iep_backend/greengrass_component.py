@@ -22,7 +22,7 @@ from aws_cdk import (
 
 class GreenGrassComponent(Construct):
 
-    def __init__(self, scope: Construct, id: str, dicom_destination_bucket: s3.Bucket,  **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, dicom_destination_bucket: s3.Bucket, s3_acceleration : bool, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
         stack_name = Stack.of(self).stack_name.lower()
         # Create an Asset with the contents of the Greengrass component directory
@@ -33,7 +33,7 @@ class GreenGrassComponent(Construct):
         recipe = f"""{{
                         "RecipeFormatVersion": "2020-01-25",
                         "ComponentName": "{stack_name}-DIMSEtoS3",
-                        "ComponentVersion": "1.0.24",
+                        "ComponentVersion": "1.0.30",
                         "ComponentType": "aws.greengrass.generic",
                         "ComponentDescription": "Edge device component for DICOM data ingestion in S3 and Amazon HealthLake Imaging.",
                         "ComponentPublisher": "Amazon Web Services",
@@ -59,6 +59,10 @@ class GreenGrassComponent(Construct):
                                     "RequiresPrivilege": true
                                     }},
                                 "Run": {{
+                                    "setEnv": {{
+                                        "S3_TRANSFER_ACCELERATION": "{str(s3_acceleration)}",
+                                        "THREADCOUNT": "0"
+                                    }},
                                     "Script": "python3 {{artifacts:decompressedPath}}/{asset_path}/main.py {{configuration:/datastoreid}}"
                                     }}
                                  

@@ -32,4 +32,4 @@ CREATE TABLE `Instance` (
 	`d00281053`  varchar(255) , /* Rescale Slope */	
 	PRIMARY KEY (instanceid));
 CREATE INDEX `Instance.d00080018` ON `Instance` (`d00080018`);
-CREATE INDEX `Instance.seriesid` ON `Instance` (`seriedid`);
+CREATE INDEX `Instance.seriesid` ON `Instance` (`seriesid`);

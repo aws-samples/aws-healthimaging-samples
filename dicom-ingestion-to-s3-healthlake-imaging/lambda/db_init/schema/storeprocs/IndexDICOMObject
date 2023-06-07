@@ -165,7 +165,7 @@ BEGIN
 			retnewinstance
 		);
 
-		call InsertInstanceLocation( retnewinstance ,  bucketname , region , filekey );
+		call InsertInstanceLocation( retinstanceid ,  bucketname , region , filekey );
 		if retnewseries = TRUE then
 			UPDATE Study set seriescount = seriescount+1 where studyid = retstudyid;
 			call UpdateModalitiesInStudy(retstudyid , d00080060);

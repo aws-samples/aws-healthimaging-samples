@@ -50,7 +50,7 @@ def lambda_handler(event, context):
             bucket = payload['Records'][0]['s3']['bucket']['name']
             region = payload['Records'][0]['awsRegion']
             key = urllib.parse.unquote_plus(payload['Records'][0]['s3']['object']['key'], encoding='utf-8')
-            print(str(it)+" - Inserting Image "+str(key))
+            #print(str(it)+" - Inserting Image "+str(key))
             obj = s3.Object(bucket, key)
             dmcobj = obj.get()['Body'].read()
             try:

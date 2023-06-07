@@ -58,6 +58,8 @@ class S3FileManager:
         #print("Destination filename will be : " +filename)
         try:
             self.s3.Bucket(self.bucket_name).upload_file(filepath,filename , ExtraArgs={'ServerSideEncryption': 'aws:kms'})
+            ## 05-11-2023 - jpleger - try to delete file after successful upload
+            os.remove(filepath)
         except Exception as S3err:
             logging.error("Could not copy the file to S3. "+str(S3err))
         self.status = 'idle'

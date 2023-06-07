@@ -31,6 +31,9 @@ AHLI_CONFIG = {
 
 ## Advanced configurations - NO changes required for default deployment.
 
+S3_CONFIG = {
+    "s3_acceleration" : True,
+}
 
 DB_CONFIG = {
     "db_name" : "iep",
