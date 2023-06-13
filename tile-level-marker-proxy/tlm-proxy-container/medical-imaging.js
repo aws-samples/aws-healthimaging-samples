@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT-0
 
 // Required to load HealthLake Imaging service model
-const AWS = require("aws-sdk/lib/core");
+const AWS = require('aws-sdk/lib/core');
 const Service = AWS.Service;
 const apiLoader = AWS.apiLoader;
 
@@ -11,11 +11,11 @@ const apiLoader = AWS.apiLoader;
  *  1. replace the existing JSON file
  *  2. put the new JSON into the service-models directory and update the path below
  */
-apiLoader.services["medical-imaging"] = {};
-AWS.MedicalImaging = Service.defineService("medical-imaging", ["2022-10-19"]);
-Object.defineProperty(apiLoader.services["medical-imaging"], "2022-10-19", {
+apiLoader.services['medical-imaging'] = {};
+AWS.MedicalImaging = Service.defineService('medical-imaging', ['2023-03-30']);
+Object.defineProperty(apiLoader.services['medical-imaging'], '2023-03-30', {
     get: function get() {
-        let model = require("./service-models/medical-imaging-model-v2.json");
+        let model = require('./service-models/medical-imaging-model-v3.json');
         model.paginators = {};
         model.waiters = {};
         return model;

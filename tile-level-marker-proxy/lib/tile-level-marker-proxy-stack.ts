@@ -12,7 +12,7 @@ import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as elasticache from 'aws-cdk-lib/aws-elasticache';
-import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
+import { DockerImageAsset, Platform } from 'aws-cdk-lib/aws-ecr-assets';
 
 // Misc
 import * as path from 'path';
@@ -118,7 +118,8 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
                 {
                     description:
                         'Amazon HealthLake Imaging Tile Lever Marker Proxy Cache Subnet Group',
-                    subnetIds: vpc.publicSubnets.map((s) => s.subnetId),
+                    // use the first subnet for memcached. to use all available subnets, use subnetIds: vpc.publicSubnets.map((s) => s.subnetId)
+                    subnetIds: [vpc.publicSubnets[0].subnetId],
                 }
             );
 
@@ -132,7 +133,7 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
                     numCacheNodes: 1,
                     cacheParameterGroupName: cacheParameterGroup.ref,
                     cacheSubnetGroupName: cacheSubnetGroup.ref,
-                    engineVersion: '1.6.12', // latest as of 2022-12-19
+                    engineVersion: '1.6.17', // latest as of 2023-06-12
                     port: MEMCACHED_PORT,
                     vpcSecurityGroupIds: [elasticacheSg.securityGroupId],
                 }
@@ -154,6 +155,7 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
             'container-image',
             {
                 directory: path.join(__dirname, '../tlm-proxy-container'),
+                platform: Platform.LINUX_AMD64,
             }
         );
 
@@ -186,7 +188,7 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
             },
         });
 
-        // Create a Fargate task definition on Linux/ARM64
+        // Create a Fargate task definition
         const fargateTaskDefinition = new ecs.FargateTaskDefinition(
             this,
             'fargate-task-definition',
@@ -195,7 +197,7 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
                 cpu: 2048, // 2 vCPU
                 runtimePlatform: {
                     operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
-                    cpuArchitecture: ecs.CpuArchitecture.ARM64,
+                    cpuArchitecture: ecs.CpuArchitecture.X86_64,
                 },
                 executionRole: ecsTaskExecutionRole,
                 taskRole: ecsTaskRole,
@@ -244,11 +246,9 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
 
         // S3 bucket for ALB access logs
         const accessLogsBucket = new s3.Bucket(this, 'AccessLogsBucket', {
-            autoDeleteObjects: true,
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-            removalPolicy: cdk.RemovalPolicy.DESTROY,
-            enforceSSL: true,
             encryption: s3.BucketEncryption.S3_MANAGED,
+            enforceSSL: true,
             lifecycleRules: [
                 {
                     transitions: [
@@ -259,6 +259,7 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
                     ],
                 },
             ],
+            removalPolicy: cdk.RemovalPolicy.RETAIN,
         });
 
         // ALB
@@ -275,22 +276,28 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
                 this,
                 'ecs-fargate-service',
                 {
-                    cluster: ecsCluster,
-                    taskDefinition: fargateTaskDefinition,
-                    loadBalancer: alb,
-                    securityGroups: [fargateSg],
                     // to be able to pull the ecr image, use 1/ public subnet with a public IP or 2/ private subnet with routing through a NAT gateway
                     assignPublicIp: true,
-                    publicLoadBalancer: true,
-                    desiredCount: 2,
-                    listenerPort: 443,
-                    protocol: elbv2.ApplicationProtocol.HTTPS,
-                    sslPolicy: elbv2.SslPolicy.TLS12_EXT,
                     certificate: acm.Certificate.fromCertificateArn(
                         this,
                         'certificate',
                         ACM_ARN
                     ),
+                    cluster: ecsCluster,
+                    desiredCount: 2,
+                    listenerPort: 443,
+                    loadBalancer: alb,
+                    protocol: elbv2.ApplicationProtocol.HTTPS,
+                    publicLoadBalancer: true,
+                    securityGroups: [fargateSg],
+                    sslPolicy: elbv2.SslPolicy.TLS12_EXT,
+                    taskDefinition: fargateTaskDefinition,
+                    // if elasticache is enabled, use the first subnet to reduce cross-AZ data transfer charges. otherwise use all available subnets
+                    taskSubnets: {
+                        subnets: ENABLE_ELASTICACHE
+                            ? [vpc.publicSubnets[0]]
+                            : vpc.publicSubnets,
+                    },
                 }
             );
 

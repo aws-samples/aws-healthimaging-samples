@@ -24,7 +24,7 @@ const COGNITO_CLIENT_ID: NullableString = null;
 
 // @Required:     No
 // @Usage:        AHLI service region
-// @Description:  Amazon HealthLake Imaging region, i.e. medical-imaging.<region>.amazonaws.com
+// @Description:  Amazon HealthLake Imaging region, i.e. runtime-healthlake-imaging.<region>.amazonaws.com
 const AHLI_REGION: NullableString = 'us-east-1';
 
 // @Required:     No

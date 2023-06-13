@@ -79,7 +79,7 @@ To disable security (**not** recommended), modify [config.ts](config.ts) and set
 
 ## Service API
 
-The container uses [AWS SDK v2](https://github.com/aws/aws-sdk-js). The [service model JSON](tlm-proxy-container/service-models/medical-imaging-model-v2.json) for Amazon HealthLake Imaging is imported and defined in [medical-imaging.js](tlm-proxy-container/medical-imaging.js). After the service is generally available, it is recommended to use the official SDK.
+The container uses [AWS SDK v2](https://github.com/aws/aws-sdk-js). The [service model JSON](tlm-proxy-container/service-models/medical-imaging-model-v3.json) for Amazon HealthLake Imaging is imported and defined in [medical-imaging.js](tlm-proxy-container/medical-imaging.js). After the service is generally available, it is recommended to use the official SDK.
 
 During the beta, the service region is hard-coded to us-east-1.
 
@@ -145,6 +145,10 @@ This workload would be better served using Amazon CloudFront directly with [Lamb
 ### Can I limit AWS Fargate containers' access to specific image frames?
 
 Yes. The ECS task role function uses an execution policy that allows it access to get all image frames. You can customize the IAM policy in the [CDK stack](./lib/tile-level-marker-proxy-stack.ts) by applying access restrictions to the `medical-imaging:GetImageFrame` action for the `ecsTaskRole` role.
+
+### Can I run the container using ARM64 architecture?
+
+Yes. ARM64 can furthur reduce ECS Fargate costs. By default, CDK uses the current machine architecture to build the container. This sample project has been coded to use x86-64/AMD64 for compatibility reasons. To update the CDK project to use ARM64, update [tile-level-marker-proxy-stack.ts](./lib/tile-level-marker-proxy-stack.ts) and change the `DockerImageAsset` construct to use `platform: Platform.LINUX_ARM64` and the `FargateTaskDefinition` construct to use `cpuArchitecture: ecs.CpuArchitecture.ARM64`.
 
 ## Cleanup
 
