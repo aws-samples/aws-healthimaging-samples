@@ -1,12 +1,12 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-/** This construct creates a NodeJS 18 Lambda@Edge function 
- * it requires Docker to build
+/** 
+ * This construct creates a NodeJS 18 Lambda@Edge function 
+ * It requires Docker to build
 */
 
 import { Construct } from 'constructs';
-import * as path from 'path';
 import * as cf from 'aws-cdk-lib/aws-cloudfront';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';

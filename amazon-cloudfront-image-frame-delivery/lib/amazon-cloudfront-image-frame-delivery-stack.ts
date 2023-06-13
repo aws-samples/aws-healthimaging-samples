@@ -31,8 +31,8 @@ import {
 const AHLI_DOMAIN = AHLI_ENDPOINT
     ? AHLI_ENDPOINT
     : AHLI_REGION
-    ? `medical-imaging.${AHLI_REGION}.amazonaws.com`
-    : 'medical-imaging.us-east-1.amazonaws.com';
+    ? `runtime-healthlake-imaging.${AHLI_REGION}.amazonaws.com`
+    : 'runtime-healthlake-imaging.us-east-1.amazonaws.com';
 
 /** If AUTH_MODE is set (assume cognito_jwt),
  * COGNITO_USER_POOL_ID must be a string between 1 and 55 characters. See below for format.
@@ -89,11 +89,17 @@ export class AmazonCloudFrontImageFrameDeliveryStack extends cdk.Stack {
             inlinePolicy: signerIamPolicy,
         });
 
-        // Update placeholder in Lambda function
+        // Update placeholders in authorizer Lambda function
         const findReplaceCmds = [
             `sed -i 's/COGNITO_USER_POOL_ID_PLACEHOLDER/${COGNITO_USER_POOL_ID}/g' /asset-output/index.js`,
             `sed -i 's/COGNITO_CLIENT_ID_PLACEHOLDER/${COGNITO_CLIENT_ID}/g' /asset-output/index.js`,
         ];
+        // If AUTH_MODE is not set, update authorizer AUTH_MODE to false
+        if (!AUTH_MODE) {
+            findReplaceCmds.push(
+                `sed -i 's/AUTH_MODE = true/AUTH_MODE = false/g' /asset-output/index.js`
+            );
+        }
 
         // Authorizer Lambda@Edge function - deploy this regardless of AUTH_MODE
         const authorizerEdgeFn = new EdgeFunctionJs(this, 'authorizer', {
@@ -105,6 +111,15 @@ export class AmazonCloudFrontImageFrameDeliveryStack extends cdk.Stack {
         // CloudFront Lambda@Edge object
         let cfEdgeLambdas: cf.EdgeLambda[] = [
             {
+                eventType: cf.LambdaEdgeEventType.VIEWER_REQUEST,
+                includeBody: false,
+                functionVersion: lambda.Version.fromVersionArn(
+                    this,
+                    'authorizerVersion',
+                    authorizerEdgeFn.fn.edgeArn
+                ),
+            },
+            {
                 eventType: cf.LambdaEdgeEventType.ORIGIN_REQUEST,
                 includeBody: false,
                 functionVersion: lambda.Version.fromVersionArn(
@@ -115,26 +130,11 @@ export class AmazonCloudFrontImageFrameDeliveryStack extends cdk.Stack {
             },
         ];
 
-        // If AUTH_MODE is set, update cfEdgeLambdas with the above as the viewer request function
-        if (AUTH_MODE) {
-            cfEdgeLambdas.push({
-                eventType: cf.LambdaEdgeEventType.VIEWER_REQUEST,
-                includeBody: false,
-                functionVersion: lambda.Version.fromVersionArn(
-                    this,
-                    'authorizerVersion',
-                    authorizerEdgeFn.fn.edgeArn
-                ),
-            });
-        }
-
-        // S3 bucket for CloudFront access logs
+        // S3 bucket for CloudFront access logs. CF requires bucket ACLs to be enabled
         const accessLogsBucket = new s3.Bucket(this, 'AccessLogsBucket', {
-            autoDeleteObjects: true,
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-            removalPolicy: cdk.RemovalPolicy.DESTROY,
-            enforceSSL: true,
             encryption: s3.BucketEncryption.S3_MANAGED,
+            enforceSSL: true,
             lifecycleRules: [
                 {
                     transitions: [
@@ -145,6 +145,8 @@ export class AmazonCloudFrontImageFrameDeliveryStack extends cdk.Stack {
                     ],
                 },
             ],
+            objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_PREFERRED,
+            removalPolicy: cdk.RemovalPolicy.RETAIN,
         });
 
         // Checkov

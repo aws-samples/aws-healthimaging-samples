@@ -4,7 +4,7 @@
 const aws4 = require('aws4');
 const log = require('loglevel');
 
-log.setLevel('WARN');
+log.setLevel('error');
 
 exports.handler = async function (event, context, callback) {
     // The request will be modified with the signed headers
@@ -24,12 +24,12 @@ exports.handler = async function (event, context, callback) {
     // Verify domain name is for Amazon HealthLake Imaging
     const domainName = request.origin?.custom?.domainName;
     if (
-        !/.*medical-imaging\..+(\.amazonaws\.com|\.aws\.dev)/.test(domainName)
+        !/.*runtime-healthlake-imaging\..+(\.amazonaws\.com|\.aws\.dev)/.test(domainName)
     ) {
         log.error(
-            `Domain name ${domainName} must match medical-imaging.+\.amazonaws.com`
+            `Domain name ${domainName} must match runtime-healthlake-imaging.+\.amazonaws.com`
         );
-        return request;
+        return null;
     }
 
     let signOpts = {

@@ -23,12 +23,12 @@ const nodeLoader = require('aws-sdk/lib/node_loader');
 const AHLI_DOMAIN = process.env.AHLI_ENDPOINT
     ? process.env.AHLI_ENDPOINT
     : process.env.AHLI_REGION
-    ? `medical-imaging.${process.env.AHLI_REGION}.amazonaws.com`
-    : 'medical-imaging.us-east-1.amazonaws.com';
+    ? `healthlake-imaging.${process.env.AHLI_REGION}.amazonaws.com`
+    : 'healthlake-imaging.us-east-1.amazonaws.com';
 const endpoint_url = `https://${AHLI_DOMAIN}`;
 const endpoint = new nodeLoader.Endpoint(endpoint_url);
 const imaging = new MedicalImaging({
-    apiVersion: '2022-10-19',
+    apiVersion: '2023-03-30',
     endpoint: endpoint,
     region: process.env.AHLI_REGION || 'us-east-1',
 });
