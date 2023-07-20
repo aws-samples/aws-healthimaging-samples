@@ -1,6 +1,6 @@
-# DICOM DIMSE to S3 / Amazon HealthLake Imaging
+# DICOM DIMSE to S3 / AWS HealthImaging
 
-This repository contains the code to deploy an IoT edge solution that receives DICOM files from a DICOM DIMSE source ( PACS, VNA, CT scanners, etc...) and store them in S3 securely. The solution indexes the DICOM files in a database and queues each DICOM series to be imported in Amazon HealthLake Imaging. It is composed of an component running at the edge, managed by AWS Greengrass service, and a DICOM ingestion pipeline running in AWS Cloud. The ingestion pipeline is entirely serverless, it relies on AWS Lambda, AWS Aurora Serverless, SQS and S3. This solution can be configured to import the DICOM files in Amazon HealthLake Imaging (default configuration). The edge is 100% python based and could be deployed on windows or Linux OSes, on a physical machine, a virtual machine or even as a container. 
+This repository contains the code to deploy an IoT edge solution that receives DICOM files from a DICOM DIMSE source ( PACS, VNA, CT scanners, etc...) and store them in S3 securely. The solution indexes the DICOM files in a database and queues each DICOM series to be imported in AWS HealthImaging. It is composed of an component running at the edge, managed by AWS Greengrass service, and a DICOM ingestion pipeline running in AWS Cloud. The ingestion pipeline is entirely serverless, it relies on AWS Lambda, AWS Aurora Serverless, SQS and S3. This solution can be configured to import the DICOM files in AWS HealthImaging (default configuration). The edge is 100% python based and could be deployed on windows or Linux OSes, on a physical machine, a virtual machine or even as a container. 
 
  ![](./img/diagram.png)
 
@@ -13,10 +13,7 @@ You will need the following software packages installed locally to deploy this s
 
 **Docker Desktop:**<br>The solution uses Docker Desktop to build the Lambda functions. Please refer to [Docker documentation](https://docs.docker.com/get-docker/) to install Docker.
 
-**An account enabled for Amazon HealthLake Imaging:**<br> At the time this project is made available, Amazon healthLake Imaging is still in preview release state requires an account to be whitelisted. Please contact your AWS account team to get your account whitelisted or register directly on the [Amazon healthLake Imaging front page](https://aws.amazon.com/healthlake/imaging/). 
-
-**Compatible region:**<br>This project is compatible in the following region(s): us-east-1.<br>
-:warning: HealthLake Imaging is only available in us-east-1 during the preview release period.
+**Compatible regions:**<br>This project is compatible in the following region(s): us-east-1, us-west-2, eu-west-1, ap-southeast-2<br>
 
 **An edge device with access to internet:**<br> The edge device needs to be able to connect to internet. The edge device also needs to be able to connect to the DIMSE source. This can be a physical machine, a virtual machine  ( EC2, VMware, Hyper-V , KVM ) or a container. The edge device needs to be able to run python 3.10 or above.
 
@@ -85,13 +82,13 @@ The configuration of the stack is done in the file `config.py`. The following pa
     </TR>
     <TR>
         <TD>AHLI_CONFIG</TD>
-        <TD><strong>ahli_enabled</strong>: Defines if the studies received in S3 should also be imported in Amazon HealthLake Imaging.<BR>
+        <TD><strong>ahli_enabled</strong>: Defines if the studies received in S3 should also be imported in AWS HealthImaging.<BR>
         <strong>ahli_endpoint</strong>: Used only for AWS employees. Keep these value empty.<BR>
         <strong>ahli_concurrent_imports</strong>: Defines how many imports can be concurrently running in AHLI. This value should match the max concurrent import jobs quota limit configured in targeted AWS account.</TD>
     </TR>
     <TR>
         <TD>DB_CONFIG</TD>
-        <TD><strong>db_name</strong>: The name of the database to index the DICOM files and queue the import jobs to Amazon HealthLake Imaging. <br>:information_source: Default: `iep`<BR>
+        <TD><strong>db_name</strong>: The name of the database to index the DICOM files and queue the import jobs to AWS HealthImaging. <br>:information_source: Default: `iep`<BR>
         <strong>db_engine_pause</strong>: Engine idle time before the SQL engine goes to sleep.<br>:information_source: Default: `20` (mins)<br>
         <strong>min_acu_capacity</strong>: Defines the minimum number of Aurora capacity units (ACUs). Each ACU is a combination of approximately 2 gigabytes (GB) of memory, corresponding CPU, and networking.<BR>
         :information_source: Default: `ACU_8`<BR>
@@ -106,6 +103,8 @@ Refer to the [AWS Greengrass IOT documentation](https://docs.aws.amazon.com/gree
 
 
 ### Install an Greengrass Core device on Ubuntu 22.04.
+
+07/20/2023 : you can now use the python script `edge_install_script.py` to generate a text file containing the commands to be pasted in the edge device terminal. Otherwise, follow the steps below.
 
 The steps below describe how to install an AWS Greengrass IoT device on a ubuntu 22.04 instance. The steps are similar for other operating systems.
 
@@ -218,7 +217,7 @@ You can test your deployment by sending DICOM data to the edge device on its `po
 
 You can verify the proper ingestion of the data by checking the content of the S3 bucket created by the stack. The bucket name is `[STACK_NAME]-iepbucketsiepdicombucket`. the DICOM data should be stored in the `s3://[STACK_NAME]-iepbucketsiepdicombucket/[STACK_NAME]-[EDGE_NAME]/UUID4/1.2.840.113619.2.67.2158294438.15745010109084247.20000`
 
-You can verify that the data was properly indexed in the database and submitted to Amazon HealthLake Imaging by connecting to the database via the `Query Editor` of the RDS menu in the AWS Web Console:
+You can verify that the data was properly indexed in the database and submitted to AWS HealthImaging by connecting to the database via the `Query Editor` of the RDS menu in the AWS Web Console:
 
 1. Logged in the AWS Web Console, open the Secrets Manager service.
 2. In the Secrets Manager menu, left side bar, select Secrets.
@@ -248,7 +247,7 @@ SELECT * FROM Ahliimageset;
 ```
 
 ![Query Editor](img/query_editor.png)
-Click through the different result tabs to check the content of the different tables. Note the the table `Ahliimageset` remains empty until the import job to Amazon HealthLake Imaging is completed. You can monitor the status of the job in the database table `Ahlijob` and in the AWS Web Console in the Amazon HealthLake Imaging service.
+Click through the different result tabs to check the content of the different tables. Note the the table `Ahliimageset` remains empty until the import job to AWS HealthImaging is completed. You can monitor the status of the job in the database table `Ahlijob` and in the AWS Web Console in the AWS HealthImaging service.
 
 ```tabular
 Status 1 : Job in queue.
