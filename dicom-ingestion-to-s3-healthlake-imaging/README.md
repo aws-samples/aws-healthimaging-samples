@@ -13,10 +13,7 @@ You will need the following software packages installed locally to deploy this s
 
 **Docker Desktop:**<br>The solution uses Docker Desktop to build the Lambda functions. Please refer to [Docker documentation](https://docs.docker.com/get-docker/) to install Docker.
 
-**An account enabled for AWS HealthImaging:**<br> At the time this project is made available, AWS HealthImaging is still in preview release state requires an account to be whitelisted. Please contact your AWS account team to get your account whitelisted or register directly on the [AWS HealthImaging front page](https://aws.amazon.com/healthlake/imaging/). 
-
 **Compatible regions:**<br>This project is compatible in the following region(s): us-east-1, us-west-2, eu-west-1, ap-southeast-2<br>
-
 
 **An edge device with access to internet:**<br> The edge device needs to be able to connect to internet. The edge device also needs to be able to connect to the DIMSE source. This can be a physical machine, a virtual machine  ( EC2, VMware, Hyper-V , KVM ) or a container. The edge device needs to be able to run python 3.10 or above.
 
