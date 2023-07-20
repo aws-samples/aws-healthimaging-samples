@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS  `Instancemetadata`;
+CREATE TABLE `Instancemetadata` (
+	`metadataid` BIGINT auto_increment NOT NULL,
+	`instanceid` BIGINT NULL UNIQUE,
+	`metadata` LONGBLOB NOT NULL,
+	`metadataendoffset` BIGINT NOT NULL,
+	PRIMARY KEY (metadataid)) ROW_FORMAT=COMPACT ;
+CREATE INDEX `Instancemetadata.instanceid` ON `Instancemetadata` (`instanceid`);

@@ -6,7 +6,7 @@ Config file for the solution deployment via CDK
 """
 
 
-CDK_APP_NAME = "iep1"
+CDK_APP_NAME = "iep-01"
 
 VPC_CIDR = "10.10.0.0/22"
 
@@ -26,7 +26,7 @@ EDGE_CONFIG = [
 AHLI_CONFIG = {
     "ahli_enabled" : True,
     "ahli_endpoint" : "", 
-    "ahli_concurrent_imports" : 5
+    "ahli_concurrent_imports" : 100
 }
 
 ## Advanced configurations - NO changes required for default deployment.

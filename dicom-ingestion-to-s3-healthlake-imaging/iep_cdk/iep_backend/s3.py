@@ -18,36 +18,18 @@ class S3Bucket(Construct):
         super().__init__(scope, id, **kwargs)
 
 
-        # self._gui_bucket = s3.Bucket(
-        #     self,
-        #     "IEP-GUI-Bucket",
-        #     encryption=s3.BucketEncryption.S3_MANAGED,
-        #     removal_policy=RemovalPolicy.DESTROY,
-        #     auto_delete_objects=True,
-        #     block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-        #     enforce_ssl=True,
-        # )
 
         self._dicom_bucket = s3.Bucket(
             self,
             "IEP-DICOM-Bucket",
             encryption=s3.BucketEncryption.S3_MANAGED,
-            removal_policy=RemovalPolicy.DESTROY,
-            auto_delete_objects=True,
+            removal_policy=RemovalPolicy.RETAIN,
+            auto_delete_objects=False,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             enforce_ssl=True,
             transfer_acceleration=s3_acceleration
         )
 
-        # self._gg_asset_bucket = s3.Bucket(
-        #     self,
-        #     "IEP-greengrass-component-Bucket",
-        #     encryption=s3.BucketEncryption.S3_MANAGED,
-        #     removal_policy=RemovalPolicy.DESTROY,
-        #     auto_delete_objects=True,
-        #     block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-        #     enforce_ssl=True,
-        # )
 
 
     
