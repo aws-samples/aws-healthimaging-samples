@@ -22,7 +22,8 @@ class SQSQueues(Construct):
                                             f"{stack_name}-iep-s3-to-rds-dl",
                                             encryption=sqs.QueueEncryption.KMS,
                                             retention_period=Duration.days(14),
-                                            queue_name=f"{stack_name}-iep-s3-to-rds-dl"
+                                            queue_name=f"{stack_name}-iep-s3-to-rds-dl",
+                                            removal_policy=cdk.RemovalPolicy.DESTROY,
                                             )
         self._dicom_profiler = sqs.Queue(  self,
                                     f"{stack_name}-iep-s3-to-rds",
@@ -31,7 +32,7 @@ class SQSQueues(Construct):
                                     queue_name=f"{stack_name}-iep-s3-to-rds",
                                     retention_period=Duration.days(14),
                                     visibility_timeout=Duration.minutes(2),
-                                    
+                                    removal_policy=cdk.RemovalPolicy.DESTROY,
                                 )
 
 

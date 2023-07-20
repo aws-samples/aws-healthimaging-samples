@@ -1,22 +1,22 @@
 {
   "version":"2.0",
   "metadata":{
-    "apiVersion":"2023-03-30",
-    "endpointPrefix":"healthlake-imaging",
+    "apiVersion":"2023-07-19",
+    "endpointPrefix":"medical-imaging",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
-    "serviceFullName":"Amazon Medical Imaging Service",
+    "serviceFullName":"AWS Health Imaging",
     "serviceId":"Medical Imaging",
     "signatureVersion":"v4",
     "signingName":"medical-imaging",
-    "uid":"medical-imaging-2023-03-30"
+    "uid":"medical-imaging-2023-07-19"
   },
   "operations":{
     "CopyImageSet":{
       "name":"CopyImageSet",
       "http":{
         "method":"POST",
-        "requestUri":"/runtime/datastore/{datastoreId}/copyimageset",
+        "requestUri":"/datastore/{datastoreId}/imageSet/{sourceImageSetId}/copyImageSet",
         "responseCode":200
       },
       "input":{"shape":"CopyImageSetRequest"},
@@ -56,7 +56,7 @@
     "DeleteDatastore":{
       "name":"DeleteDatastore",
       "http":{
-        "method":"POST",
+        "method":"DELETE",
         "requestUri":"/datastore/{datastoreId}",
         "responseCode":200
       },
@@ -70,7 +70,28 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Delete a data store.</p>",
+      "documentation":"<p>Delete a data store.</p> <note> <p>Before a data store can be deleted, you must first delete all image sets within it.</p> </note>",
+      "idempotent":true
+    },
+    "DeleteImageSet":{
+      "name":"DeleteImageSet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/datastore/{datastoreId}/imageSet/{imageSetId}/deleteImageSet",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteImageSetRequest"},
+      "output":{"shape":"DeleteImageSetResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Delete an image set.</p>",
+      "endpoint":{"hostPrefix":"runtime-"},
       "idempotent":true
     },
     "GetDICOMImportJob":{
@@ -113,8 +134,8 @@
     "GetImageFrame":{
       "name":"GetImageFrame",
       "http":{
-        "method":"GET",
-        "requestUri":"/runtime/datastore/{datastoreId}/imageset/{imageSetId}/imageframe/{imageFrameId}",
+        "method":"POST",
+        "requestUri":"/datastore/{datastoreId}/imageSet/{imageSetId}/getImageFrame",
         "responseCode":200
       },
       "input":{"shape":"GetImageFrameRequest"},
@@ -127,14 +148,14 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Get an image frame.</p>",
+      "documentation":"<p>Get an image frame (pixel data) for an image set.</p>",
       "endpoint":{"hostPrefix":"runtime-"}
     },
     "GetImageSet":{
       "name":"GetImageSet",
       "http":{
-        "method":"GET",
-        "requestUri":"/runtime/datastore/{datastoreId}/imageset/{imageSetId}",
+        "method":"POST",
+        "requestUri":"/datastore/{datastoreId}/imageSet/{imageSetId}/getImageSet",
         "responseCode":200
       },
       "input":{"shape":"GetImageSetRequest"},
@@ -153,8 +174,8 @@
     "GetImageSetMetadata":{
       "name":"GetImageSetMetadata",
       "http":{
-        "method":"GET",
-        "requestUri":"/runtime/datastore/{datastoreId}/imageset",
+        "method":"POST",
+        "requestUri":"/datastore/{datastoreId}/imageSet/{imageSetId}/getImageSetMetadata",
         "responseCode":200
       },
       "input":{"shape":"GetImageSetMetadataRequest"},
@@ -167,7 +188,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Get metadata for an image set.</p>",
+      "documentation":"<p>Get metadata attributes for an image set.</p>",
       "endpoint":{"hostPrefix":"runtime-"}
     },
     "ListDICOMImportJobs":{
@@ -184,7 +205,8 @@
         {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>List import jobs created by this AWS account for a specific data store.</p>"
     },
@@ -208,14 +230,15 @@
     "ListImageSetVersions":{
       "name":"ListImageSetVersions",
       "http":{
-        "method":"GET",
-        "requestUri":"/runtime/datastore/{datastoreId}/imageset/{imageSetId}/versions",
+        "method":"POST",
+        "requestUri":"/datastore/{datastoreId}/imageSet/{imageSetId}/listImageSetVersions",
         "responseCode":200
       },
       "input":{"shape":"ListImageSetVersionsRequest"},
       "output":{"shape":"ListImageSetVersionsResponse"},
       "errors":[
         {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
@@ -240,13 +263,13 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all tags associated with a data store.</p>"
+      "documentation":"<p>Lists all tags associated with a medical imaging resource.</p>"
     },
     "SearchImageSets":{
       "name":"SearchImageSets",
       "http":{
         "method":"POST",
-        "requestUri":"/runtime/datastore/{datastoreId}",
+        "requestUri":"/datastore/{datastoreId}/searchImageSets",
         "responseCode":200
       },
       "input":{"shape":"SearchImageSetsRequest"},
@@ -276,9 +299,10 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Start importing bulk data into an active data store. The import job will import DICOM P10 files found in the S3 prefix specified by the <code>inputS3Uri</code> parameter. The results of the output job will be stored in the file specified by the <code>outputS3Uri</code> parameter.</p>",
+      "documentation":"<p>Start importing bulk data into an <code>ACTIVE</code> data store. The import job imports DICOM P10 files found in the S3 prefix specified by the <code>inputS3Uri</code> parameter. The import job stores processing results in the file specified by the <code>outputS3Uri</code> parameter.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -297,7 +321,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Adds a user-specifed key and value tag to a data store.</p>",
+      "documentation":"<p>Adds a user-specifed key and value tag to a medical imaging resource.</p>",
       "idempotent":true
     },
     "UntagResource":{
@@ -316,14 +340,14 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Removes tags from a data store.</p>",
+      "documentation":"<p>Removes tags from a medical imaging resource.</p>",
       "idempotent":true
     },
     "UpdateImageSetMetadata":{
       "name":"UpdateImageSetMetadata",
       "http":{
         "method":"POST",
-        "requestUri":"/runtime/datastore/{datastoreId}/imageset/{imageSetId}/metadata",
+        "requestUri":"/datastore/{datastoreId}/imageSet/{imageSetId}/updateImageSetMetadata",
         "responseCode":200
       },
       "input":{"shape":"UpdateImageSetMetadataRequest"},
@@ -337,7 +361,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Update image set metadata.</p>",
+      "documentation":"<p>Update image set metadata attributes.</p>",
       "endpoint":{"hostPrefix":"runtime-"}
     }
   },
@@ -357,7 +381,7 @@
     },
     "Arn":{
       "type":"string",
-      "pattern":"arn:aws((-us-gov)|(-iso)|(-iso-b)|(-cn))?:medical-imaging:[a-z0-9-]+:[0-9]{12}:datastore/[0-9a-z]{32}"
+      "pattern":"arn:aws((-us-gov)|(-iso)|(-iso-b)|(-cn))?:medical-imaging:[a-z0-9-]+:[0-9]{12}:datastore/[0-9a-z]{32}(/imageset/[0-9a-z]{32})?"
     },
     "ClientToken":{
       "type":"string",
@@ -426,6 +450,10 @@
         "updatedAt":{
           "shape":"Date",
           "documentation":"<p>The timestamp when the destination image set properties were last updated.</p>"
+        },
+        "imageSetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) assigned to the destination image set.</p>"
         }
       },
       "documentation":"<p>Copy the image set properties of the destination image set.</p>"
@@ -435,7 +463,7 @@
       "required":["sourceImageSet"],
       "members":{
         "sourceImageSet":{
-          "shape":"CopySourceImageSet",
+          "shape":"CopySourceImageSetInformation",
           "documentation":"<p>The source image set.</p>"
         },
         "destinationImageSet":{
@@ -449,6 +477,7 @@
       "type":"structure",
       "required":[
         "datastoreId",
+        "sourceImageSetId",
         "copyImageSetInformation"
       ],
       "members":{
@@ -457,6 +486,12 @@
           "documentation":"<p>The data store identifier.</p>",
           "location":"uri",
           "locationName":"datastoreId"
+        },
+        "sourceImageSetId":{
+          "shape":"ImageSetId",
+          "documentation":"<p>The source image set identifier.</p>",
+          "location":"uri",
+          "locationName":"sourceImageSetId"
         },
         "copyImageSetInformation":{
           "shape":"CopyImageSetInformation",
@@ -487,23 +522,16 @@
         }
       }
     },
-    "CopySourceImageSet":{
+    "CopySourceImageSetInformation":{
       "type":"structure",
-      "required":[
-        "imageSetId",
-        "latestVersionId"
-      ],
+      "required":["latestVersionId"],
       "members":{
-        "imageSetId":{
-          "shape":"ImageSetId",
-          "documentation":"<p>The image set identifier of the source image set.</p>"
-        },
         "latestVersionId":{
           "shape":"ImageSetExternalVersionId",
-          "documentation":"<p>The latest version identifier of the source image set.</p>"
+          "documentation":"<p>The latest version identifier for the source image set.</p>"
         }
       },
-      "documentation":"<p>The copy of the source image set.</p>"
+      "documentation":"<p>Copy source image set information.</p>"
     },
     "CopySourceImageSetProperties":{
       "type":"structure",
@@ -535,6 +563,10 @@
         "updatedAt":{
           "shape":"Date",
           "documentation":"<p>The timestamp when the source image set properties were updated.</p>"
+        },
+        "imageSetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) assigned to the source image set.</p>"
         }
       },
       "documentation":"<p>Copy source image set properties.</p>"
@@ -555,6 +587,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags provided when creating a data store.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) assigned to the AWS Key Management Service (AWS KMS) key for accessing encrypted data.</p>"
         }
       }
     },
@@ -577,7 +613,7 @@
     },
     "DICOMAccessionNumber":{
       "type":"string",
-      "max":256,
+      "max":16,
       "min":0,
       "sensitive":true
     },
@@ -617,7 +653,7 @@
         },
         "dataAccessRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that grants permissions to access resources.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that grants permissions to access medical imaging resources.</p>"
         },
         "endedAt":{
           "shape":"Date",
@@ -673,7 +709,7 @@
         },
         "dataAccessRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that grants permissions to access resources.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that grants permissions to access medical imaging resources.</p>"
         },
         "endedAt":{
           "shape":"Date",
@@ -690,17 +726,25 @@
       },
       "documentation":"<p>Summary of import job.</p>"
     },
-    "DICOMNumberOfStudyRelatedInstances":{"type":"integer"},
-    "DICOMNumberOfStudyRelatedSeries":{"type":"integer"},
+    "DICOMNumberOfStudyRelatedInstances":{
+      "type":"integer",
+      "max":10000,
+      "min":0
+    },
+    "DICOMNumberOfStudyRelatedSeries":{
+      "type":"integer",
+      "max":10000,
+      "min":0
+    },
     "DICOMPatientBirthDate":{
       "type":"string",
-      "max":256,
+      "max":18,
       "min":0,
       "sensitive":true
     },
     "DICOMPatientId":{
       "type":"string",
-      "max":256,
+      "max":64,
       "min":0,
       "sensitive":true
     },
@@ -712,13 +756,13 @@
     },
     "DICOMPatientSex":{
       "type":"string",
-      "max":256,
+      "max":16,
       "min":0,
       "sensitive":true
     },
     "DICOMStudyDate":{
       "type":"string",
-      "max":256,
+      "max":18,
       "min":0,
       "sensitive":true
     },
@@ -739,24 +783,26 @@
     },
     "DICOMStudyDescription":{
       "type":"string",
-      "max":256,
+      "max":64,
       "min":0,
       "sensitive":true
     },
     "DICOMStudyId":{
       "type":"string",
-      "max":256,
+      "max":16,
       "min":0,
       "sensitive":true
     },
     "DICOMStudyInstanceUID":{
       "type":"string",
+      "max":64,
+      "min":0,
       "pattern":"(?:[1-9][0-9]*|0)(\\.(?:[1-9][0-9]*|0))*",
       "sensitive":true
     },
     "DICOMStudyTime":{
       "type":"string",
-      "max":256,
+      "max":28,
       "min":0,
       "sensitive":true
     },
@@ -812,7 +858,7 @@
           "documentation":"<p>The study time.</p>"
         }
       },
-      "documentation":"<p>The DICOM attributes returned as a part of a response. Each image set will have these properties as part of a search result.</p>"
+      "documentation":"<p>The DICOM attributes returned as a part of a response. Each image set has these properties as part of a search result.</p>"
     },
     "DICOMUpdates":{
       "type":"structure",
@@ -857,6 +903,10 @@
         "datastoreStatus":{
           "shape":"DatastoreStatus",
           "documentation":"<p>The data store status.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) assigned to the AWS Key Management Service (AWS KMS) key for accessing encrypted data.</p>"
         },
         "datastoreArn":{
           "shape":"Arn",
@@ -952,6 +1002,54 @@
         }
       }
     },
+    "DeleteImageSetRequest":{
+      "type":"structure",
+      "required":[
+        "datastoreId",
+        "imageSetId"
+      ],
+      "members":{
+        "datastoreId":{
+          "shape":"DatastoreId",
+          "documentation":"<p>The data store identifier.</p>",
+          "location":"uri",
+          "locationName":"datastoreId"
+        },
+        "imageSetId":{
+          "shape":"ImageSetId",
+          "documentation":"<p>The image set identifier.</p>",
+          "location":"uri",
+          "locationName":"imageSetId"
+        }
+      }
+    },
+    "DeleteImageSetResponse":{
+      "type":"structure",
+      "required":[
+        "datastoreId",
+        "imageSetId",
+        "imageSetState",
+        "imageSetWorkflowStatus"
+      ],
+      "members":{
+        "datastoreId":{
+          "shape":"DatastoreId",
+          "documentation":"<p>The data store identifier.</p>"
+        },
+        "imageSetId":{
+          "shape":"ImageSetId",
+          "documentation":"<p>The image set identifier.</p>"
+        },
+        "imageSetState":{
+          "shape":"ImageSetState",
+          "documentation":"<p>The image set state.</p>"
+        },
+        "imageSetWorkflowStatus":{
+          "shape":"ImageSetWorkflowStatus",
+          "documentation":"<p>The image set workflow status.</p>"
+        }
+      }
+    },
     "GetDICOMImportJobRequest":{
       "type":"structure",
       "required":[
@@ -1010,7 +1108,7 @@
       "required":[
         "datastoreId",
         "imageSetId",
-        "imageFrameId"
+        "imageFrameInformation"
       ],
       "members":{
         "datastoreId":{
@@ -1025,13 +1123,12 @@
           "location":"uri",
           "locationName":"imageSetId"
         },
-        "imageFrameId":{
-          "shape":"ImageFrameId",
-          "documentation":"<p>The image frame identifier.</p>",
-          "location":"uri",
-          "locationName":"imageFrameId"
+        "imageFrameInformation":{
+          "shape":"ImageFrameInformation",
+          "documentation":"<p>Information about the image frame (pixel data) identifier.</p>"
         }
-      }
+      },
+      "payload":"imageFrameInformation"
     },
     "GetImageFrameResponse":{
       "type":"structure",
@@ -1066,7 +1163,7 @@
         "imageSetId":{
           "shape":"ImageSetId",
           "documentation":"<p>The image set identifier.</p>",
-          "location":"querystring",
+          "location":"uri",
           "locationName":"imageSetId"
         },
         "versionId":{
@@ -1093,7 +1190,7 @@
         },
         "contentEncoding":{
           "shape":"String",
-          "documentation":"<p>The compression format in which the study metadata is returned to the customer.</p>",
+          "documentation":"<p>The compression format in which image set metadata attributes are returned.</p>",
           "location":"header",
           "locationName":"Content-Encoding"
         }
@@ -1171,12 +1268,27 @@
         "message":{
           "shape":"Message",
           "documentation":"<p>The error message thrown if an image set action fails.</p>"
+        },
+        "imageSetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) assigned to the image set.</p>"
         }
       }
     },
     "ImageFrameId":{
       "type":"string",
       "pattern":"[0-9a-z]{32}"
+    },
+    "ImageFrameInformation":{
+      "type":"structure",
+      "required":["imageFrameId"],
+      "members":{
+        "imageFrameId":{
+          "shape":"ImageFrameId",
+          "documentation":"<p>The image frame (pixel data) identifier.</p>"
+        }
+      },
+      "documentation":"<p>Information about the image frame (pixel data) identifier.</p>"
     },
     "ImageSetExternalVersionId":{
       "type":"string",
@@ -1278,11 +1390,11 @@
         },
         "createdAt":{
           "shape":"Date",
-          "documentation":"<p>The time of creation after an image has been imported in HealthLake Imaging. Sample creation date is provided in <code>1985-04-12T23:20:50.52Z</code> format.</p>"
+          "documentation":"<p>The time an image set is created in AWS Health Imaging. Sample creation date is provided in <code>1985-04-12T23:20:50.52Z</code> format.</p>"
         },
         "updatedAt":{
           "shape":"Date",
-          "documentation":"<p>The time of creation after an image has been updated in HealthLake Imaging.</p>"
+          "documentation":"<p>The time when an image was last updated in AWS Health Imaging.</p>"
         },
         "DICOMTags":{
           "shape":"DICOMTags",
@@ -1326,6 +1438,13 @@
         "COMPLETED",
         "FAILED"
       ]
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "documentation":"<p>ARN referencing a KMS key or KMS key alias.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"arn:aws[a-zA-Z-]{0,16}:kms:[a-z]{2}(-[a-z]{1,16}){1,3}-\\d{1}:\\d{12}:((key/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})|(alias/[a-zA-Z0-9:/_-]{1,256}))"
     },
     "ListDICOMImportJobsRequest":{
       "type":"structure",
@@ -1478,7 +1597,7 @@
       "members":{
         "resourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the data store to list tags for.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the medical imaging resource to list tags for.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -1490,7 +1609,7 @@
       "members":{
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>A list of all tags associated with a data store.</p>"
+          "documentation":"<p>A list of all tags associated with a medical imaging resource.</p>"
         }
       }
     },
@@ -1581,7 +1700,7 @@
           "documentation":"<p>The aggregated structure containing DICOM study date and study time for search.</p>"
         }
       },
-      "documentation":"<p>The search value input.</p>",
+      "documentation":"<p>The search input attribute value.</p>",
       "union":true
     },
     "SearchCriteria":{
@@ -1592,7 +1711,8 @@
           "documentation":"<p>The filters for the search criteria.</p>"
         }
       },
-      "documentation":"<p>The search criteria.</p>"
+      "documentation":"<p>The search criteria.</p>",
+      "sensitive":true
     },
     "SearchCriteriaFiltersList":{
       "type":"list",
@@ -1702,7 +1822,7 @@
         },
         "dataAccessRoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) that grants permission to access resources.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that grants permission to access medical imaging resources.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -1779,13 +1899,13 @@
       "members":{
         "resourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the data store that tags are being added to.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the medical imaging resource that tags are being added to.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The user-specified key and value tag pairs added to a data store.</p>"
+          "documentation":"<p>The user-specified key and value tag pairs added to a medical imaging resource.</p>"
         }
       }
     },
@@ -1821,13 +1941,13 @@
       "members":{
         "resourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the data store that tags are being removed from.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the medical imaging resource that tags are being removed from.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "tagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>The keys for the tags to be removed from the data store.</p>",
+          "documentation":"<p>The keys for the tags to be removed from the medical imaging resource.</p>",
           "location":"querystring",
           "locationName":"tagKeys"
         }
@@ -1929,5 +2049,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>This is the <i>Amazon HealthLake Imaging API Reference</i>. HealthLake Imaging is an AWS service for storing, accessing, and managing medical images. For an introduction to the service, see the <i>Amazon HealthLake Imaging Developer Guide</i>.</p> <note> <p>We recommend using one of the AWS Software Development Kits (SDKs) for your programming language, as they take care of request authentication, serialization, and connection management. For more information, see <a href=\"http://aws.amazon.com/developer/tools\">Tools to build on AWS</a>.</p> </note>"
+  "documentation":"<p>This is the <i>AWS Health Imaging API Reference</i>. AWS Health Imaging is an AWS service for storing, accessing, and analyzing medical images. For an introduction to the service, see the <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide\"> <i>AWS Health Imaging Developer Guide</i> </a>.</p> <note> <p>We recommend using one of the AWS Software Development Kits (SDKs) for your programming language, as they take care of request authentication, serialization, and connection management. For more information, see <a href=\"http://aws.amazon.com/developer/tools\">Tools to build on AWS</a>.</p> <p>For information about using AWS Health Imaging API actions in one of the language-specific AWS SDKs, refer to the <i>See Also</i> link at the end of each section that describes an API action or data type.</p> </note> <p>The following sections list AWS Health Imaging API actions categorized according to functionality. Links are provided to actions within this Reference, along with links back to corresponding sections in the <i>AWS Health Imaging Developer Guide</i> so you can view console procedures and CLI/SDK code examples.</p> <p class=\"title\"> <b>Data store actions</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_CreateDatastore.html\">CreateDatastore</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/create-data-store.html\">Creating a data store</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_GetDatastore.html\">GetDatastore</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/get-data-store.html\">Getting data store properties</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_ListDatastores.html\">ListDatastores</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/list-data-stores.html\">Listing data stores</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_DeleteDatastore.html\">DeleteDatastore</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/delete-data-store.html\">Deleting a data store</a>.</p> </li> </ul> <p class=\"title\"> <b>Import job actions</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_StartDICOMImportJob.html\">StartDICOMImportJob</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/start-dicom-import-job.html\">Starting an import job</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_GetDICOMImportJob.html\">GetDICOMImportJob</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/get-dicom-import-job.html\">Getting import job properties</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_ListDICOMImportJobs.html\">ListDICOMImportJobs</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/list-dicom-import-jobs.html\">Listing import jobs</a>.</p> </li> </ul> <p class=\"title\"> <b>Image set access actions</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_SearchImageSets.html\">SearchImageSets</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/search-image-sets.html\">Searching image sets</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_GetImageSet.html\">GetImageSet</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/get-image-set-properties.html\">Getting image set properties</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_GetImageSetMetadata.html\">GetImageSetMetadata</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/get-image-set-metadata.html\">Getting image set metadata</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_GetImageFrame.html\">GetImageFrame</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/get-image-frame.html\">Getting image set pixel data</a>.</p> </li> </ul> <p class=\"title\"> <b>Image set modification actions</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_ListImageSetVersions.html\">ListImageSetVersions</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/list-image-set-versions.html\">Listing image set versions</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_UpdateImageSetMetadata.html\">UpdateImageSetMetadata</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/update-image-set-metadata.html\">Updating image set metadata</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_CopyImageSet.html\">CopyImageSet</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/copy-image-set.html\">Copying an image set</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_DeleteImageSet.html\">DeleteImageSet</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/delete-image-set.html\">Deleting an image set</a>.</p> </li> </ul> <p class=\"title\"> <b>Tagging actions</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_TagResource.html\">TagResource</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/tag-list-untag-data-store.html\">Tagging a data store</a> and <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/tag-list-untag-image-set.html\">Tagging an image set</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_ListTagsForResource.html\">ListTagsForResource</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/tag-list-untag-data-store.html\">Tagging a data store</a> and <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/tag-list-untag-image-set.html\">Tagging an image set</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/APIReference/API_UntagResource.html\">UntagResource</a> – See <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/tag-list-untag-data-store.html\">Tagging a data store</a> and <a href=\"https://docs.aws.amazon.com/medical-imaging/latest/devguide/tag-list-untag-image-set.html\">Tagging an image set</a>.</p> </li> </ul>"
 }

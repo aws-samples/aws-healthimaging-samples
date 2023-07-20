@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS Datafield;
+CREATE TABLE Datafield (
+
+	`datafieldid` bigint NOT NULL AUTO_INCREMENT,
+	`dicomgtag` varchar(8) ,
+	`dicomvr` varchar(3) ,
+	`dicomname` varchar(256) ,
+    `description` varchar(2048) ,
+    `dicomlevel` varchar(256) , -- PATIENT, STUDY , SERIES , INSTANCE
+	`dbtype` varchar(265) ,
+	`active` boolean,
+	`locked` boolean,
+	PRIMARY KEY (datafieldid));

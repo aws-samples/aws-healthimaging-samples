@@ -39,7 +39,6 @@ class SQSReceiver:
     def ReceiveFromQueue(self):
         queue_name= self.EdgeId+'_receiver.fifo'
         logging.warning("Connecting to queue : "+ queue_name) 
-        #self.queue = self.sqs.create_queue(QueueName=queue_url, Attributes={'DelaySeconds': '0','FifoQueue': 'true' ,'ContentBasedDeduplication':'false', 'KmsMasterKeyId' : 'alias/aws/sqs'})
         queue = self.sqs.get_queue_by_name(QueueName=queue_name)
         # receive message and delete after processing
         messages = queue.receive_messages( MaxNumberOfMessages=10,WaitTimeSeconds=1)

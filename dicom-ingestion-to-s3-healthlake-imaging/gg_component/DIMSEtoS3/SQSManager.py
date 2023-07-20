@@ -37,20 +37,10 @@ class SQSManager:
         self.SqsJobs = collections.deque([])
         self.EdgeId = EdgeId
         self.queuename = EdgeId+"_"+qname+".fifo"
-        #self.InitializeQueue(self.queuename)
         thread = Thread(target = self.ProcessMsgs, args = ( ))
         thread.start()
 
 
-
-    # def InitializeQueue(self,qname):
-    #     if( qname is not None ):
-    #         self.queuename = qname+".fifo"
-    #     else:
-    #         self.queuename = self.EdgeId+'.fifo'
-    #     logging.debug("[SQSManager][InitializeQueue] - Initializing queue : "+self.queuename)
-    #     self.queue = self.sqs.create_queue(QueueName=self.queuename, Attributes={'DelaySeconds': '0','FifoQueue': 'true' ,'ContentBasedDeduplication':'false', 'KmsMasterKeyId' : 'alias/aws/sqs' })
-    #     self.queue = self.sqs.get_queue_by_name(QueueName=self.queuename)
 
     def AddSendJob(self, sqsjob):
         self.SqsJobs.append(sqsjob)
@@ -64,7 +54,6 @@ class SQSManager:
                 sqsjob = self.SqsJobs.popleft()
                 try:
                     response = self.queue.send_message(
-                        #QueueUrl=self.queuename,
                         DelaySeconds=0,
                         MessageAttributes={
                             'EdgeID': {
