@@ -50,13 +50,13 @@ Note that during the publishing step, the Amplify CLI will build the React appli
 
 ## Permissions Boundary Policy
 
-### Amazon HealthLake Imaging
+### AWS HealthImaging
 
-This policy allows all actions within the Amazon HealthLake Imaging service. For the rest of this document, this policy is referred to as `ImagingViewerPermissionsBoundary`.
+This policy allows all actions within the AWS HealthImaging service. For the rest of this document, this policy is referred to as `ImagingViewerPermissionsBoundary`.
 
 ```
     {
-      "Sid": "AmazonHealthLakeImaging",
+      "Sid": "AwsHealthImaging",
       "Effect": "Allow",
       "Action": [
         "medical-imaging:*"

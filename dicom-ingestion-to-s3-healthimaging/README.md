@@ -126,13 +126,13 @@ The steps below describe how to install an AWS Greengrass IoT device on a ubuntu
     ```
     {
     "Credentials": {
-        "AccessKeyId": "ASIAQTBUADFXEXAMPLE",
-        "SecretAccessKey": "gCWOYooKz/YoDIM30TeTF15pufxOWPFlsfJpHOUX",
-        "SessionToken": "IQoJb3JpZ2luX2VjEPz...HLF+h+Adjl6o=",
+        "AccessKeyId": "ABCDEFGHIJKLMNOP",
+        "SecretAccessKey": "abcdefghijklmnopqrstuvwxyz",
+        "SessionToken": "abcdefghijklmnop...wxyz",
         "Expiration": "2023-04-24T20:52:08+00:00"
     },
     "AssumedRoleUser": {
-        "AssumedRoleId": "AROAQTBUADFXSRM6QHHJF:GGInstaller",
+        "AssumedRoleId": "ABCDEFGHIJKLMNOPQ:GGInstaller",
         "Arn": "arn:aws:sts::[AWS_ACCOUNT]:assumed-role/iep2-GGInstallerRole/GGInstaller"
         }
     }

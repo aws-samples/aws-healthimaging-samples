@@ -12,7 +12,7 @@ import { tagDescription, tagTableColumnDefinitions, tagEditorI18n } from './data
 import { keyValueToObj } from '../../utils/Array';
 
 // API
-import { listTagsForResource, tagResource, untagResource } from '../../utils/HealthLakeImagingAPI';
+import { listTagsForResource, tagResource, untagResource } from '../../utils/AwsHealthImagingApi';
 
 function TagEdit({ datastoreArn, existingTags, loading, setToolsOpen, navigate }) {
     const [tags, setTags] = useState([]);

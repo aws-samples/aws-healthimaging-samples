@@ -132,7 +132,7 @@ export default function TopNav({ signOut, setAppTheme }) {
             <TopNavigation
                 identity={{
                     href: '',
-                    title: 'Amazon HealthLake Imaging Sample Viewer',
+                    title: 'AWS HealthImaging Sample Viewer',
                 }}
                 utilities={navUtils}
                 i18nStrings={{

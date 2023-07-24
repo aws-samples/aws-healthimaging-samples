@@ -14,9 +14,10 @@ const COGNITO_CLIENT_ID = 'COGNITO_CLIENT_ID_PLACEHOLDER';
 
 // Regex for verifying request URI
 const URI_VERIFY =
-    /\/runtime\/datastore\/[0-9a-z]{32}\/imageset\/[0-9a-z]{32}\/imageframe\/[0-9a-z]{32}/;
+    /\/datastore\/[0-9a-z]{32}\/imageSet\/[0-9a-z]{32}\/getImageFrame/;
 
-log.setLevel('error');
+// Default loglevel is 'warn'. Possible values are trace, debug, info, warn, error
+log.setLevel('warn');
 
 // Cognito JWT verifier
 let verifier;

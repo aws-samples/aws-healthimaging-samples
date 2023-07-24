@@ -24,13 +24,32 @@ Module.onRuntimeInitialized = () => {
 };
 
 /**
- * Load the entire frame, then display it
- * incoming message is the sigv4URL of the image frame
+ * Build a unique URL string from an imageframeReqObj (post req)
+ * Append imageFrameId from the request body to the URL
+ * TODO: deduplicate from workerPool.js
  */
-function defaultLoader({ url, instance }) {
+function buildUrl(imageframeReqObj) {
+    const postDataObj = JSON.parse(imageframeReqObj.body);
+    const imageFrameId = postDataObj.imageFrameId;
+    return imageframeReqObj.url + '?imageFrameId=' + imageFrameId;
+}
+
+/**
+ * Load the entire frame, then display it
+ * incoming message is the post object of the image frame URL, i.e.
+ * {
+ *   method: 'POST',
+ *   url: <string>,
+ *   headers: { ... },
+ *   data: {
+ *     imageFrameId: <string>,
+ *   }
+ * }
+ */
+function defaultLoader({ imageframeReqObj, instance }) {
     const fetchStart = new Date();
 
-    fetch(url).then(async (response) => {
+    fetch(imageframeReqObj.url, imageframeReqObj).then(async (response) => {
         const body = await response.arrayBuffer();
         const fetchEnd = new Date();
 
@@ -48,7 +67,7 @@ function defaultLoader({ url, instance }) {
         uncompressedImageFrame.set(decoder.getDecodedBuffer());
 
         const rsp = {
-            url: url,
+            url: buildUrl(imageframeReqObj),
             instance: instance,
             frameInfo: frameInfo,
             buffer: uncompressedImageFrame.buffer,
@@ -66,11 +85,11 @@ function defaultLoader({ url, instance }) {
  * @param {string} url incoming message is the sigv4URL of the image frame
  * @param {object} instance
  */
-function progressiveLoader({ url, instance }) {
+function progressiveLoader({ imageframeReqObj, instance }) {
     const fetchStart = new Date();
     let result = new Uint8Array([]);
 
-    fetch(url).then(async (response) => {
+    fetch(imageframeReqObj.url, imageframeReqObj).then(async (response) => {
         const reader = response.body.getReader();
 
         reader.read().then(function processData({ done, value }) {
@@ -97,7 +116,7 @@ function progressiveLoader({ url, instance }) {
             uncompressedImageFrame.set(decoder.getDecodedBuffer());
 
             const rsp = {
-                url: url,
+                url: buildUrl(imageframeReqObj),
                 instance: instance,
                 frameInfo: frameInfo,
                 buffer: uncompressedImageFrame.buffer,
@@ -190,6 +209,19 @@ function decodeAndPost(url, instance, decodeLevel, result) {
 }
 
 /**
+ * Given a TLM imageframeReqObj, a start level and an end level,
+ * Return an updated imageframeReqObj with an updated URL
+ * @param {object} imageframeReqObj
+ * @param {number} startLevel
+ * @param {number} endLevel
+ */
+function updateImageframeReqTlmObj(imageframeReqObj, startLevel, endLevel) {
+    const urlJoinChar = imageframeReqObj.url.includes('?') ? '&' : '?';
+    const updatedUrl = `${imageframeReqObj.url}${urlJoinChar}startLevel=${startLevel}&endLevel=${endLevel}`;
+    return { ...imageframeReqObj, url: updatedUrl };
+}
+
+/**
  * Load the frame one TLM level at a time, then display it
  * append ?startLevel=0&endLevel=0 to the first call, then post the response
  * then increment start/end levels until tlmDecodeLevel or the URL returns nothing
@@ -198,16 +230,17 @@ function decodeAndPost(url, instance, decodeLevel, result) {
  * @param {object} instance
  * @param {number} tlmDecodeLevel
  */
-async function tlmLoader({ url, instance, tlmDecodeLevel }) {
+async function tlmLoader({ imageframeReqObj, instance, tlmDecodeLevel }) {
+    const reqUrl = buildUrl(imageframeReqObj);
     try {
+        const initialTlmObj = updateImageframeReqTlmObj(imageframeReqObj, 0, 0);
         let imageFrameResponse = []; // array of data from TLM proxy. Size will be decomposition levels + 1
-        const urlJoinChar = url.includes('?') ? '&' : '?';
-        const initialTlmUrl = `${url}${urlJoinChar}startLevel=0&endLevel=0`;
 
-        const response = await fetch(initialTlmUrl);
+        const response = await fetch(initialTlmObj.url, initialTlmObj);
         const body = await response.arrayBuffer();
         imageFrameResponse[0] = body;
-        const decompositionLevels = decodeAndPost(url, instance, 0, imageFrameResponse[0]) || 1;
+
+        const decompositionLevels = decodeAndPost(reqUrl, instance, 0, imageFrameResponse[0]) || 1;
 
         // max TLM level to retrieve
         // if tlmDecodeLevel is -1, use decompositionLevels
@@ -221,8 +254,8 @@ async function tlmLoader({ url, instance, tlmDecodeLevel }) {
 
         const seqArray = Array.from({ length: maxDecodeLevel }, (_, i) => i + 1);
         seqArray.forEach((i) => {
-            const tlmUrl = `${url}${urlJoinChar}startLevel=${i}&endLevel=${i}`;
-            fetch(tlmUrl).then(async (response) => {
+            const tlmObj = updateImageframeReqTlmObj(imageframeReqObj, i, i);
+            fetch(tlmObj.url, tlmObj).then(async (response) => {
                 const tlmData = await response.arrayBuffer();
                 imageFrameResponse[i] = tlmData;
             });
@@ -231,10 +264,10 @@ async function tlmLoader({ url, instance, tlmDecodeLevel }) {
         for (let i = 1; i <= maxDecodeLevel; i++) {
             await waitFor((_) => imageFrameResponse[i] !== undefined);
             const newImageFrame = joinArrayBuffers(imageFrameResponse, i);
-            decodeAndPost(url, instance, i, newImageFrame);
+            decodeAndPost(reqUrl, instance, i, newImageFrame);
         }
     } catch (error) {
-        postMessage({ url: url, error: new Error(error) });
+        postMessage({ url: reqUrl, error: new Error(error) });
     }
 }
 

@@ -17,7 +17,7 @@ async function getCreds() {
 /*******************
  * Helper Functions
  *******************/
-export async function medicalImagingGet({ config, url, axiosArgs, returnUrl = false, sign = true }) {
+export async function medicalImagingGet({ config, url, axiosArgs, returnReq = false, sign = true }) {
     if (!config.region || !url) throw new Error('API configuration not set');
     const serviceInfo = {
         service: 'medical-imaging',
@@ -27,8 +27,8 @@ export async function medicalImagingGet({ config, url, axiosArgs, returnUrl = fa
     const start = performance.now();
     // sign or leave the URL alone (if sigv4 is not needed) and save to processedUrl
     const processedUrl = sign ? Signer.signUrl(url, await getCreds(), serviceInfo) : url;
-    // Return signed URL immediately if returnUrl is set, otherwise get the result
-    if (returnUrl) return processedUrl;
+    // Return signed URL immediately if returnReq is set, otherwise get the result
+    if (returnReq) return processedUrl;
     const getResult = await axios(processedUrl, { ...axiosArgs });
     const end = performance.now();
     if (config.apiTiming) console.debug(`Time: ${end - start}ms for URL ${url}`);
@@ -39,7 +39,7 @@ export async function medicalImagingGet({ config, url, axiosArgs, returnUrl = fa
     };
 }
 
-async function medicalImagingVerb({ config, verb, url, data = {}, axiosArgs, returnReq = false }) {
+async function medicalImagingVerb({ config, verb, url, data = {}, axiosArgs, returnReq = false, sign = true }) {
     if (!config.region || !url) throw new Error('API configuration not set.');
     const serviceInfo = {
         service: 'medical-imaging',
@@ -53,13 +53,16 @@ async function medicalImagingVerb({ config, verb, url, data = {}, axiosArgs, ret
             'Content-Type': 'application/json',
         },
     };
-    if (data) request.data = JSON.stringify(data);
+    if (data) {
+        request.data = JSON.stringify(data);
+        request.body = JSON.stringify(data);
+    }
 
     const start = performance.now();
-    let signedReq = Signer.sign(request, await getCreds(), serviceInfo);
+    let signedReq = sign ? Signer.sign(request, await getCreds(), serviceInfo) : request;
     // Remove the host header, as we have signedReq.url
     delete signedReq.headers?.host;
-    // Return signed request immediately if returnUrl is set, otherwise get the result
+    // Return signed request immediately if returnReq is set, otherwise get the result
     if (returnReq) return signedReq;
     const verbResult = await axios({ ...signedReq }, { ...axiosArgs });
     const end = performance.now();
@@ -71,7 +74,7 @@ async function medicalImagingVerb({ config, verb, url, data = {}, axiosArgs, ret
     };
 }
 
-export async function medicalImagingPost({ config, url, data = {}, axiosArgs, returnReq = false }) {
+export async function medicalImagingPost({ config, url, data = {}, axiosArgs, returnReq = false, sign }) {
     return medicalImagingVerb({
         config: config,
         verb: 'POST',
@@ -79,15 +82,17 @@ export async function medicalImagingPost({ config, url, data = {}, axiosArgs, re
         data: data,
         axiosArgs: axiosArgs,
         returnReq: returnReq,
+        sign: sign,
     });
 }
 
-export async function medicalImagingDelete({ config, url, axiosArgs, returnReq = false }) {
+export async function medicalImagingDelete({ config, url, axiosArgs, returnReq = false, sign }) {
     return medicalImagingVerb({
         config: config,
         verb: 'DELETE',
         url: url,
         axiosArgs: axiosArgs,
         returnReq: returnReq,
+        sign: sign,
     });
 }

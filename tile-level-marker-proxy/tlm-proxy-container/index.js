@@ -8,7 +8,8 @@ const { authMode, validateJwt } = require('./auth');
 const AUTH_MODE = authMode();
 
 // Logging
-const log = require('loglevel');
+const logger = require('./log');
+const log = logger('container');
 
 // Fasify
 const fastify = require('fastify')({
@@ -36,15 +37,11 @@ if (AUTH_MODE == null) {
     tlmRouteAuthOpts = {
         authMode: 'cognito_jwt',
     };
-    fastify
-        .register(require('@fastify/auth'))
-        .after(() => tlmRoutes(fastify, { ...tlmRouteAuthOpts }));
+    fastify.register(require('@fastify/auth')).after(() => tlmRoutes(fastify, { ...tlmRouteAuthOpts }));
 }
 
 // Set 404
-fastify.setNotFoundHandler((request, reply) =>
-    reply.status(404).send('Not Found')
-);
+fastify.setNotFoundHandler((request, reply) => reply.status(404).send('Not Found'));
 
 // Start server
 fastify.listen({ host: HOST, port: PORT }, function (err, address) {

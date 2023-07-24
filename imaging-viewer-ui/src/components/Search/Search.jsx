@@ -14,7 +14,7 @@ import { Button, Pagination, Table, TextFilter } from '@cloudscape-design/compon
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { columnDefs } from './tableColumnDefs';
 import { DEFAULT_PREFERENCES } from './tablePrefs';
-import { searchImageSets } from '../../utils/HealthLakeImagingAPI';
+import { searchImageSets } from '../../utils/AwsHealthImagingApi';
 import { TableHeader, TablePreferences } from './SearchTableComponents';
 import TableEmptyState from '../../common/Table/TableEmptyState';
 
@@ -58,6 +58,13 @@ export default function Search() {
                     searchParams = { ...searchParams, nextToken: nextToken };
                 }
                 const searchResults = await searchImageSets(searchParams);
+
+                // Handle undefined imageSetsMetadataSummaries (the service should return an empty array)
+                if (typeof searchResults.data?.imageSetsMetadataSummaries === 'undefined') {
+                    setImageSets([]);
+                    setTableLoading(false);
+                    return;
+                }
 
                 // Results from the search API has DICOM properties in the "DICOMTag" key - need to move everything up
                 let imageSetResults = searchResults.data?.imageSetsMetadataSummaries;

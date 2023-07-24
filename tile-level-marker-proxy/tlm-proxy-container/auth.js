@@ -5,7 +5,8 @@
 const { CognitoJwtVerifier } = require('aws-jwt-verify');
 
 // Logging
-const log = require('loglevel');
+const logger = require('./log');
+const log = logger('auth');
 
 function authMode() {
     // Auth

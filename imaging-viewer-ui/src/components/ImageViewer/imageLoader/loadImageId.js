@@ -1,7 +1,7 @@
 // App
 import workerPool from './workerPool';
-import { getDicomFrame } from '../../../utils/HealthLakeImagingAPI';
-import { getFrameTlmUrl } from '../../../utils/TileLevelMarkerProxy';
+import { getImageFrame } from '../../../utils/AwsHealthImagingApi';
+import { getFrameTlmObj } from '../../../utils/TileLevelMarkerProxy';
 
 // imageId is a URI built in ImageViewer.jsx using index.makeImageId
 function loadImageId(imageId, config) {
@@ -19,20 +19,20 @@ function loadImageId(imageId, config) {
         const imageFrameId = instance.ImageFrames[frame].ID;
 
         // for TLM loading, URLs don't need to be signed
-        const imageframeReqUrl =
+        const imageframeReqObj =
             config.loadMethod === 'tlm'
-                ? await getFrameTlmUrl({
+                ? await getFrameTlmObj({
                       datastoreId: datastoreId,
                       imageSetId: imageSetId,
                       imageFrameId: imageFrameId,
                       tlmProxyUrl: config.tlmProxyUrl,
                       tlmProxyAuth: config.tlmProxyAuth,
                   })
-                : await getDicomFrame({
+                : await getImageFrame({
                       datastoreId: datastoreId,
                       imageSetId: imageSetId,
                       imageFrameId: imageFrameId,
-                      returnUrl: true,
+                      returnReq: true,
                       imageFrameOverrideUrl: config.imageFrameOverrideUrl,
                       imageFrameOverrideAuth: config.imageFrameOverrideAuth,
                   });
@@ -40,7 +40,7 @@ function loadImageId(imageId, config) {
         workerPool.queueRequest({
             resolve: resolve,
             reject: reject,
-            url: imageframeReqUrl,
+            imageframeReqObj: imageframeReqObj,
             instance: instance,
             loadMethod: config.loadMethod,
             tlmDecodeLevel: config.tlmDecodeLevel,

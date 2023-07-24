@@ -5,6 +5,7 @@
  * See README.md for more information.
  */
 
+type AuthMode = null | 'null' | 'cognito_jwt';
 type NullableString = string | undefined | null;
 
 // @Required:     Yes
@@ -15,12 +16,12 @@ const DEPLOY_REGION: string = 'us-east-1';
 // @Required:     Yes
 // @Usage:        CDK deployment
 // @Description:  AWS Certificate Manager SSL certificate ARN
-const ACM_ARN: string = '';
+const ACM_ARN: string = 'arn:aws:acm:us-east-1:160057935798:certificate/8f8d43be-b6cb-443d-8d9a-124c750628c1';
 
 // @Required:     No
 // @Usage:        Container environment variable
 // @Description:  Authentication type. See README
-const AUTH_MODE: NullableString = 'cognito_jwt';
+const AUTH_MODE: AuthMode = null;
 
 // @Required:     Yes, if using Amazon Cognito JWT auth. See README
 // @Usage:        Container environment variable
@@ -38,14 +39,14 @@ const COGNITO_CLIENT_ID: NullableString = null;
 const ENABLE_ELASTICACHE: boolean = true;
 
 // @Required:     No
-// @Usage:        AHLI service region
-// @Description:  Amazon HealthLake Imaging region, i.e. healthlake-imaging.<region>.amazonaws.com
-const AHLI_REGION: NullableString = 'us-east-1';
+// @Usage:        AHI service region
+// @Description:  AWS HealthImaging region, i.e. medical-imaging.<region>.amazonaws.com
+const AHI_REGION: NullableString = 'us-east-1';
 
 // @Required:     No
-// @Usage:        AHLI endpoint
-// @Description:  Amazon HealthLake Imaging endpoint without the protocol (https://). Overrides AHLI_REGION
-const AHLI_ENDPOINT: NullableString = '';
+// @Usage:        AHI endpoint
+// @Description:  AWS HealthImaging endpoint without the protocol (https://). Overrides AHI_REGION
+const AHI_ENDPOINT: NullableString = '';
 
 export {
     DEPLOY_REGION,
@@ -54,6 +55,6 @@ export {
     COGNITO_USER_POOL_ID,
     COGNITO_CLIENT_ID,
     ENABLE_ELASTICACHE,
-    AHLI_REGION,
-    AHLI_ENDPOINT
+    AHI_REGION,
+    AHI_ENDPOINT
 };

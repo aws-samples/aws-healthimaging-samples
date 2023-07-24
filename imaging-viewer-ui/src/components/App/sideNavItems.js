@@ -32,7 +32,7 @@ const sideNavItems = [
     {
         type: 'link',
         text: 'Amazon HeathLake Imaging',
-        href: 'https://aws.amazon.com/healthlake/imaging',
+        href: 'https://aws.amazon.com/healthimaging',
         external: true,
     },
     {

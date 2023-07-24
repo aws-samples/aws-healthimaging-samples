@@ -20,7 +20,7 @@ function updateConfig(newSetting) {
 
 /**
  * Control Plane Read
- * https://healthlake-imaging.us-east-1.amazonaws.com
+ * https://medical-imaging.us-east-1.amazonaws.com
  */
 
 // List datastores
@@ -77,35 +77,35 @@ async function untagResource({ resourceArn, tags }) {
 
 /**
  * Data Plane
- * https://runtime-healthlake-imaging.us-east-1.amazonaws.com
+ * https://runtime-medical-imaging.us-east-1.amazonaws.com
  */
 
-async function getImageSet({ datastoreId, imageSetId }) {
-    return await medicalImagingGet({
+async function getImageSet({ datastoreId, imageSetId, versionId = null }) {
+    return await medicalImagingPost({
         config: config,
-        url: config.dataPlaneEndpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}`,
+        url: config.dataPlaneEndpoint + `/datastore/${datastoreId}/imageSet/${imageSetId}/getImageSet`,
         name: 'Get image set',
     });
 }
 
 async function listImageSetVersions({ datastoreId, imageSetId }) {
-    return await medicalImagingGet({
+    return await medicalImagingPost({
         config: config,
-        url: config.dataPlaneEndpoint + `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/versions`,
+        url: config.dataPlaneEndpoint + `/datastore/${datastoreId}/imageSet/${imageSetId}/listImageSetVersions`,
         name: 'List image set versions',
     });
 }
 
 // Get DICOM study metadata
 async function getDicomStudyMetadata({ datastoreId, imageSetId, versionId = null }) {
-    let metadataUrl = config.dataPlaneEndpoint + `/runtime/datastore/${datastoreId}/imageset?imageSetId=${imageSetId}`;
+    let metadataUrl = config.dataPlaneEndpoint + `/datastore/${datastoreId}/imageSet/${imageSetId}/getImageSetMetadata`;
     if (versionId) {
         const versionInt = parseInt(versionId);
         if (typeof versionInt === 'number') {
-            metadataUrl += `&version=${versionInt}`;
+            metadataUrl += `?version=${versionInt}`;
         }
     }
-    return await medicalImagingGet({
+    return await medicalImagingPost({
         config: config,
         url: metadataUrl,
         name: 'Get DICOM study metadata',
@@ -113,12 +113,12 @@ async function getDicomStudyMetadata({ datastoreId, imageSetId, versionId = null
 }
 
 // Get DICOM frame
-// Pass in returnUrl to only return the sigv4-signed image frame URL
-async function getDicomFrame({
+// Pass in returnReq to only return the sigv4-signed image frame URL
+async function getImageFrame({
     datastoreId,
     imageSetId,
     imageFrameId,
-    returnUrl = false,
+    returnReq = false,
     imageFrameOverrideUrl = null,
     imageFrameOverrideAuth = 'cognito_jwt',
 }) {
@@ -134,23 +134,18 @@ async function getDicomFrame({
         signRequest = false;
     }
 
-    if (returnUrl) {
-        return await medicalImagingGet({
-            config: config,
-            url: `${endpoint}/runtime/datastore/${datastoreId}/imageset/${imageSetId}/imageframe/${imageFrameId}${urlSuffix}`,
-            name: 'Get DICOM frame URL',
-            returnUrl: true,
-            sign: signRequest,
-        });
-    } else {
-        return await medicalImagingGet({
-            config: config,
-            url: `${endpoint}/runtime/datastore/${datastoreId}/imageset/${imageSetId}/imageframe/${imageFrameId}${urlSuffix}`,
-            name: 'Get full DICOM frame',
-            axiosArgs: { responseType: 'arraybuffer' },
-            sign: signRequest,
-        });
-    }
+    const getImageFramePostReq = {
+        config: config,
+        url: endpoint + `/datastore/${datastoreId}/imageSet/${imageSetId}/getImageFrame` + urlSuffix,
+        data: {
+            imageFrameId: imageFrameId,
+        },
+        sign: signRequest,
+        name: returnReq ? 'Get image frame URL' : 'Get full image frame',
+        ...(returnReq && { returnReq: true }),
+    };
+
+    return await medicalImagingPost(getImageFramePostReq);
 }
 
 // Search ImageSets
@@ -162,7 +157,7 @@ async function searchImageSets({ datastoreId, data = {}, maxResults = null, next
     // nextToken is an ASCII string between 1 and 8192 characters
     if (nextToken && (nextToken?.length < 1 || nextToken?.length > 8192)) nextToken = null;
     // Build search URL
-    let searchUrl = config.dataPlaneEndpoint + '/runtime/datastore/' + datastoreId;
+    let searchUrl = config.dataPlaneEndpoint + '/datastore/' + datastoreId + '/searchImageSets';
     let queryString = [`maxResults=${maxResults}`, `nextToken=${nextToken}`]
         .filter((val) => {
             if (val.split('=')?.[1] !== 'null') return true;
@@ -209,7 +204,7 @@ async function updateImageSetMetadata({
 
     const updateImageSetMetadtaUrl =
         config.dataPlaneEndpoint +
-        `/runtime/datastore/${datastoreId}/imageset/${imageSetId}/metadata?latestVersion=${latestVersionId}`;
+        `/datastore/${datastoreId}/imageSet/${imageSetId}/updateImageSetMetadata?latestVersion=${latestVersionId}`;
 
     return await medicalImagingPost({
         config: config,
@@ -228,7 +223,7 @@ export {
     getImageSet,
     listImageSetVersions,
     getDicomStudyMetadata,
-    getDicomFrame,
+    getImageFrame,
     searchImageSets,
     updateImageSetMetadata,
 };

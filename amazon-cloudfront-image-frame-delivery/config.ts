@@ -5,12 +5,26 @@
  * See README.md for more information.
  */
 
+type AuthMode = null | 'null' | 'cognito_jwt';
 type NullableString = string | undefined | null;
+type CustomCname = {
+    domainNames: string[];
+    certificateArn: string;
+};
 
 // @Required:     No
 // @Usage:        Container environment variable
 // @Description:  Authentication type. See README
-const AUTH_MODE: NullableString = 'cognito_jwt';
+const AUTH_MODE: AuthMode = null;
+
+// @Required:     No
+// @Usage:        CloudFront custom CNAME
+// @Description:  Use custom CNAME for CloudFront distribution. Requires a certificate in the us-east-1 region
+const CUSTOM_CNAME: CustomCname = {
+    domainNames: ['cf.imaging.yno.people.aws.dev'],
+    certificateArn:
+        'arn:aws:acm:us-east-1:160057935798:certificate/8f8d43be-b6cb-443d-8d9a-124c750628c1',
+};
 
 // @Required:     Yes, if using Amazon Cognito JWT auth. See README
 // @Usage:        Container environment variable
@@ -24,16 +38,17 @@ const COGNITO_CLIENT_ID: NullableString = null;
 
 // @Required:     No
 // @Usage:        AHLI service region
-// @Description:  Amazon HealthLake Imaging region, i.e. runtime-healthlake-imaging.<region>.amazonaws.com
+// @Description:  AWS HealthImaging region, i.e. runtime-medical-imaging.<region>.amazonaws.com
 const AHLI_REGION: NullableString = 'us-east-1';
 
 // @Required:     No
 // @Usage:        AHLI endpoint
-// @Description:  Amazon HealthLake Imaging endpoint without the protocol (https://). Overrides AHLI_REGION
+// @Description:  AWS HealthImaging endpoint without the protocol (https://). Overrides AHLI_REGION
 const AHLI_ENDPOINT: NullableString = '';
 
 export {
     AUTH_MODE,
+    CUSTOM_CNAME,
     COGNITO_USER_POOL_ID,
     COGNITO_CLIENT_ID,
     AHLI_REGION,

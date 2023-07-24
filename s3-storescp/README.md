@@ -104,17 +104,17 @@ Configuration options are defined in `cfg.py`. They are used by CDK for deployin
 |AUTOSCALE_MAX_TASKS | Yes | 10 | Integer. Maximum number of concurrent tasks |
 |TASK_ENABLE_EXEC_COMMAND| Yes | False | True/False. Enable ECS Exec for ssh access to tasks for debugging (see https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html) |
 
-## Integration with Amazon HealthLake Imaging
+## Integration with AWS HealthImaging
 
-This application can be used to receive DICOM into an S3 bucket, for subsequent import into [Amazon HealthLake Imaging](https://aws.amazon.com/healthlake/imaging/).
+This application can be used to receive DICOM into an S3 bucket, for subsequent import into [AWS HealthImaging](https://aws.amazon.com/healthimaging/).
 
-The following settings configure the application to store DICOM files in a structure and format suitable for import into Amazon Healthlake Imaging:
+The following settings configure the application to store DICOM files in a structure and format suitable for import into AWS HealthImaging:
 
 |Option| Value | Description |
 |------|-------|-------------|
-|CREATE_METADATA | False | Amazon HealthLake Imaging only requires DICOM Part10 files. |
-|GZIP_FILES | False | Amazon HealthLake Imaging currently does not support S3 objects with `gzip` content encoding. |
-|ADD_STUDYUID_PREFIX | False | Amazon HealthLake Imaging currently does not support sub-prefix recursion. All DICOM files to be imported need to be stored under the same prefix. |
+|CREATE_METADATA | False | AWS HealthImaging only requires DICOM Part10 files. |
+|GZIP_FILES | False | AWS HealthImaging currently does not support S3 objects with `gzip` content encoding. |
+|ADD_STUDYUID_PREFIX | False | AWS HealthImaging currently does not support sub-prefix recursion. All DICOM files to be imported need to be stored under the same prefix. |
 
 ## Cost
 

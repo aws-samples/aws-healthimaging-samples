@@ -4,8 +4,8 @@
     "Parameters": {
         "CloudWatchRule": {
             "Type": "String",
-            "Default" : "NONE",
-            "Description" : " Schedule Expression"
+            "Default": "NONE",
+            "Description": " Schedule Expression"
         },
         "deploymentBucketName": {
             "Type": "String"
@@ -16,8 +16,6 @@
         "s3Key": {
             "Type": "String"
         }
-        
-    
     },
     "Conditions": {
         "ShouldNotCreateEnvResources": {
@@ -31,48 +29,56 @@
     },
     "Resources": {
         "LambdaFunction": {
-          "Type": "AWS::Lambda::Function",
-          "Metadata": {
-            "aws:asset:path": "./src",
-            "aws:asset:property": "Code"
-          },
-          "Properties": {
-            "Code": {
-                "S3Bucket": {
-                    "Ref": "deploymentBucketName"
-                },
-                "S3Key": {
-                    "Ref": "s3Key"
-                }
+            "Type": "AWS::Lambda::Function",
+            "Metadata": {
+                "aws:asset:path": "./src",
+                "aws:asset:property": "Code"
             },
-            "Handler": "index.handler",
-            "FunctionName": {
-                "Fn::If": [
-                    "ShouldNotCreateEnvResources",
-                    "secureDeployBucket",
-                    {
-
-                        "Fn::Join": [
-                            "",
-                            [
-                                "secureDeployBucket",
-                                "-",
-                                {
-                                    "Ref": "env"
-                                }
-                            ]
-                        ]
+            "Properties": {
+                "Code": {
+                    "S3Bucket": {
+                        "Ref": "deploymentBucketName"
+                    },
+                    "S3Key": {
+                        "Ref": "s3Key"
                     }
-                ]
-            },
-            "Environment": {
-                "Variables" : {"ENV":{"Ref":"env"},"REGION":{"Ref":"AWS::Region"}}
-            },
-            "Role": { "Fn::GetAtt": ["LambdaExecutionRole", "Arn"] },
-            "Runtime": "nodejs18.x",
-            "Layers": [],
-            "Timeout": 25
-          }
+                },
+                "Handler": "index.handler",
+                "FunctionName": {
+                    "Fn::If": [
+                        "ShouldNotCreateEnvResources",
+                        "secureDeployBucket",
+                        {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    "secureDeployBucket",
+                                    "-",
+                                    {
+                                        "Ref": "env"
+                                    }
+                                ]
+                            ]
+                        }
+                    ]
+                },
+                "Environment": {
+                    "Variables": {
+                        "ENV": {
+                            "Ref": "env"
+                        },
+                        "REGION": {
+                            "Ref": "AWS::Region"
+                        }
+                    }
+                },
+                "Role": {
+                    "Fn::GetAtt": ["LambdaExecutionRole", "Arn"]
+                },
+                "Runtime": "nodejs18.x",
+                "Layers": [],
+                "Timeout": 25
+            }
         },
         "LambdaExecutionRole": {
             "Type": "AWS::IAM::Role",
@@ -82,7 +88,6 @@
                         "ShouldNotCreateEnvResources",
                         "imagingvieweruiLambdaRoleef25becf",
                         {
-
                             "Fn::Join": [
                                 "",
                                 [
@@ -102,40 +107,78 @@
                         {
                             "Effect": "Allow",
                             "Principal": {
-                                "Service": [
-                                    "lambda.amazonaws.com"
-                                ]
+                                "Service": ["lambda.amazonaws.com"]
                             },
-                            "Action": [
-                                "sts:AssumeRole"
-                            ]
+                            "Action": ["sts:AssumeRole"]
                         }
                     ]
                 }
             }
-        }
-        ,"lambdaexecutionpolicy": {
+        },
+        "lambdaexecutionpolicy": {
             "DependsOn": ["LambdaExecutionRole"],
             "Type": "AWS::IAM::Policy",
             "Properties": {
                 "PolicyName": "lambda-execution-policy",
-                "Roles": [{ "Ref": "LambdaExecutionRole" }],
+                "Roles": [
+                    {
+                        "Ref": "LambdaExecutionRole"
+                    }
+                ],
                 "PolicyDocument": {
                     "Version": "2012-10-17",
                     "Statement": [
                         {
                             "Effect": "Allow",
-                            "Action": ["logs:CreateLogGroup",
-                            "logs:CreateLogStream",
-                            "logs:PutLogEvents"],
-                            "Resource": { "Fn::Sub": [ "arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*", { "region": {"Ref": "AWS::Region"}, "account": {"Ref": "AWS::AccountId"}, "lambda": {"Ref": "LambdaFunction"}} ]}
+                            "Action": ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"],
+                            "Resource": {
+                                "Fn::Sub": [
+                                    "arn:aws:logs:${region}:${account}:log-group:/aws/lambda/${lambda}:log-stream:*",
+                                    {
+                                        "region": {
+                                            "Ref": "AWS::Region"
+                                        },
+                                        "account": {
+                                            "Ref": "AWS::AccountId"
+                                        },
+                                        "lambda": {
+                                            "Ref": "LambdaFunction"
+                                        }
+                                    }
+                                ]
+                            }
                         }
                     ]
                 }
             }
+        },
+        "CustomLambdaExecutionPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "custom-lambda-execution-policy",
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Action": ["s3:PutBucketPublicAccessBlock"],
+                            "Resource": ["arn:aws:s3:::amplify-*-deployment"],
+                            "Effect": "Allow"
+                        },
+                        {
+                            "Action": ["cloudformation:DescribeStacks"],
+                            "Resource": ["arn:aws:cloudformation:*:*:stack/amplify-*"],
+                            "Effect": "Allow"
+                        }
+                    ]
+                },
+                "Roles": [
+                    {
+                        "Ref": "LambdaExecutionRole"
+                    }
+                ]
+            },
+            "DependsOn": "LambdaExecutionRole"
         }
-        
-        
     },
     "Outputs": {
         "Name": {
@@ -144,7 +187,9 @@
             }
         },
         "Arn": {
-            "Value": {"Fn::GetAtt": ["LambdaFunction", "Arn"]}
+            "Value": {
+                "Fn::GetAtt": ["LambdaFunction", "Arn"]
+            }
         },
         "Region": {
             "Value": {
@@ -155,7 +200,11 @@
             "Value": {
                 "Ref": "LambdaExecutionRole"
             }
+        },
+        "LambdaExecutionRoleArn": {
+            "Value": {
+                "Fn::GetAtt": ["LambdaExecutionRole", "Arn"]
+            }
         }
-        
     }
 }

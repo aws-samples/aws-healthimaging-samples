@@ -1,5 +1,5 @@
 // This is a modal authentication component that displays the AWS Amplify Authenticator.
-import { useMemo, useContext, memo } from 'react';
+import { useMemo, useContext, useEffect, memo } from 'react';
 
 // Context
 import { AppContext } from '../App';
@@ -8,7 +8,7 @@ import { AppContext } from '../App';
 import { Box, Button, Modal, SpaceBetween } from '@cloudscape-design/components';
 
 // AWS
-import { Amplify } from 'aws-amplify';
+import { Amplify, Hub } from 'aws-amplify';
 import { Authenticator, ThemeProvider, defaultDarkModeOverride } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import awsExports from '../../aws-exports';
@@ -80,6 +80,15 @@ function Auth({ visible, setVisible }) {
             return 'system';
         }
     }, [appTheme]);
+
+    // Show auth modal when token refresh fails
+    useEffect(() => {
+        Hub.listen('auth', (data) => {
+            if (data.payload.event === 'tokenRefresh_failure') {
+                setVisible(true);
+            }
+        });
+    }, [setVisible]);
 
     return (
         <Modal

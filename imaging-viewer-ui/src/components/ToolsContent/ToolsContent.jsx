@@ -19,7 +19,7 @@ export default function ToolsContent() {
 
     const defaultHeader = (
         <Box variant="h3" textAlign="center">
-            Amazon HealthLake Imaging Sample Viewer
+            AWS HealthImaging Sample Viewer
         </Box>
     );
 
@@ -31,8 +31,8 @@ export default function ToolsContent() {
         return (
             <div>
                 <h3>Learn more</h3>
-                <Link external href="https://aws.amazon.com/healthlake/imaging">
-                    Amazon HealthLake Imaging
+                <Link external href="https://aws.amazon.com/healthimaging">
+                    AWS HealthImaging
                 </Link>
                 {additionalLinks.map((l) => (
                     <p key={l.name}>
@@ -137,7 +137,7 @@ export default function ToolsContent() {
             <HelpPanel header={<h2>ImageSet Search</h2>} footer={<Footer />}>
                 <div>
                     <p>
-                        The Amazon HealthLake Imaging service provides native search functionality. You can search in a
+                        The AWS HealthImaging service provides native search functionality. You can search in a
                         datastore by the following parameters:
                     </p>
                     <ul>
@@ -160,7 +160,7 @@ export default function ToolsContent() {
             <HelpPanel header={<h2>ImageSet Metadata</h2>} footer={<Footer />}>
                 <div>
                     <p>
-                        Amazon HealthLake Imaging provides an optimized JSON representation of an ImageSet's metadata.
+                        AWS HealthImaging provides an optimized JSON representation of an ImageSet's metadata.
                     </p>
                     <p>This includes patient, study, series and instance-level data.</p>
                 </div>
@@ -183,7 +183,7 @@ export default function ToolsContent() {
             >
                 <div>
                     <p>
-                        Amazon HealthLake Imaging stores and provides image frames in lossless High Throughput JPEG 2000
+                        AWS HealthImaging stores and provides image frames in lossless High Throughput JPEG 2000
                         (HTJ2K) format. HTJ2K is a simple extension to the existing JPEG2000 standard that replaces
                         block coder resulting in an order of magnitude speedup.
                     </p>
