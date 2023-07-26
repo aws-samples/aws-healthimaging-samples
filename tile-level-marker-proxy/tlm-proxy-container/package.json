@@ -8,7 +8,7 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@aws-sdk/client-medical-imaging": "^3.373.0",
+        "@aws-sdk/client-medical-imaging": "^3.377.0",
         "@fastify/auth": "^4.3.0",
         "@fastify/cors": "^8.3.0",
         "aws-jwt-verify": "^4.0.0",

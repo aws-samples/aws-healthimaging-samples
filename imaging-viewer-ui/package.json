@@ -3,8 +3,8 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
-        "@aws-amplify/ui-react": "^5.0.5",
-        "@cloudscape-design/components": "^3.0.342",
+        "@aws-amplify/ui-react": "^5.0.6",
+        "@cloudscape-design/components": "^3.0.344",
         "@cloudscape-design/global-styles": "^1.0.12",
         "ace-builds": "^1.23.4",
         "aws-amplify": "^5.3.5",
