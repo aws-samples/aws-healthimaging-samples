@@ -15,15 +15,14 @@ type CustomCname = {
 // @Required:     No
 // @Usage:        Container environment variable
 // @Description:  Authentication type. See README
-const AUTH_MODE: AuthMode = null;
+const AUTH_MODE: AuthMode = 'cognito_jwt';
 
 // @Required:     No
 // @Usage:        CloudFront custom CNAME
 // @Description:  Use custom CNAME for CloudFront distribution. Requires a certificate in the us-east-1 region
 const CUSTOM_CNAME: CustomCname = {
-    domainNames: ['cf.imaging.yno.people.aws.dev'],
-    certificateArn:
-        'arn:aws:acm:us-east-1:160057935798:certificate/8f8d43be-b6cb-443d-8d9a-124c750628c1',
+    domainNames: [],
+    certificateArn: '',
 };
 
 // @Required:     Yes, if using Amazon Cognito JWT auth. See README

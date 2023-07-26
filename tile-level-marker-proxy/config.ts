@@ -16,12 +16,12 @@ const DEPLOY_REGION: string = 'us-east-1';
 // @Required:     Yes
 // @Usage:        CDK deployment
 // @Description:  AWS Certificate Manager SSL certificate ARN
-const ACM_ARN: string = 'arn:aws:acm:us-east-1:160057935798:certificate/8f8d43be-b6cb-443d-8d9a-124c750628c1';
+const ACM_ARN: string = '';
 
 // @Required:     No
 // @Usage:        Container environment variable
 // @Description:  Authentication type. See README
-const AUTH_MODE: AuthMode = null;
+const AUTH_MODE: AuthMode = 'cognito_jwt';
 
 // @Required:     Yes, if using Amazon Cognito JWT auth. See README
 // @Usage:        Container environment variable

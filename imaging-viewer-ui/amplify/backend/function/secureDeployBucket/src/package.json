@@ -5,9 +5,9 @@
   "main": "index.js",
   "license": "Apache-2.0",
   "dependencies": {
-    "@aws-sdk/client-cloudformation": "^3.347.1",
-    "@aws-sdk/client-s3": "^3.347.1",
+    "@aws-sdk/client-cloudformation": "^3.377.0",
+    "@aws-sdk/client-s3": "^3.377.0",
     "axios": "^1.4.0",
-    "axios-retry": "^3.5.0"
+    "axios-retry": "^3.5.1"
   }
 }

@@ -9,7 +9,7 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "@aws-sdk/client-medical-imaging": "^3.373.0",
+        "@aws-sdk/client-medical-imaging": "^3.377.0",
         "crc-32": "^1.2.2"
     }
 }
