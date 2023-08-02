@@ -40,7 +40,7 @@ By default, the app is configured to use AWS HealthImaging in the `us-east-1` re
 
 ### Automatic
 
-[![amplifybutton](https://oneclick.amplifyapp.com/button.svg)](https://console.aws.amazon.com/amplify/home#/deploy?repo=https://github.com/aws-samples/aws-health-imaging-samples)
+[![amplifybutton](https://oneclick.amplifyapp.com/button.svg)](https://console.aws.amazon.com/amplify/home#/deploy?repo=https://github.com/aws-samples/aws-healthimaging-samples)
 
 ### Semi-Automatic via AWS CodeCommit
 
