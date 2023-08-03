@@ -1,8 +1,8 @@
 const appRegionOptions = [
     { label: 'US East (N. Virginia)', value: 'us-east-1' },
-    { label: 'US East (Ohio)', value: 'us-east-2', disabled: true },
-    { label: 'US West (N. California)', value: 'us-west-1', disabled: true },
     { label: 'US West (Oregon)', value: 'us-west-2', disabled: true },
+    { label: 'Europe (Ireland)', value: 'eu-west-1', disabled: true },
+    { label: 'Asia Pacific (Sydney)', value: 'ap-southeast-2', disabled: true },
 ];
 
 const tlmAuthOptions = [
