@@ -4,6 +4,7 @@
     "private": true,
     "dependencies": {
         "@aws-amplify/ui-react": "^5.0.6",
+        "@cloudscape-design/component-toolkit": "^1.0.0-beta.23",
         "@cloudscape-design/components": "^3.0.351",
         "@cloudscape-design/global-styles": "^1.0.12",
         "ace-builds": "^1.23.4",
