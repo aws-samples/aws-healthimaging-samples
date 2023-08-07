@@ -19,9 +19,13 @@ let createdImages = [];
  * TODO: deduplicate from worker.js
  */
 function buildUrl(imageframeReqObj) {
-    const postDataObj = JSON.parse(imageframeReqObj.body);
-    const imageFrameId = postDataObj.imageFrameId;
-    return imageframeReqObj.url + '?imageFrameId=' + imageFrameId;
+    if (imageframeReqObj.body) {
+        const postDataObj = JSON.parse(imageframeReqObj.body);
+        const imageFrameId = postDataObj.imageFrameId;
+        return imageframeReqObj.url + '?imageFrameId=' + imageFrameId;
+    } else {
+        return imageframeReqObj.url;
+    }
 }
 
 function init(numWorkers = 1) {

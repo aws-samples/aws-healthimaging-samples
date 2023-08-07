@@ -4,18 +4,18 @@ This [AWS Amplify](https://aws.amazon.com/amplify/) project deploys a full-stack
 
 This app allows you to view datastores, search ImageSets, view ImageSet metadata, and view images. There are also multiple ways to load image frames, including default (full image frames), progressive (chunk by chunk) and tile level marker (discrete tile level markers).
 
-The [Tile Level Marker (TLM) Proxy](../tile-level-marker-proxy/) and/or [Amazon CloudFront Image Frame Delivery](../amazon-cloudfront-image-frame-delivery/) projects can be incorporated into the image viewer as an alternative method of image loading.
+The [Tile Level Marker (TLM) Proxy](../tile-level-marker-proxy/) and/or [Amazon CloudFront Delivery](../amazon-cloudfront-delivery/) projects can be incorporated into the image viewer as an alternative method of image loading.
 
 ![UI Load Mammo](./images/UI-Load-Mammo.gif)
 
-- [AWS HealthImaging Viewer UI](#aws-health-imaging-viewer-ui)
-  - [Architecture](#architecture)
-  - [Deployment Requirements](#deployment-requirements)
-  - [Deployment](#deployment)
-  - [Usage](#usage)
-  - [Dependencies](#dependencies)
-  - [FAQ](#faq)
-  - [Cleanup](#cleanup)
+-   [AWS HealthImaging Viewer UI](#aws-health-imaging-viewer-ui)
+    -   [Architecture](#architecture)
+    -   [Deployment Requirements](#deployment-requirements)
+    -   [Deployment](#deployment)
+    -   [Usage](#usage)
+    -   [Dependencies](#dependencies)
+    -   [FAQ](#faq)
+    -   [Cleanup](#cleanup)
 
 ## Architecture
 
@@ -61,12 +61,12 @@ This deployment method uses the AWS Amplify console to deploy the web app.
 13. Select **Next**
 14. Review the app settings, and select **Save and deploy**
 15. If a build fails, you can review the logs from the AWS Amplify console. You can also attempt a rebuild by selecting the failed build, then selecting the _Redeploy this version_ button.
-    *Note:* if the error says Amplify app ID not found, modify the build service IAM role to include the *AdministratorAccess-Amplify* AWS-managed policy. You can find the build service IAM role by selecting *General* in the Amplify app console.
+    _Note:_ if the error says Amplify app ID not found, modify the build service IAM role to include the _AdministratorAccess-Amplify_ AWS-managed policy. You can find the build service IAM role by selecting _General_ in the Amplify app console.
 16. The web app URL is named `https://<backend env name>.<app id>.amplifyapp.com` and can be found in the **Hosting environments** tab
 
 ### Manual
 
-Manual deployment uses the [Amplify CLI](https://docs.amplify.aws/cli/). You also need to have IAM user with programmatic access, with the `AdministratorAccess-Amplify` AWS-managed IAM policy attached. Deployment requires a *nix environment.
+Manual deployment uses the [Amplify CLI](https://docs.amplify.aws/cli/). You also need to have IAM user with programmatic access, with the `AdministratorAccess-Amplify` AWS-managed IAM policy attached. Deployment requires a \*nix environment.
 
 <details>
   <summary>Configure IAM User</summary>

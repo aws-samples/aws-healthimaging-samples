@@ -10,7 +10,7 @@ import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { ContentLayout, SpaceBetween } from '@cloudscape-design/components';
 
 // App
-import { buildVersionOption, MetadataViewerHeader, MetadataViewerSearch } from './metadataHeaderComponents';
+import { buildVersionOption, MetadataHeader, MetadataSearch } from './metadataHeaderComponents';
 import { useDataStoreImageSetInput } from '../../hooks/useDataStoreImageSetInput';
 import { DATA_STORE_ID_REGEX, IMAGESET_ID_REGEX } from '../../consts/apiRegex';
 import { getDicomStudyMetadata, listImageSetVersions } from '../../utils/AwsHealthImagingApi';
@@ -23,7 +23,9 @@ const ERROR_MESSAGE_TOPIC = 'Metadata';
 export default function Metadata() {
     const { addFlashMessage, buildCrumb } = useContext(AppContext);
 
-    const [aceLoading, setAceLoading] = useState(false); // ace editor loading
+    const [metadataMode, setMetadataMode] = useState('viewer'); // view or edit metadata ('viewer', 'editor')
+    const [ace, setAce] = useState(undefined); // ace editor object
+    const [aceLoading, setAceLoading] = useState(true); // ace editor loading
     const [metadataLoading, setMetadataLoading] = useState(false); // true while the metadata is being retrieved
     const [imageSetMetadata, setImageSetMetadata] = useState(''); // ImageSet metadata json
     const [imageSetVersions, setImageSetVersions] = useState([]); // ImageSet versions
@@ -51,6 +53,35 @@ export default function Metadata() {
     useEffect(() => {
         buildCrumb(location.pathname, 'Metadata');
     }, [buildCrumb, location]);
+
+    // Load Ace editor and metadata from search params if present
+    useEffect(() => {
+        setAceLoading(true);
+        import('ace-builds')
+            .then((ace) =>
+                import('ace-builds/webpack-resolver')
+                    .then(() => {
+                        ace.config.set('useStrictCSP', true);
+                        ace.config.set('loadWorkerFromBlob', false);
+                        ace.config.set('tabSize', 2);
+                        setAce(ace);
+
+                        // Load metadata if search params are present
+                        const datastoreId = searchParams.get('datastoreId');
+                        const imageSetId = searchParams.get('imageSetId');
+                        const versionId = searchParams.get('versionId');
+                        if (DATA_STORE_ID_REGEX.test(datastoreId) && IMAGESET_ID_REGEX.test(imageSetId)) {
+                            setImageSetId(imageSetId);
+                            getImageSetVersions(datastoreId, imageSetId, versionId);
+                            getMetadata(datastoreId, imageSetId, versionId);
+                        }
+                        setAceLoading(false);
+                    })
+                    .catch(() => setAceLoading(false))
+            )
+            .catch(() => setAceLoading(false));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Get ImageSet versions
     const getImageSetVersions = useCallback(
@@ -130,18 +161,6 @@ export default function Metadata() {
         [addFlashMessage]
     );
 
-    // Load metadata if search params are present or if location changes (coming back from editing metadata)
-    useEffect(() => {
-        const datastoreId = searchParams.get('datastoreId');
-        const imageSetId = searchParams.get('imageSetId');
-        const versionId = searchParams.get('versionId');
-        if (!aceLoading && DATA_STORE_ID_REGEX.test(datastoreId) && IMAGESET_ID_REGEX.test(imageSetId)) {
-            setImageSetId(imageSetId);
-            getImageSetVersions(datastoreId, imageSetId, versionId);
-            getMetadata(datastoreId, imageSetId, versionId);
-        }
-    }, [aceLoading, getImageSetVersions, getMetadata, searchParams, setImageSetId, location]);
-
     // Handle reset button
     function handleReset() {
         setImageSetMetadata('');
@@ -183,19 +202,39 @@ export default function Metadata() {
         getMetadata(selectedDatastore.value, imageSetId, version.value);
     }
 
+    function MetadataContent() {
+        if (metadataMode === 'editor') {
+            return (
+                <MetadataEditor
+                    imageSetMetadata={imageSetMetadata}
+                    setMetadataMode={setMetadataMode}
+                    saveEnabled={editEnabled}
+                    maxVersion={maxVersion}
+                    metadataLoading={metadataLoading}
+                    handleRetrieveMetadata={handleRetrieveMetadata}
+                />
+            );
+        } else {
+            return (
+                <MetadataViewer ace={ace} imageSetMetadata={imageSetMetadata} isSomethingLoading={isSomethingLoading} />
+            );
+        }
+    }
+
     return (
         <ContentLayout
             header={
                 <SpaceBetween size="m">
-                    <MetadataViewerHeader
+                    <MetadataHeader
                         isSomethingLoading={isSomethingLoading}
                         handleRetrieveMetadata={handleRetrieveMetadata}
+                        setMetadataMode={setMetadataMode}
                         editEnabled={editEnabled}
                         resetEnabled={imageSetMetadata.length > 0}
                         handleReset={handleReset}
                         navigate={navigate}
                     />
-                    <MetadataViewerSearch
+                    <MetadataSearch
                         selectedDatastore={selectedDatastore}
                         setSelectedDatastore={setSelectedDatastore}
                         imageSetId={imageSetId}
@@ -209,21 +248,7 @@ export default function Metadata() {
                 </SpaceBetween>
             }
         >
-            {location.pathname.endsWith('/edit') ? (
-                <MetadataEditor
-                    imageSetMetadata={imageSetMetadata}
-                    saveEnabled={editEnabled}
-                    maxVersion={maxVersion}
-                    metadataLoading={metadataLoading}
-                    navigate={navigate}
-                />
-            ) : (
-                <MetadataViewer
-                    imageSetMetadata={imageSetMetadata}
-                    isSomethingLoading={isSomethingLoading}
-                    setAceLoading={setAceLoading}
-                />
-            )}
+            <MetadataContent />
         </ContentLayout>
     );
 }

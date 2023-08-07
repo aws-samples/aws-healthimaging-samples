@@ -1,8 +1,8 @@
 const appRegionOptions = [
     { label: 'US East (N. Virginia)', value: 'us-east-1' },
-    { label: 'US East (Ohio)', value: 'us-east-2', disabled: true },
-    { label: 'US West (N. California)', value: 'us-west-1', disabled: true },
-    { label: 'US West (Oregon)', value: 'us-west-2', disabled: true },
+    { label: 'US West (Oregon)', value: 'us-west-2', disabled: false },
+    { label: 'Europe (Ireland)', value: 'eu-west-1', disabled: false },
+    { label: 'Asia Pacific (Sydney)', value: 'ap-southeast-2', disabled: false },
 ];
 
 const tlmAuthOptions = [
@@ -20,4 +20,9 @@ const onOffOptions = [
     { label: 'Off', value: false },
 ];
 
-export { appRegionOptions, tlmAuthOptions, imageFrameOverrideAuthOptions, onOffOptions };
+const yesNoOptions = [
+    { label: 'Yes', value: true },
+    { label: 'No', value: false },
+];
+
+export { appRegionOptions, tlmAuthOptions, imageFrameOverrideAuthOptions, onOffOptions, yesNoOptions };

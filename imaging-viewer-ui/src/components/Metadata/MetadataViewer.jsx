@@ -14,32 +14,13 @@ import 'ace-builds/css/ace.css';
 import 'ace-builds/css/theme/dawn.css';
 import 'ace-builds/css/theme/tomorrow_night_bright.css';
 
-export function MetadataViewer({ imageSetMetadata, isSomethingLoading, setAceLoading }) {
+export function MetadataViewer({ ace, imageSetMetadata, isSomethingLoading }) {
     const { appTheme } = useContext(AppContext);
 
-    const [ace, setAce] = useState(undefined); // ace editor object
     const [preferences, setPreferences] = useState({
         wrapLines: true,
         theme: appTheme === 'theme.light' ? 'dawn' : 'tomorrow_night_bright',
     }); // CodeEditor preferences. Do not use useLocalStorage because of theme
-
-    // Load Ace editor
-    useEffect(() => {
-        setAceLoading(true);
-        import('ace-builds')
-            .then((ace) =>
-                import('ace-builds/webpack-resolver')
-                    .then(() => {
-                        ace.config.set('useStrictCSP', true);
-                        ace.config.set('loadWorkerFromBlob', false);
-                        ace.config.set('tabSize', 2);
-                        setAce(ace);
-                        setAceLoading(false);
-                    })
-                    .catch(() => setAceLoading(false))
-            )
-            .catch(() => setAceLoading(false));
-    }, [setAceLoading]);
 
     // Update Ace theme if theme changes
     useEffect(() => {

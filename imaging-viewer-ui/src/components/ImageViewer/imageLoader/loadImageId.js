@@ -18,7 +18,6 @@ function loadImageId(imageId, config) {
         const instance = metadata.Study.Series[seriesInstanceUid].Instances[sopInstanceUid];
         const imageFrameId = instance.ImageFrames[frame].ID;
 
-        // for TLM loading, URLs don't need to be signed
         const imageframeReqObj =
             config.loadMethod === 'tlm'
                 ? await getFrameTlmObj({
@@ -33,8 +32,6 @@ function loadImageId(imageId, config) {
                       imageSetId: imageSetId,
                       imageFrameId: imageFrameId,
                       returnReq: true,
-                      imageFrameOverrideUrl: config.imageFrameOverrideUrl,
-                      imageFrameOverrideAuth: config.imageFrameOverrideAuth,
                   });
 
         workerPool.queueRequest({

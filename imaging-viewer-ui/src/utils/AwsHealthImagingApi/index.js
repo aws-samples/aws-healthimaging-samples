@@ -11,6 +11,9 @@ let config = {
     region: '',
     controlPlaneEndpoint: null,
     dataPlaneEndpoint: null,
+    cfEndpoint: null,
+    cfEndpointAuth: null,
+    cfPostToGet: true,
     apiTiming: false,
 };
 
@@ -80,14 +83,81 @@ async function untagResource({ resourceArn, tags }) {
  * https://runtime-medical-imaging.us-east-1.amazonaws.com
  */
 
-async function getImageSet({ datastoreId, imageSetId, versionId = null }) {
-    return await medicalImagingPost({
+/**
+ * @description If a CloudFront endpoint (cloudfront.endpointUrl) is specified,
+ *   1/ use CloudFront as the host.
+ *   2/ add the Cognito JWT to the Authorization header if specified (cloudfront.endpointUrlAuth === 'cognito_jwt').
+ *   3/ redirect POST to GET if specified (cloudfront.posttoget).
+ *  Otherwise pass through the request with the data plane endpoint
+ * @param {object} config API configuration. Defined above and updated elsewhere in the app
+ * @param {string} url Request URL
+ * @param {name} name API call name. Used to print API timings if enabled
+ * @param {Boolean} returnReq (optional) Return the request instead of calling it and returning the result. Default: false
+ * @returns {object} request
+ */
+async function cloudFrontDataPlaneWrapper({ config, url, name, returnReq = false }) {
+    let cfRequest = {
         config: config,
-        url: config.dataPlaneEndpoint + `/datastore/${datastoreId}/imageSet/${imageSetId}/getImageSet`,
-        name: 'Get image set',
+        url: url,
+        name: name,
+        returnReq: returnReq,
+    };
+
+    if (config.cfEndpoint) {
+        // Parse the CloudFront endpoint URL
+        const cfEndpointUrl = new URL(config.cfEndpoint);
+
+        // Do not sigv4 sign the request
+        cfRequest.sign = false;
+
+        // Update the request URL with the CloudFront protocol and hostname
+        const requestUrl = new URL(cfRequest.url);
+        requestUrl.protocol = cfEndpointUrl.protocol;
+        requestUrl.hostname = cfEndpointUrl.hostname;
+        // .href includes search parameters
+        cfRequest.url = requestUrl.href;
+
+        // If using Cognito auth, update the request header with the JWT
+        if (config.cfEndpointAuth === 'cognito_jwt') {
+            const currentSession = await Auth.currentSession();
+            cfRequest.headers = {
+                Authorization: `Bearer ${currentSession.accessToken?.jwtToken}`,
+                ...cfRequest.headers,
+            };
+        }
+
+        // If cloudfront.posttoget is set to true, call GET, otherwise call POST
+        if (config.cfPostToGet === true) {
+            return await medicalImagingGet(cfRequest);
+        } else {
+            return await medicalImagingPost(cfRequest);
+        }
+    } else {
+        // Convert the query string to body
+        const searchParams = new URL(url);
+        const requestBody = Object.fromEntries(searchParams.searchParams);
+        cfRequest.body = requestBody;
+        cfRequest.data = requestBody;
+        return await medicalImagingPost(cfRequest);
+    }
+}
+
+async function getImageSet({ datastoreId, imageSetId, versionId = null }) {
+    let getImageSetUrl = config.dataPlaneEndpoint + `/datastore/${datastoreId}/imageSet/${imageSetId}/getImageSet`;
+    if (versionId) {
+        const versionInt = parseInt(versionId);
+        if (typeof versionInt === 'number') {
+            getImageSetUrl += `?version=${versionInt}`;
+        }
+    }
+    return await cloudFrontDataPlaneWrapper({
+        config: config,
+        url: getImageSetUrl,
+        name: 'GetImageSet',
     });
 }
 
+// ListImageSetVersions
 async function listImageSetVersions({ datastoreId, imageSetId }) {
     return await medicalImagingPost({
         config: config,
@@ -96,7 +166,7 @@ async function listImageSetVersions({ datastoreId, imageSetId }) {
     });
 }
 
-// Get DICOM study metadata
+// GetDicomStudyMetadata
 async function getDicomStudyMetadata({ datastoreId, imageSetId, versionId = null }) {
     let metadataUrl = config.dataPlaneEndpoint + `/datastore/${datastoreId}/imageSet/${imageSetId}/getImageSetMetadata`;
     if (versionId) {
@@ -105,13 +175,28 @@ async function getDicomStudyMetadata({ datastoreId, imageSetId, versionId = null
             metadataUrl += `?version=${versionInt}`;
         }
     }
-    return await medicalImagingPost({
+    return await cloudFrontDataPlaneWrapper({
         config: config,
         url: metadataUrl,
-        name: 'Get DICOM study metadata',
+        name: 'GetDicomStudyMetadata',
     });
 }
 
+// GetImageFrame
+async function getImageFrame({ datastoreId, imageSetId, imageFrameId, returnReq = false }) {
+    const imageFrameUrl =
+        config.dataPlaneEndpoint +
+        `/datastore/${datastoreId}/imageSet/${imageSetId}/getImageFrame?imageFrameId=${imageFrameId}`;
+
+    return await cloudFrontDataPlaneWrapper({
+        config: config,
+        url: imageFrameUrl,
+        name: 'GetImageFrame',
+        returnReq: returnReq,
+    });
+}
+
+/**
 // Get DICOM frame
 // Pass in returnReq to only return the sigv4-signed image frame URL
 async function getImageFrame({
@@ -121,6 +206,7 @@ async function getImageFrame({
     returnReq = false,
     imageFrameOverrideUrl = null,
     imageFrameOverrideAuth = 'cognito_jwt',
+    cfPostToGet = false,
 }) {
     const endpoint = imageFrameOverrideUrl || config.dataPlaneEndpoint;
 
@@ -134,19 +220,33 @@ async function getImageFrame({
         signRequest = false;
     }
 
-    const getImageFramePostReq = {
+    const getImageFrameReq = {
         config: config,
         url: endpoint + `/datastore/${datastoreId}/imageSet/${imageSetId}/getImageFrame` + urlSuffix,
-        data: {
-            imageFrameId: imageFrameId,
-        },
         sign: signRequest,
         name: returnReq ? 'Get image frame URL' : 'Get full image frame',
         ...(returnReq && { returnReq: true }),
     };
 
-    return await medicalImagingPost(getImageFramePostReq);
+    if (cfPostToGet) {
+        const joinType = (urlSuffix += urlSuffix ? '&' : '?');
+        const imageFrameQueryString = `${joinType}imageFrameId=${imageFrameId}`;
+        const getImageFrameGetReq = {
+            ...getImageFrameReq,
+            url: getImageFrameReq.url + imageFrameQueryString,
+        };
+        return await medicalImagingGet(getImageFrameGetReq);
+    } else {
+        const getImageFramePostReq = {
+            ...getImageFrameReq,
+            data: {
+                imageFrameId: imageFrameId,
+            },
+        };
+        return await medicalImagingPost(getImageFramePostReq);
+    }
 }
+*/
 
 // Search ImageSets
 async function searchImageSets({ datastoreId, data = {}, maxResults = null, nextToken = null }) {

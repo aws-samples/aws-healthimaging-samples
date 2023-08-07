@@ -159,9 +159,7 @@ export default function ToolsContent() {
         return (
             <HelpPanel header={<h2>ImageSet Metadata</h2>} footer={<Footer />}>
                 <div>
-                    <p>
-                        AWS HealthImaging provides an optimized JSON representation of an ImageSet's metadata.
-                    </p>
+                    <p>AWS HealthImaging provides an optimized JSON representation of an ImageSet's metadata.</p>
                     <p>This includes patient, study, series and instance-level data.</p>
                 </div>
             </HelpPanel>
@@ -183,9 +181,9 @@ export default function ToolsContent() {
             >
                 <div>
                     <p>
-                        AWS HealthImaging stores and provides image frames in lossless High Throughput JPEG 2000
-                        (HTJ2K) format. HTJ2K is a simple extension to the existing JPEG2000 standard that replaces
-                        block coder resulting in an order of magnitude speedup.
+                        AWS HealthImaging stores and provides image frames in lossless High Throughput JPEG 2000 (HTJ2K)
+                        format. HTJ2K is a simple extension to the existing JPEG2000 standard that replaces block coder
+                        resulting in an order of magnitude speedup.
                     </p>
                     <p>
                         This component uses{' '}
@@ -230,9 +228,9 @@ export default function ToolsContent() {
                         <strong>Image Frame Endpoint Override</strong>
                         <p>
                             This endpoint will override where the viewer retrieves image frames. One such example is
-                            using a content deliver network, Amazon CloduFront, using the
-                            amazon-cloudfront-image-frame-delivery project in the code repository. Provide the full
-                            public URL in the settings and the authorization mode to use this feature.
+                            using a content deliver network, Amazon CloduFront, using the amazon-cloudfront-delivery
+                            project in the code repository. Provide the full public URL in the settings and the
+                            authorization mode to use this feature.
                         </p>
                     </ExpandableSection>
                 </div>

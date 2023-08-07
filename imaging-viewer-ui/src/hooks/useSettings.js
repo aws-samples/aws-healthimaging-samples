@@ -13,13 +13,22 @@ export function useSettings() {
         const controlPlaneEndpoint =
             appSettings['app.controlPlaneEndpointOverride'] || `https://medical-imaging.${region}.amazonaws.com`;
         const dataPlaneEndpoint =
-            appSettings['app.dataPlaneEndpointOverride'] ||
-            `https://runtime-medical-imaging.${region}.amazonaws.com`;
+            appSettings['app.dataPlaneEndpointOverride'] || `https://runtime-medical-imaging.${region}.amazonaws.com`;
+        const cfEndpoint = appSettings['cloudfront.endpointUrl'] || null;
+        const cfEndpointAuth = appSettings['cloudfront.endpointUrlAuth']?.value || null;
         const apiTiming = appSettings['app.apiTiming']?.value || false;
+        const cfPostToGet =
+            typeof appSettings['cloudfront.posttoget']?.value === 'undefined'
+                ? false
+                : appSettings['cloudfront.posttoget']?.value;
+
         updateConfig({
             region: region,
             controlPlaneEndpoint: controlPlaneEndpoint,
             dataPlaneEndpoint: dataPlaneEndpoint,
+            cfEndpoint: cfEndpoint,
+            cfEndpointAuth: cfEndpointAuth,
+            cfPostToGet: cfPostToGet,
             apiTiming: apiTiming,
         });
     }, [appSettings]);

@@ -38,9 +38,10 @@ const HeaderDescription = memo(function HeaderDescription() {
 });
 
 // Metadata header
-const MetadataViewerHeader = memo(function MetadataViewerHeader({
+const MetadataHeader = memo(function MetadataHeader({
     isSomethingLoading,
     handleRetrieveMetadata,
+    setMetadataMode,
     editEnabled,
     resetEnabled,
     handleReset,
@@ -55,10 +56,7 @@ const MetadataViewerHeader = memo(function MetadataViewerHeader({
                     <Button disabled={!resetEnabled} onClick={() => handleReset()}>
                         Reset
                     </Button>
-                    <Button
-                        disabled={!editEnabled}
-                        onClick={() => navigate({ pathname: 'edit', search: window.location.search })}
-                    >
+                    <Button disabled={!editEnabled} onClick={() => setMetadataMode('editor')}>
                         Edit
                     </Button>
                     <Button variant="primary" disabled={isSomethingLoading} onClick={() => handleRetrieveMetadata()}>
@@ -90,17 +88,16 @@ function buildVersionOption(imageSetVersion) {
     return selectOption;
 }
 
-// Image set ID object
-// When metadata is not loaded (versionsLoaded = false) - <Input />
-// When metadata is loaded (versionsLoaded = true) - popover with imageset information
-function ImageSetId({ selectedDatastore, isSomethingLoading, imageSetId, setImageSetId, versionsLoaded }) {
+const MemoImageSetDetails = memo(function ImageSetDetails({ datastoreId, imageSetId, imageSetVersion }) {
     const [imageSetDetails, setImageSetDetails] = useState(<Spinner />);
+
     useEffect(() => {
         async function getImageSetDetails() {
-            if (!selectedDatastore?.value || !imageSetId) return;
+            if (!datastoreId || !imageSetId) return;
             const imageSetDetails = await getImageSet({
-                datastoreId: selectedDatastore.value,
+                datastoreId: datastoreId,
                 imageSetId: imageSetId,
+                versionId: imageSetVersion || null,
             });
             setImageSetDetails(
                 <SpaceBetween size="m">
@@ -130,10 +127,23 @@ function ImageSetId({ selectedDatastore, isSomethingLoading, imageSetId, setImag
                 </SpaceBetween>
             );
         }
-        if (selectedDatastore == null || !imageSetId) return;
         getImageSetDetails();
-    }, [selectedDatastore, imageSetId]);
+    }, [datastoreId, imageSetId, imageSetVersion]);
 
+    return imageSetDetails;
+});
+
+// Image set ID object
+// When metadata is not loaded (versionsLoaded = false) - <Input />
+// When metadata is loaded (versionsLoaded = true) - popover with imageset information
+function ImageSetId({
+    selectedDatastore,
+    isSomethingLoading,
+    imageSetId,
+    setImageSetId,
+    versionsLoaded,
+    selectedVersion,
+}) {
     if (versionsLoaded) {
         return (
             <div
@@ -144,7 +154,18 @@ function ImageSetId({ selectedDatastore, isSomethingLoading, imageSetId, setImag
                     alignItems: 'center',
                 }}
             >
-                <Popover header="Image Set Details" fixedWidth size="medium" content={imageSetDetails}>
+                <Popover
+                    header="Image Set Details"
+                    fixedWidth
+                    size="medium"
+                    content={
+                        <MemoImageSetDetails
+                            datastoreId={selectedDatastore?.value}
+                            imageSetId={imageSetId}
+                            imageSetVersion={selectedVersion?.value}
+                        />
+                    }
+                >
                     {imageSetId}
                 </Popover>
             </div>
@@ -162,7 +183,7 @@ function ImageSetId({ selectedDatastore, isSomethingLoading, imageSetId, setImag
 }
 
 // Metadata search row
-const MetadataViewerSearch = memo(function MetadataViewerSearch({
+const MetadataSearch = memo(function MetadataSearch({
     selectedDatastore,
     setSelectedDatastore,
     imageSetId,
@@ -193,6 +214,7 @@ const MetadataViewerSearch = memo(function MetadataViewerSearch({
                         imageSetId={imageSetId}
                         setImageSetId={setImageSetId}
                         versionsLoaded={imageSetVersions.length > 0}
+                        selectedVersion={selectedVersion}
                     />
                     <Select
                         selectedOption={selectedVersion}
@@ -209,4 +231,4 @@ const MetadataViewerSearch = memo(function MetadataViewerSearch({
     );
 });
 
-export { buildVersionOption, MetadataViewerHeader, MetadataViewerSearch };
+export { buildVersionOption, MetadataHeader, MetadataSearch };

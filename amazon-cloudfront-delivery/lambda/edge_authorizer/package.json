@@ -1,0 +1,13 @@
+{
+  "name": "edge_authorizer",
+  "version": "1.0.0",
+  "description": "Lambda@Edge Cognito JWT Authorizer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "aws-jwt-verify": "^4.0.0"
+  }
+}

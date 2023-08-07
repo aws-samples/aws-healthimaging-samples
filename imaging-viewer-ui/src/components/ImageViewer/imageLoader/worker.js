@@ -29,22 +29,17 @@ Module.onRuntimeInitialized = () => {
  * TODO: deduplicate from workerPool.js
  */
 function buildUrl(imageframeReqObj) {
-    const postDataObj = JSON.parse(imageframeReqObj.body);
-    const imageFrameId = postDataObj.imageFrameId;
-    return imageframeReqObj.url + '?imageFrameId=' + imageFrameId;
+    if (imageframeReqObj.body) {
+        const postDataObj = JSON.parse(imageframeReqObj.body);
+        const imageFrameId = postDataObj.imageFrameId;
+        return imageframeReqObj.url + '?imageFrameId=' + imageFrameId;
+    } else {
+        return imageframeReqObj.url;
+    }
 }
 
 /**
  * Load the entire frame, then display it
- * incoming message is the post object of the image frame URL, i.e.
- * {
- *   method: 'POST',
- *   url: <string>,
- *   headers: { ... },
- *   data: {
- *     imageFrameId: <string>,
- *   }
- * }
  */
 function defaultLoader({ imageframeReqObj, instance }) {
     const fetchStart = new Date();
