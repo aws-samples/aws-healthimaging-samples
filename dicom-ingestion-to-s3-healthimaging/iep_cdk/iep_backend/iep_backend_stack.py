@@ -9,6 +9,7 @@ from aws_cdk import (
     Stack,
     aws_ec2 as ec2,
     aws_lambda_event_sources as event_source,
+    aws_s3 as s3,
     aws_s3_notifications as s3n,
     Duration,
     aws_events as events,
@@ -76,7 +77,7 @@ class IepBackend(Stack):
 
         self.buckets= S3Bucket(self, "IEP-Buckets" , s3_acceleration = s3_config['s3_acceleration'])
 
-        self.buckets.getDICOMBucket().add_object_created_notification(s3n.SqsDestination(sqs_queues.getDICOMProfilerQueue()))
+        self.buckets.getDICOMBucket().add_object_created_notification(s3n.SqsDestination(sqs_queues.getDICOMProfilerQueue()), s3.NotificationKeyFilter(suffix='.dcm'))
         self.buckets.getDICOMBucket().grant_read_write(role.getRole())
 
         #GreenGrass component
