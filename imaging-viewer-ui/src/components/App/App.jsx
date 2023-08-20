@@ -14,7 +14,7 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import dayjs from 'dayjs';
 import { isUserAuth } from '../../utils/Auth';
 import { nowTime } from '../../utils/DateTime';
-import { listDatastores } from '../../utils/HealthLakeImagingAPI';
+import { listDatastores } from '../../utils/AwsHealthImagingApi';
 
 // App
 import { sideNavItems } from './sideNavItems';

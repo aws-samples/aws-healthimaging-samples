@@ -10,29 +10,12 @@ const CRC32 = require('crc-32');
 // js/webassembly build of openjph
 const openjphjs = require('./openjphjs/openjphjs.js');
 
-/**
- * create an sdk client for healthlake imaging using the service model helper function
- * to use the preview sdk directly, replace the below with:
- *   const AWS = require('./aws-sdk')
- *   const ahli_region = 'us-east-1';
- *   const params = {
- *     region: ahli_region,
- *     'https://medical-imaging.${ahli_region}.amazonaws.com'
- *   }
- *   const miClient = new AWS.MedicalImaging(params)
- */
-const MedicalImaging = require('./medical-imaging');
-const ahli_region = 'us-east-1';
-const nodeLoader = require('aws-sdk/lib/node_loader');
-const endpoint_url = 'https://iad.gamma.medical-imaging.ai.aws.dev';
-// const endpoint_url = `https://medical-imaging.${ahli_region}.amazonaws.com`;
-const endpoint = new nodeLoader.Endpoint(endpoint_url);
-const params = {
-    apiVersion: '2022-10-19',
-    endpoint: endpoint,
-    region: ahli_region,
-};
-const miClient = new MedicalImaging(params);
+// aws healthimaging js sdk v3
+const AHI_REGION = '';
+const { MedicalImagingClient, GetImageSetMetadataCommand, GetImageFrameCommand } = require('@aws-sdk/client-medical-imaging');
+let imagingClientConfig;
+if (AHI_REGION) imagingClientConfig.endpoint = AHI_REGION;
+const miClient = new MedicalImagingClient(imagingClientConfig);
 
 /**
  * @param {object} metadata - ImageSet metadata
@@ -43,7 +26,8 @@ const miClient = new MedicalImaging(params);
 const getImageFrameForSopInstance = (metadata, seriesInstanceUid, sopInstanceUid) => {
     try {
         return metadata.Study.Series[seriesInstanceUid].Instances[sopInstanceUid].ImageFrames;
-    } catch (e) {
+    }
+    catch (e) {
         throw 'Unable to get image frame ID from metadata. Check series and SOP instance UIDs.';
     }
 };
@@ -60,38 +44,43 @@ openjphjs.onRuntimeInitialized = async (_) => {
     const seriesInstanceUid = process.argv[4];
     const sopInstanceUid = process.argv[5];
 
-    // get the metadata for the imageset
-    const getImageSetMetadataResult = await miClient
-        .getImageSetMetadata({
-            datastoreId,
-            imageSetId,
-        })
-        .promise();
-    const metadataJSON = await gunzip(getImageSetMetadataResult.imageSetMetadataBlob);
-    const imageSetMetadata = JSON.parse(metadataJSON);
+    // get the imageset metadata
+    const getImageSetMetadataInput = {
+        datastoreId: datastoreId,
+        imageSetId: imageSetId,
+    };
+    const getImageSetMetadataCmd = new GetImageSetMetadataCommand(getImageSetMetadataInput);
+    const getImageSetMetadataRsp = await miClient.send(getImageSetMetadataCmd);
+    const imageSetMetadataBlobByteArray = await getImageSetMetadataRsp.imageSetMetadataBlob.transformToByteArray();
+    const imageSetMetadataBuffer = await gunzip(imageSetMetadataBlobByteArray);
+    const imageSetMetadata = JSON.parse(imageSetMetadataBuffer);
 
     // lookup the ImageFrame for the sopInstanceUid
     const imageFrameMeta = getImageFrameForSopInstance(imageSetMetadata, seriesInstanceUid, sopInstanceUid);
     const imageFrameId = imageFrameMeta[0].ID;
 
     // get the image frame
-    const imageFrameData = await miClient
-        .getImageFrame({
-            datastoreId,
-            imageSetId,
-            imageFrameId,
-        })
-        .promise();
+    const getImageFrameInput = {
+        datastoreId: datastoreId,
+        imageSetId: imageSetId,
+        imageFrameInformation: {
+            imageFrameId: imageFrameId,
+        },
+    };
+    const getImageFrameCmd = new GetImageFrameCommand(getImageFrameInput);
+    const getImageFrameRsp = await miClient.send(getImageFrameCmd);
+    const imageFrameData = await getImageFrameRsp.imageFrameBlob.transformToByteArray();
 
     // decode the image frame
-    const encodedBuffer = decoder.getEncodedBuffer(imageFrameData.imageFrameBlob.length);
-    encodedBuffer.set(imageFrameData.imageFrameBlob);
+    const encodedBuffer = decoder.getEncodedBuffer(imageFrameData.length);
+    encodedBuffer.set(imageFrameData);
     decoder.decode();
     const decodedBuffer = decoder.getDecodedBuffer();
 
     // calculate the CRC32 for the image frame
-    const fullResCRC32 = CRC32.buf(decodedBuffer);
-
+    const fullResCRC32Signed = CRC32.buf(decodedBuffer);
+    const fullResCRC32 = fullResCRC32Signed >>> 0; // convert to unsigned
+    
     // compare it to the value in the metadata
     const fullResCRC32FromMeta =
         imageFrameMeta[0].PixelDataChecksumFromBaseToFullResolution[

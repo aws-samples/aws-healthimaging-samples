@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: MIT-0
 
 // Logging
-const log = require('loglevel');
-log.setLevel('info');
+const logger = require('../log');
+const log = logger('tlm-proxy');
 
-// Amazon HealthLake Imaging SDK
-const MedicalImaging = require('../medical-imaging');
+// AWS HealthImaging SDK
+const { MedicalImagingClient, GetImageFrameCommand } = require('@aws-sdk/client-medical-imaging');
 
 // Decoder
 const getResolutionRange = require('../decoder/getResolutionRange');
@@ -17,25 +17,19 @@ const { setCacheValue, getCacheValue } = require('../cache');
 // Stream
 const { Readable } = require('stream');
 
-// Amazon HealthLake Imaging
-// Endpoint (https://github.com/aws/aws-sdk-js/issues/3544)
-const nodeLoader = require('aws-sdk/lib/node_loader');
-const AHLI_DOMAIN = process.env.AHLI_ENDPOINT
-    ? process.env.AHLI_ENDPOINT
-    : process.env.AHLI_REGION
-    ? `healthlake-imaging.${process.env.AHLI_REGION}.amazonaws.com`
-    : 'healthlake-imaging.us-east-1.amazonaws.com';
-const endpoint_url = `https://${AHLI_DOMAIN}`;
-const endpoint = new nodeLoader.Endpoint(endpoint_url);
-const imaging = new MedicalImaging({
-    apiVersion: '2023-03-30',
-    endpoint: endpoint,
-    region: process.env.AHLI_REGION || 'us-east-1',
-});
+let imagingClientConfig = {};
+if (process.env.AHI_ENDPOINT) imagingClientConfig.endpoint = AHI_ENDPOINT;
+if (process.env.AHI_REGION) {
+    imagingClientConfig.endpoint = AHI_REGION;
+} else {
+    imagingClientConfig.region = 'us-east-1';
+}
 
-log.info(`Using AHLI Endpoint: ${AHLI_DOMAIN}.`);
+log.debug(`AHI Client Config: ${JSON.stringify(imagingClientConfig)}.`);
 
-// Convert a buffer to a stream
+const imagingClient = new MedicalImagingClient(imagingClientConfig);
+
+// Convert a buffer to a stream (cache data to stream)
 function bufferToStream(binary) {
     const readableInstanceStream = new Readable({
         read() {
@@ -46,134 +40,145 @@ function bufferToStream(binary) {
     return readableInstanceStream;
 }
 
-// Call when user requests TLM level 0
-// Read frame and cache every level, 0-0, 1-1, etc and the entire frame
-async function readAndCacheSingle(
-    reply,
-    datastoreId,
-    imageSetId,
-    imageFrameId
-) {
-    let frameDataStream = imaging
-        .getImageFrame({
-            datastoreId: datastoreId,
-            imageSetId: imageSetId,
-            imageFrameId: imageFrameId,
-        })
-        .createReadStream();
-    const responseBufferArray =
-        (await getResolutionRange(frameDataStream, 0, undefined, true, {
-            reply: reply,
-        })) || [];
-    // Cache individual level
-    for (let i = 0; i < responseBufferArray.length; i++) {
-        const cacheKey = `${endpoint_url}/datastore/${datastoreId}/imageset/${imageSetId}/imageframe/${imageFrameId}/start/${i}/end/${i}`;
-        setCacheValue(cacheKey, responseBufferArray[i]);
+// Build cache key. Full frames do not include appended /start/#/end/#
+// Exclude tlmIntLevels to build cache key for entire frame
+function buildCacheKey({ imageFrameObj, tlmIntLevels = {} }) {
+    const { datastoreId, imageSetId, imageFrameId } = imageFrameObj;
+    const { startLevelInt, endLevelInt } = tlmIntLevels;
+
+    if (Object.keys(tlmIntLevels)?.length === 0) {
+        return `/datastore/${datastoreId}/imageSet/${imageSetId}/imageframe/${imageFrameId}`;
+    } else {
+        return `/datastore/${datastoreId}/imageSet/${imageSetId}/imageframe/${imageFrameId}/start/${startLevelInt}/end/${endLevelInt}`;
     }
-    // Cache entire frame
-    const wholeFrameCacheKey = `${endpoint_url}/datastore/${datastoreId}/imageset/${imageSetId}/imageframe/${imageFrameId}`;
-    setCacheValue(wholeFrameCacheKey, Buffer.concat(responseBufferArray));
 }
 
-async function tlmProxy(
-    reply,
-    datastoreId,
-    imageSetId,
-    imageFrameId,
-    startLevel = undefined,
-    endLevel = undefined
-) {
+// Create an image frame read stream
+async function createFrameDataStream(imageFrameObj, reply) {
+    const { datastoreId, imageSetId, imageFrameId } = imageFrameObj;
+
+    const getImageFrameInput = {
+        datastoreId: datastoreId,
+        imageSetId: imageSetId,
+        imageFrameInformation: {
+            imageFrameId: imageFrameId,
+        },
+    };
+    const getImageFrameCmd = new GetImageFrameCommand(getImageFrameInput);
+    const getImageFrameRsp = await imagingClient.send(getImageFrameCmd);
+    return getImageFrameRsp.imageFrameBlob;
+}
+
+// Print debug image stats
+function printLogs({ startLevelInt, endLevelInt, bufferLength, startStreamTime, getResolutionRangeTime, totalTime }) {
+    log.debug(`--- Levels ${startLevelInt} to ${endLevelInt} --- `);
+    log.debug('Buffer length (bytes)     : ', bufferLength);
+    log.debug('Start stream (ms)         : ', startStreamTime);
+    log.debug('Get resolution range (ms) : ', getResolutionRangeTime);
+    log.debug('Total (ms)                : ', totalTime);
+}
+
+// Retrieve the entire frame, and cache it level by level
+// If firstLevel = true, then return the first TLM level, and continue to read and cache the rest of the frame
+async function tlmCacheFullFrame(reply, imageFrameObj, firstLevel = false) {
+    const frameDataStream = await createFrameDataStream(imageFrameObj, reply);
+
+    // get entire frame (0 - undefined)
+    // if firstLevel = true, then getResolutionRange will reply with the first TLM level
+    const responseBufferArray =
+        (await getResolutionRange(frameDataStream, 0, undefined, true, firstLevel ? { reply: reply } : null)) || [];
+    // if getResolutionRange = false, then reply with the entire frame
+    const fullFrame = Buffer.concat(responseBufferArray);
+    if (!firstLevel) {
+        reply.type('application/octet-stream');
+        reply.code(200).send(fullFrame);
+    }
+
+    // Cache individual level
+    for (let i = 0; i < responseBufferArray.length; i++) {
+        const cacheKey = buildCacheKey({
+            imageFrameObj: imageFrameObj,
+            tlmIntLevels: { startLevelInt: i, endLevelInt: i },
+        });
+        setCacheValue(cacheKey, responseBufferArray[i]);
+    }
+
+    // Cache entire frame
+    const wholeFrameCacheKey = buildCacheKey({ imageFrameObj: imageFrameObj });
+    setCacheValue(wholeFrameCacheKey, fullFrame);
+}
+
+async function tlmProxy(reply, imageFrameObj, tlmLevels) {
+    const { datastoreId, imageSetId, imageFrameId } = imageFrameObj;
+    const { startLevel, endLevel } = tlmLevels;
+
+    if (!datastoreId || !imageSetId || !imageFrameId) {
+        reply.code(400).send('Missing argument. Required: datastore ID, imageSet ID, image frame ID.');
+        return;
+    }
+
+    const timeStart = performance.now();
+    const startLevelInt = startLevel ? parseInt(startLevel) : 0;
+    const endLevelInt = endLevel ? parseInt(endLevel) : undefined;
+
     try {
-        if (!datastoreId || !imageSetId || !imageFrameId) {
-            reply
-                .code(400)
-                .send(
-                    'Missing argument. Required: datastore ID, imageset ID, image frame ID.'
-                );
-            return;
-        }
-
-        const timeStart = performance.now();
-        const startLevelInt = startLevel ? parseInt(startLevel) : 0;
-        const endLevelInt = endLevel ? parseInt(endLevel) : undefined;
-
-        log.info(
-            `Requesting datastore ${datastoreId}, imageset ${imageSetId}, image frame ${imageFrameId}, start ${startLevelInt}, end ${endLevelInt}.`
+        log.debug(
+            `Requesting datastore ${datastoreId}, imageSet ${imageSetId}, image frame ${imageFrameId}, start ${startLevelInt}, end ${endLevelInt}.`
         );
 
-        const cacheKey = `${endpoint_url}/datastore/${datastoreId}/imageset/${imageSetId}/imageframe/${imageFrameId}/start/${startLevelInt}/end/${endLevelInt}`;
-        let cacheData = await getCacheValue(cacheKey);
+        const exactCacheKey = buildCacheKey({
+            imageFrameObj: imageFrameObj,
+            tlmIntLevels: {
+                startLevelInt: startLevelInt,
+                endLevelInt: endLevelInt,
+            },
+        });
+        const cacheData = await getCacheValue(exactCacheKey);
 
-        // If the frame isn't in cache, and the requested start and end level is 0
-        // Return level 0, and cache every other level and the entire frame
-        if (
-            typeof cacheData === 'undefined' &&
-            startLevelInt === 0 &&
-            endLevelInt === 0
-        ) {
-            await readAndCacheSingle(
-                reply,
-                datastoreId,
-                imageSetId,
-                imageFrameId
-            );
+        if (typeof cacheData !== 'undefined') {
+            // If the frame is in cache, return the cached value
+            log.debug(`Returning frame from cache with size ${cacheData.length}`);
+            reply.type('application/octet-stream');
+            reply.code(200).send(cacheData);
             return;
-        }
+        } else if (startLevelInt === 0 && [0, undefined].includes(endLevelInt)) {
+            // If requesting the first TLM level, or the entire frame, read and cache the entire frame
+            await tlmCacheFullFrame(reply, imageFrameObj, startLevelInt === 0 && endLevelInt === 0);
+            return;
+        } else {
+            // If the request is a non-single TLM level (i.e. 0-2, 1-3), try using the entire frame cache
+            const wholeFrameCacheKey = buildCacheKey({
+                imageFrameObj: imageFrameObj,
+            });
+            const wholeFrameCache = await getCacheValue(wholeFrameCacheKey);
 
-        // This will run if request is non-single TLM level, i.e. level 0-1 vs. of 0-0. Or if caching is disabled.
-        if (typeof cacheData === 'undefined') {
-            // Check if the full frame is in cache
-            let frameDataCache = await getCacheValue(
-                `${endpoint_url}/datastore/${datastoreId}/imageset/${imageSetId}/imageframe/${imageFrameId}`
-            );
+            // Create a data stream by using the cached value or calling the API
             let frameDataStream;
-            if (typeof frameDataCache === 'undefined') {
-                frameDataStream = imaging
-                    .getImageFrame({
-                        datastoreId: datastoreId,
-                        imageSetId: imageSetId,
-                        imageFrameId: imageFrameId,
-                    })
-                    .createReadStream();
+            if (typeof wholeFrameCache === 'undefined') {
+                frameDataStream = await createFrameDataStream(imageFrameObj, reply);
             } else {
-                log.info(
-                    `Retrieved full frame from cache with size ${frameDataCache.length}`
-                );
-                frameDataStream = bufferToStream(frameDataCache);
+                log.debug(`Retrieved full frame from cache with size ${wholeFrameCache.length}`);
+                frameDataStream = bufferToStream(wholeFrameCache);
             }
 
             const timeGotImageFrame = performance.now();
-
-            const responseBuffer = await getResolutionRange(
-                frameDataStream,
-                startLevelInt,
-                endLevelInt
-            );
+            const responseBuffer = await getResolutionRange(frameDataStream, startLevelInt, endLevelInt);
             const timeGetResolutionRange = performance.now();
             const timeEnd = performance.now();
-            log.debug(`--- Levels ${startLevelInt} to ${endLevelInt} --- `);
-            log.debug('Buffer length (bytes)     : ', responseBuffer.length);
-            log.debug(
-                'Start stream (ms)         : ',
-                timeGotImageFrame - timeStart
-            );
-            log.debug(
-                'Get resolution range (ms) : ',
-                timeGetResolutionRange - timeStart
-            );
-            log.debug('Total (ms)                : ', timeEnd - timeStart);
 
-            setCacheValue(cacheKey, responseBuffer);
-
-            log.info(`Returning frame with size ${responseBuffer.length}`);
             reply.type('application/octet-stream');
             reply.code(200).send(responseBuffer);
-        } else {
-            log.info(
-                `Returning frame from cache with size ${cacheData.length}`
-            );
-            reply.type('application/octet-stream');
-            reply.code(200).send(cacheData);
+            setCacheValue(exactCacheKey, responseBuffer);
+
+            printLogs({
+                startLevel: startLevelInt,
+                endLevel: endLevelInt,
+                bufferLength: responseBuffer.length,
+                startStream: timeGotImageFrame - timeStart,
+                getResolutionRange: timeGetResolutionRange - timeStart,
+                total: timeEnd - timeStart,
+            });
+            return;
         }
     } catch (error) {
         log.error('TLM Proxy Error: ', error);

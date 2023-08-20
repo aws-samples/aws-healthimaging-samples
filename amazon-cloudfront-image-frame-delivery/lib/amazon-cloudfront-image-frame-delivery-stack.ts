@@ -4,6 +4,7 @@
 // CDK
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as cf from 'aws-cdk-lib/aws-cloudfront';
 import * as cfo from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
@@ -18,21 +19,22 @@ import { suppressNag } from './nag-suppressions';
 
 import {
     AUTH_MODE,
+    CUSTOM_CNAME,
     COGNITO_USER_POOL_ID,
     COGNITO_CLIENT_ID,
     AHLI_REGION,
     AHLI_ENDPOINT,
 } from '../config';
 
-/** Amazon HealthLake Imaging URL
+/** AWS HealthImaging URL
  * Use $AHLI_ENDPOINT if set, otherwise use the standard URL with $AHLI_REGION
  * If neither is defined, use us-east-1
  */
 const AHLI_DOMAIN = AHLI_ENDPOINT
     ? AHLI_ENDPOINT
     : AHLI_REGION
-    ? `runtime-healthlake-imaging.${AHLI_REGION}.amazonaws.com`
-    : 'runtime-healthlake-imaging.us-east-1.amazonaws.com';
+    ? `runtime-medical-imaging.${AHLI_REGION}.amazonaws.com`
+    : 'runtime-medical-imaging.us-east-1.amazonaws.com';
 
 /** If AUTH_MODE is set (assume cognito_jwt),
  * COGNITO_USER_POOL_ID must be a string between 1 and 55 characters. See below for format.
@@ -64,6 +66,15 @@ if (AUTH_MODE) {
                 'COGNITO_CLIENT_ID must be between 1 and 128 characters.'
             );
         }
+    }
+}
+
+/** If CUSTOM_CNAME has domainNames specified, then a certificateArn must also be specified */
+if (CUSTOM_CNAME.domainNames?.length > 0) {
+    if (!CUSTOM_CNAME.certificateArn) {
+        throw new Error(
+            'If CUSTOM_CNAME has domainNames specified, then a certificateArn must also be specified.'
+        );
     }
 }
 
@@ -121,7 +132,7 @@ export class AmazonCloudFrontImageFrameDeliveryStack extends cdk.Stack {
             },
             {
                 eventType: cf.LambdaEdgeEventType.ORIGIN_REQUEST,
-                includeBody: false,
+                includeBody: true,
                 functionVersion: lambda.Version.fromVersionArn(
                     this,
                     'signerVersion',
@@ -131,7 +142,7 @@ export class AmazonCloudFrontImageFrameDeliveryStack extends cdk.Stack {
         ];
 
         // S3 bucket for CloudFront access logs. CF requires bucket ACLs to be enabled
-        const accessLogsBucket = new s3.Bucket(this, 'AccessLogsBucket', {
+        const accessLogsBucket = new s3.Bucket(this, 'accessLogsBucket', {
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
             encryption: s3.BucketEncryption.S3_MANAGED,
             enforceSSL: true,
@@ -169,28 +180,63 @@ export class AmazonCloudFrontImageFrameDeliveryStack extends cdk.Stack {
             },
         };
 
+        // CloudFront origin request policy allowing custom headers
+        const originRequestPolicy = new cf.OriginRequestPolicy(
+            this,
+            'originRequestPolicy',
+            {
+                cookieBehavior: cf.OriginRequestCookieBehavior.none(),
+                queryStringBehavior: cf.OriginRequestQueryStringBehavior.none(),
+                headerBehavior: cf.OriginRequestHeaderBehavior.allowList(
+                    'Origin',
+                    'Access-Control-Request-Headers'
+                ),
+            }
+        );
+
+        // CloudFront Default Behavior
+        const cfDefaultBehavior: cf.BehaviorOptions = {
+            origin: new cfo.HttpOrigin(AHLI_DOMAIN, {
+                originSslProtocols: [cf.OriginSslPolicy.TLS_V1_2],
+                protocolPolicy: cf.OriginProtocolPolicy.HTTPS_ONLY,
+            }),
+            allowedMethods: cf.AllowedMethods.ALLOW_ALL,
+            viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+            cachePolicy: cf.CachePolicy.CACHING_OPTIMIZED,
+            originRequestPolicy: originRequestPolicy,
+            edgeLambdas: cfEdgeLambdas,
+        };
+
+        // Optional custom CNAME for CloudFront distribution
+        let cfCnameOpts = {};
+        if (CUSTOM_CNAME.domainNames?.length > 0) {
+            // Get ICertificate from ACM
+            const cfCertificate = acm.Certificate.fromCertificateArn(
+                this,
+                'cfCertificate',
+                CUSTOM_CNAME.certificateArn
+            );
+            cfCnameOpts = {
+                domainNames: CUSTOM_CNAME.domainNames,
+                certificate: cfCertificate,
+                securityPolicy: cf.SecurityPolicyProtocol.TLS_V1_2_2021,
+            };
+        }
+
         // CloudFront Distribution
         const cfDistribution = new cf.Distribution(this, 'cf', {
             comment:
-                'Amazon CloudFront distribution for Amazon HealthLake Imaging image frames',
+                'Amazon CloudFront distribution for AWS HealthImaging image frames',
             // As of Dec 2022, the minimium security policy is set to TLSv1 if using the
             //   default *.cloudfront.net viewer certificiate, regardless of minimumProtocolVersion
+            // This setting applies when using CUSTOM_CNAME and an AWS Certificate Manager certificate
             minimumProtocolVersion: cf.SecurityPolicyProtocol.TLS_V1_2_2021,
-            priceClass: cf.PriceClass.PRICE_CLASS_100,
+            priceClass: cf.PriceClass.PRICE_CLASS_ALL,
             enableLogging: true,
             logBucket: accessLogsBucket,
             logFilePrefix: 'cloudfront',
-            defaultBehavior: {
-                origin: new cfo.HttpOrigin(AHLI_DOMAIN, {
-                    originSslProtocols: [cf.OriginSslPolicy.TLS_V1_2],
-                    protocolPolicy: cf.OriginProtocolPolicy.HTTPS_ONLY,
-                }),
-                allowedMethods: cf.AllowedMethods.ALLOW_GET_HEAD,
-                viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-                cachePolicy: cf.CachePolicy.CACHING_OPTIMIZED,
-                originRequestPolicy: cf.OriginRequestPolicy.CORS_CUSTOM_ORIGIN,
-                edgeLambdas: cfEdgeLambdas,
-            },
+            defaultBehavior: cfDefaultBehavior,
+            ...cfCnameOpts,
         });
 
         // Checkov

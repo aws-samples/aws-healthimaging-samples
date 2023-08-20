@@ -11,34 +11,21 @@ async function tlmRoutes(fastify, options) {
         };
     }
 
-    fastify.get(
-        '/runtime/datastore/:datastoreId/imageset/:imageSetId/imageframe/:imageFrameId',
-        routeOpts,
-        async (request, reply) => {
-            const { datastoreId, imageSetId, imageFrameId } = request.params;
-            const { startLevel, endLevel } = request.query;
-            await tlmProxy(
-                reply,
-                datastoreId,
-                imageSetId,
-                imageFrameId,
-                startLevel,
-                endLevel
-            );
-        }
-    );
+    fastify.post('/datastore/:datastoreId/imageSet/:imageSetId/getImageFrame', routeOpts, async (request, reply) => {
+        const { datastoreId, imageSetId } = request.params;
+        const { startLevel, endLevel } = request.query;
+        const { imageFrameId } = request.body;
 
-    fastify.get('/', routeOpts, async (request, reply) => {
-        const { datastoreId, imageSetId, imageFrameId, startLevel, endLevel } =
-            request.query;
-        await tlmProxy(
-            reply,
-            datastoreId,
-            imageSetId,
-            imageFrameId,
-            startLevel,
-            endLevel
-        );
+        const imageFrameObj = {
+            datastoreId: datastoreId,
+            imageSetId: imageSetId,
+            imageFrameId: imageFrameId,
+        };
+        const tlmLevels = {
+            startLevel: startLevel || undefined,
+            endLevel: endLevel || undefined,
+        };
+        await tlmProxy(reply, imageFrameObj, tlmLevels);
     });
 }
 

@@ -34,7 +34,7 @@ export function getSeriesDataFromMetadata(imageSetMetadata) {
         });
 }
 
-// Return an array of ahli:// URIs for the given seriesID (series instance UID)
+// Return an array of ahi:// URIs for the given seriesID (series instance UID)
 export function getSeriesImageIds({ datastoreId, imageSetId, seriesId, metadata }) {
     const imageUids = Object.keys(metadata.Study.Series[seriesId].Instances);
     imageUids.sort((a, b) => {

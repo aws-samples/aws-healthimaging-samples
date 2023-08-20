@@ -58,7 +58,7 @@ export function suppressNag(
         [
             {
                 id: 'AwsSolutions-IAM5',
-                reason: 'Allow ECS task access to all Amazon HealthLake Imaging image frames. Steps to tighten this control is listed in the FAQ.',
+                reason: 'Allow ECS task access to all AWS HealthImaging image frames. Steps to tighten this control is listed in the FAQ.',
             },
         ],
         true

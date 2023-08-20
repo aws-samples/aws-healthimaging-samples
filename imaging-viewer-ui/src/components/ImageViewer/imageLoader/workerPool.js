@@ -13,6 +13,17 @@ let workers = [];
 let nextWorker = 0;
 let createdImages = [];
 
+/**
+ * Build a unique URL string from an imageframeReqObj (post req)
+ * Append imageFrameId from the request body to the URL
+ * TODO: deduplicate from worker.js
+ */
+function buildUrl(imageframeReqObj) {
+    const postDataObj = JSON.parse(imageframeReqObj.body);
+    const imageFrameId = postDataObj.imageFrameId;
+    return imageframeReqObj.url + '?imageFrameId=' + imageFrameId;
+}
+
 function init(numWorkers = 1) {
     for (var i = 0; i < numWorkers; i++) {
         const worker = new Worker(new URL('./worker.js', import.meta.url));
@@ -66,10 +77,11 @@ function init(numWorkers = 1) {
                     request.resolve(image);
                 }
             } else if ('error' in e.data) {
+                console.error('Error message from worker: ', e.data);
                 const request = requests[e.data.url];
                 request.reject(e.data.error);
             } else {
-                console.debug('Message from worker: ', e.data);
+                console.error('Unhandled message from worker: ', e.data);
             }
         };
     }
@@ -81,9 +93,10 @@ function resetCreatedImages() {
 
 function queueRequest(request) {
     const workerId = nextWorker++ % workers.length;
-    requests[request.url] = request;
+    requests[buildUrl(request.imageframeReqObj)] = request;
+
     workers[workerId].postMessage({
-        url: request.url,
+        imageframeReqObj: request.imageframeReqObj,
         instance: request.instance,
         loadMethod: request.loadMethod,
         tlmDecodeLevel: request.tlmDecodeLevel,

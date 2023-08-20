@@ -4,45 +4,88 @@
 const aws4 = require('aws4');
 const log = require('loglevel');
 
-log.setLevel('error');
+const util = require('util');
+
+// Default loglevel is 'warn'. Possible values are trace, debug, info, warn, error
+log.setLevel('warn');
 
 exports.handler = async function (event, context, callback) {
     // The request will be modified with the signed headers
     let request = event.Records[0].cf.request;
-    const headers = request.headers;
+
+    console.log(
+        'Event',
+        util.inspect(event, {
+            showHidden: false,
+            depth: null,
+            colors: false,
+        })
+    );
+
+    console.log(
+        'Incoming request',
+        util.inspect(request, {
+            showHidden: false,
+            depth: null,
+            colors: false,
+        })
+    );
+
+    const requestBody =
+        request.body?.encoding === 'base64'
+            ? atob(request?.body?.data)
+            : request?.body?.data;
+
     /** CloudFront adds the request ID as X-Amz-Cf-Id to the origin request
      * and all x-amz-* headers need to be signed
      */
     const cfRequestId = event.Records[0].cf.config?.requestId;
 
     // Verify request method is GET
-    if (request?.method !== 'GET') {
+    if (request?.method !== 'POST') {
         log.error(`Method ${request.method} is not supported.`);
         return request;
     }
 
-    // Verify domain name is for Amazon HealthLake Imaging
+    // Verify domain name is for AWS HealthImaging
     const domainName = request.origin?.custom?.domainName;
     if (
-        !/.*runtime-healthlake-imaging\..+(\.amazonaws\.com|\.aws\.dev)/.test(domainName)
+        !/.*runtime-medical-imaging\..+(\.amazonaws\.com|\.aws\.dev)/.test(
+            domainName
+        )
     ) {
         log.error(
-            `Domain name ${domainName} must match runtime-healthlake-imaging.+\.amazonaws.com`
+            `Domain name ${domainName} must match runtime-medical-imaging.+\.amazonaws.com`
         );
         return null;
     }
+
+    // extract aws region from cf request host
+    const regionMatch = /[\w-]+.([\w]{2}-[\w]+-[0-9]+).[\w.]+/;
+    const domainRegion = domainName.match(regionMatch)?.[1] || 'us-east-1';
 
     let signOpts = {
         host: domainName,
         path: request.uri,
         service: 'medical-imaging',
-        region: 'us-east-1',
+        region: domainRegion,
         headers: {
+            'Content-Type': 'application/json',
             'X-Amz-Cf-Id': cfRequestId,
         },
+        body: requestBody,
     };
 
     const signedReq = aws4.sign(signOpts);
+
+    console.log(
+        'Signed request',
+        util.inspect(request, {
+            showHidden: false,
+            depth: null,
+            colors: false,
+        })
+    );
 
     // Extract the signature headers
     // Lambda@Edge expects headers to be in the format [{ key: 'key', value: 'value' }]
@@ -66,6 +109,20 @@ exports.handler = async function (event, context, callback) {
     // Return request is the original request + signed headers
     const returnHeaders = { ...request.headers, ...updatedSignedHeaders };
     request.headers = returnHeaders;
+
+    // Replace body with text
+    request.body.action = 'replace';
+    request.body.encoding = 'text';
+    request.body.data = requestBody;
+
+    console.log(
+        'Outgoing request',
+        util.inspect(request, {
+            showHidden: false,
+            depth: null,
+            colors: false,
+        })
+    );
 
     callback(null, request);
 };

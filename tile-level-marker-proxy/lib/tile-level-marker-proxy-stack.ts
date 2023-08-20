@@ -26,8 +26,8 @@ import {
     COGNITO_CLIENT_ID,
     ENABLE_ELASTICACHE,
     AUTH_MODE,
-    AHLI_REGION,
-    AHLI_ENDPOINT,
+    AHI_REGION,
+    AHI_ENDPOINT,
 } from '../config';
 
 // Port number for Amazon ElastiCache Memcached
@@ -102,7 +102,7 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
                 {
                     cacheParameterGroupFamily: 'memcached1.6',
                     description:
-                        'Amazon HealthLake Imaging Tile Lever Marker Proxy Cache Parameter Group',
+                        'AWS HealthImaging Tile Lever Marker Proxy Cache Parameter Group',
                     properties: {
                         max_item_size: '52428800',
                         slab_chunk_max: '1048576',
@@ -117,7 +117,7 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
                 'cache-subnet-group',
                 {
                     description:
-                        'Amazon HealthLake Imaging Tile Lever Marker Proxy Cache Subnet Group',
+                        'AWS HealthImaging Tile Lever Marker Proxy Cache Subnet Group',
                     // use the first subnet for memcached. to use all available subnets, use subnetIds: vpc.publicSubnets.map((s) => s.subnetId)
                     subnetIds: [vpc.publicSubnets[0].subnetId],
                 }
@@ -209,8 +209,8 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
             AUTH_MODE: String(AUTH_MODE),
             COGNITO_USER_POOL_ID: String(COGNITO_USER_POOL_ID),
             COGNITO_CLIENT_ID: String(COGNITO_CLIENT_ID),
-            AHLI_REGION: String(AHLI_REGION),
-            AHLI_ENDPOINT: String(AHLI_ENDPOINT),
+            AHI_REGION: String(AHI_REGION),
+            AHI_ENDPOINT: String(AHI_ENDPOINT),
         };
         if (ENABLE_ELASTICACHE) {
             const elasticacheEnvironmentVariables = {
@@ -245,7 +245,7 @@ export class TileLevelMarkerProxyStack extends cdk.Stack {
         });
 
         // S3 bucket for ALB access logs
-        const accessLogsBucket = new s3.Bucket(this, 'AccessLogsBucket', {
+        const accessLogsBucket = new s3.Bucket(this, 'accessLogsBucket', {
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
             encryption: s3.BucketEncryption.S3_MANAGED,
             enforceSSL: true,

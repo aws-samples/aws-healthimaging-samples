@@ -3,13 +3,13 @@ const prefix = require('loglevel-plugin-prefix');
 
 prefix.reg(log);
 log.enableAll(false);
-log.setLevel("info");
+log.setLevel('info');
 
 prefix.apply(log, {
-  // eslint-disable-next-line no-unused-vars
-  format(level, name, timestamp) {
-    return `${timestamp} -- ${level.toUpperCase()} --`;
-  },
+    // eslint-disable-next-line no-unused-vars
+    format(level, name, timestamp) {
+        return `${timestamp} -- ${level.toUpperCase()} --`;
+    },
 });
 
 //#region Exports

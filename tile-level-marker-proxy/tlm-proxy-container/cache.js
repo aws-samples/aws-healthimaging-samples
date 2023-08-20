@@ -8,7 +8,8 @@ let ENABLE_LOCAL_NODECACHE = process.env.ENABLE_LOCAL_NODECACHE || true;
 let ENABLE_AMAZON_ELASTICACHE = process.env.ENABLE_AMAZON_ELASTICACHE || true;
 
 // Logging
-const log = require('loglevel');
+const logger = require('./log');
+const log = logger('cache');
 
 // node-cache
 const NodeCache = require('node-cache');
@@ -63,9 +64,7 @@ async function getCacheValue(key) {
                 return localNodeCacheValue;
             }
         } else if (ENABLE_AMAZON_ELASTICACHE) {
-            const getCloudCachePromise = promisify(
-                awsMemcached.get.bind(awsMemcached)
-            );
+            const getCloudCachePromise = promisify(awsMemcached.get.bind(awsMemcached));
             const cloudCacheValue = await getCloudCachePromise(key);
             if (typeof cloudCacheValue !== 'undefined') {
                 return cloudCacheValue;

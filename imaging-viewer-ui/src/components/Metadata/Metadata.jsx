@@ -13,7 +13,7 @@ import { ContentLayout, SpaceBetween } from '@cloudscape-design/components';
 import { buildVersionOption, MetadataViewerHeader, MetadataViewerSearch } from './metadataHeaderComponents';
 import { useDataStoreImageSetInput } from '../../hooks/useDataStoreImageSetInput';
 import { DATA_STORE_ID_REGEX, IMAGESET_ID_REGEX } from '../../consts/apiRegex';
-import { getDicomStudyMetadata, listImageSetVersions } from '../../utils/HealthLakeImagingAPI';
+import { getDicomStudyMetadata, listImageSetVersions } from '../../utils/AwsHealthImagingApi';
 import { MetadataViewer } from './MetadataViewer';
 import { MetadataEditor } from './MetadataEditor';
 
@@ -93,7 +93,7 @@ export default function Metadata() {
 
     // Enable save/edit
     const editEnabled = useMemo(
-        () => imageSetMetadata.length > 0 && maxVersion === selectedVersion.value,
+        () => imageSetMetadata.length > 0 && maxVersion === selectedVersion?.value,
         [imageSetMetadata, maxVersion, selectedVersion]
     );
 
@@ -116,7 +116,8 @@ export default function Metadata() {
                     type: 'error',
                 };
                 if (error?.response?.status === 409) {
-                    flashMessage.content += ' Try retrieving metadata in a few moments after the operation is complete.'
+                    flashMessage.content +=
+                        ' Try retrieving metadata in a few moments after the operation is complete.';
                     flashMessage.type = 'success';
                     flashMessage.otherParams = {
                         loading: true,

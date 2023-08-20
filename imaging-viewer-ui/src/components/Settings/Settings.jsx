@@ -93,7 +93,7 @@ export default function Settings({ setAppSettings }) {
                 >
                     <SpaceBetween direction="vertical" size="m">
                         <SettingsSelect
-                            label="Amazon HealthLake Imaging Region"
+                            label="AWS HealthImaging Region"
                             options={appRegionOptions}
                             settingKey="app.region"
                             settings={settings}
@@ -141,8 +141,8 @@ export default function Settings({ setAppSettings }) {
                             <SpaceBetween direction="vertical" size="m">
                                 <SettingsInput
                                     label="Control Plane Endpoint Override"
-                                    description="Override the default control plane endpoint URL (https://healthlake-imaging.<region>.amazonaws.com)."
-                                    placeholder="https://healthlake-imaging.us-east-1.amazonaws.com"
+                                    description="Override the default control plane endpoint URL (https://medical-imaging.<region>.amazonaws.com)."
+                                    placeholder="https://medical-imaging.us-east-1.amazonaws.com"
                                     settingKey="app.controlPlaneEndpointOverride"
                                     settings={settings}
                                     updateSettings={updateSettings}
@@ -150,8 +150,8 @@ export default function Settings({ setAppSettings }) {
                                 />
                                 <SettingsInput
                                     label="Data Plane Endpoint Override"
-                                    description="Override the default data plane endpoint URL (https://runtime-healthlake-imaging.<region>.amazonaws.com)."
-                                    placeholder="https://runtime-healthlake-imaging.us-east-1.amazonaws.com"
+                                    description="Override the default data plane endpoint URL (https://runtime-medical-imaging.<region>.amazonaws.com)."
+                                    placeholder="https://runtime-medical-imaging.us-east-1.amazonaws.com"
                                     settingKey="app.dataPlaneEndpointOverride"
                                     settings={settings}
                                     updateSettings={updateSettings}

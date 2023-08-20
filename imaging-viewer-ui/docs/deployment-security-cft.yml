@@ -1,15 +1,15 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Amazon HealthLake Imaging Sample Viewer UI Amplify Permissions Boundary and User Access Policies
+Description: AWS HealthImaging Sample Viewer UI Amplify Permissions Boundary and User Access Policies
 
 Resources:
     PermissionsBoundaryPolicy:
         Type: AWS::IAM::ManagedPolicy
         Properties:
-            Description: Permission boundary for Amazon HealthLake Imaging Sample Viewer UI via Amplify
+            Description: Permission boundary for AWS HealthImaging Sample Viewer UI via Amplify
             PolicyDocument:
                 Version: 2012-10-17
                 Statement:
-                    - Sid: AmazonHealthLakeImaging
+                    - Sid: AwsHealthImaging
                       Effect: Allow
                       Action: medical-imaging:*
                       Resource: '*'

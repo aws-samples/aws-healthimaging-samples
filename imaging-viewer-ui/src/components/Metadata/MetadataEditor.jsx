@@ -12,7 +12,7 @@ import { INITIAL_DICOM_KEYS, METADATA_TAG_EDITOR_I18N } from './metadataConsts';
 import { keyValueToObj } from '../../utils/Array';
 
 // API
-import { updateImageSetMetadata } from '../../utils/HealthLakeImagingAPI';
+import { updateImageSetMetadata } from '../../utils/AwsHealthImagingApi';
 
 const flatOpts = { delimiter: '|' };
 

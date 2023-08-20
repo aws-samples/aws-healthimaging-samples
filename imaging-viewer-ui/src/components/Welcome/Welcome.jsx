@@ -17,8 +17,8 @@ function Welcome() {
             return (
                 <Box>
                     <p>
-                        This sample ReactJS-based webapp shows the art of the possible in using Amazon HealthLake
-                        Imaging to view images.
+                        This sample ReactJS-based webapp shows the art of the possible in using AWS HealthImaging to
+                        view images.
                     </p>
                     <p>Currently this demo allows you to:</p>
                     <ul>
@@ -75,7 +75,7 @@ function Welcome() {
     }
 
     return (
-        <ContentLayout header={<Header variant="h2">Amazon HealthLake Imaging Sample Viewer</Header>}>
+        <ContentLayout header={<Header variant="h2">AWS HealthImaging Sample Viewer</Header>}>
             <Container footer={<Footer />}>
                 <Content />
             </Container>

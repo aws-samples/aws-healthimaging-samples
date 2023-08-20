@@ -35,7 +35,7 @@ class GreenGrassComponent(Construct):
                         "ComponentName": "{stack_name}-DIMSEtoS3",
                         "ComponentVersion": "1.0.31",
                         "ComponentType": "aws.greengrass.generic",
-                        "ComponentDescription": "Edge device component for DICOM data ingestion in S3 and Amazon HealthLake Imaging.",
+                        "ComponentDescription": "Edge device component for DICOM data ingestion in S3 and Amazon HealthImaging.",
                         "ComponentPublisher": "Amazon Web Services",
                         "ComponentDependencies": {{
                             "aws.greengrass.TokenExchangeService": {{

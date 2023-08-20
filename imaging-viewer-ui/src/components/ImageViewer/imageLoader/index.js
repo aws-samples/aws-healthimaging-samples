@@ -18,7 +18,7 @@ function init(configuration) {
     if (configuration) {
         config.numWorkers = configuration.numWorkers ? configuration.numWorkers : config.numWorkers;
     }
-    cornerstone.registerImageLoader('ahli', loadImage);
+    cornerstone.registerImageLoader('ahi', loadImage);
     workerPool.init(config.numWorkers, config.addFlashMessage);
 }
 
@@ -31,7 +31,7 @@ async function loadMetadata(datastoreId, imageSetId) {
 }
 
 function makeImageId(datastoreId, imageSetId, seriesUid, instanceUid, frame) {
-    const result = 'ahli://' + datastoreId + '/' + imageSetId + '/' + seriesUid + '/' + instanceUid + '/' + frame;
+    const result = 'ahi://' + datastoreId + '/' + imageSetId + '/' + seriesUid + '/' + instanceUid + '/' + frame;
     return result;
 }
 
