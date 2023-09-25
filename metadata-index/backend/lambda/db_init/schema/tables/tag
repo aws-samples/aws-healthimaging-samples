@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS tag;
+CREATE TABLE tag (
+	`tag_pkey` bigint NOT NULL AUTO_INCREMENT,
+    `series_pkey` bigint NOT NULL,
+    `imageset_pkey` bigint NOT NULL,
+    `key` varchar(256) NOT NULL,
+    `value` varchar(256) NOT NULL,
+    `description` varchar(1024) NULL,
+	PRIMARY KEY (`tag_pkey`));
+    CREATE INDEX `tag_series_pkey_idx` ON `tag` (`series_pkey`);
+    CREATE INDEX `tag_imageset_pkey_idx` ON `tag` (`imageset_pkey`);
+    CREATE INDEX `tag_key_idx` ON `tag` (`key`);

@@ -15,11 +15,15 @@ AWS HealthImaging is a new HIPAA-eligible capability that enables healthcare pro
 
 ### [S3 StoreSCP](s3-storescp)
 
-This AWS CDK project implements a DICOM [StoreSCP](https://dicom.nema.org/medical/dicom/current/output/html/part04.html#sect_B.2.2) listener capable of receiving DIMSE messages and storing the received SOP instances as DICOM Part10 files on Amazon S3. The listener is deployed as service on [AWS ECS Fargate](https://aws.amazon.com/fargate/). DICOM Part10 files stored on S3 can be then imported into [AWS HealthImaging](https://aws.amazon.com/healthimaging).
+This AWS CDK project implements a DICOM [StoreSCP](https://dicom.nema.org/medical/dicom/current/output/html/part04.html#sect_B.2.2) listener capable of receiving DIMSE messages and storing the received SOP instances as DICOM Part10 files on Amazon S3. The listener is deployed as service on [AWS ECS Fargate](https://aws.amazon.com/fargate/). DICOM Part10 files stored on S3 can then be imported into [AWS HealthImaging](https://aws.amazon.com/healthimaging).
 
 ### [DICOM Ingestion From On-Prem to AWS HealthImaging](dicom-ingestion-to-s3-healthimaging/)
 
 This [AWS CDK](https://aws.amazon.com/cdk/) project allows to host a DICOM Service to receive data via DICOM-DIMSE and ingest it to S3 and HealthImaging. The on-prem service is hosted as part of [AWS Greengrass IOT service](https://aws.amazon.com/greengrass/). The project also demonstrates how to profile DICOM data, index it into a database and manage a queue of import jobs into AWS HealthImaging.
+
+### [AWS HealthImaging metadata index with RDBMS and Datalake (Athena)](metadata-index/)
+
+This [AWS CDK](https://aws.amazon.com/cdk/) project allows the indexing of DICOM metadata as it is being imported in AWS HealthImaging. The metadata can be stored in a relational database (RDS MySQL) and/or a data lake (Amazon S3 with [AWS Athena](https://aws.amazon.com/athena/)), enabling with query and analytics capabilities.
 
 ## Validate/Verify
 

@@ -1,0 +1,14 @@
+DROP TABLE IF EXISTS patient;
+CREATE TABLE patient (
+	`patient_pkey` bigint NOT NULL AUTO_INCREMENT,
+    `issuer_pkey` bigint NOT NULL,
+    `patientid` varchar(64) NULL,
+    `patientname` varchar(64) NULL,
+    `patientbirthdate` date NULL,
+    `patientsex` varchar(16) NULL,
+    `patientcomments` TEXT NULL,
+	PRIMARY KEY (`patient_pkey`),
+    CONSTRAINT `patient_patientid_issuerofpatientid_cst` UNIQUE (`patientid`, `issuer_pkey`),
+    FOREIGN KEY (`issuer_pkey`) REFERENCES `issuer` (`issuer_pkey`) ON DELETE CASCADE);
+	CREATE INDEX `patient_patientid_idx` ON `patient` (`patientid`);
+    CREATE INDEX `patient_patientname_idx` ON `patient` (`patientname`);
