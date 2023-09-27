@@ -36,4 +36,4 @@ The solution avoids duplicate entries thanks to the usage of file names based on
 >Note: <mark>The `IssuerOfPatientID` is optional in DICOM standard an may not be present in the DICOM file. In this case it is possible that 2 patient files describing 2 different patients from different domains , but with the same PatientID may produce the same file name, resulting in the overwrite of the former patient with the information of the most recently imported one. This would also cause studies from the from the former patient to appear as attached to the new patient. This is a limitation of the solution.</mark> This could be avoided by injecting the IssuerOfPatientID in the DICOM files before the import to the AHI datastore; or by creating on AHI datastore per patient domain and updating the Lambda datalake parser to set a prefix to the patientid based on the source datastore of the metadata.
 
 
-![Datalake Lambda Diagram](/doc/img/lambdas-dataflow-datalake.png)
+![Datalake Lambda Diagram](../../img/lambdas-dataflow-datalake.png)
