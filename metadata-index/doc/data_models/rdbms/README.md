@@ -25,4 +25,4 @@ The data model assumes that DICOM studies are composed of objects globally uniqu
 * ***Conflict***: This table is used to track series referred by more than 1 ImageSet. The table contains a mapping of the series primary key in the series table and the primary keys in the imageset table. Conflicts situations dot not prevent access to the metadata and pixel data in AHI. However, duplication of Imagesets for the same DICOM series may lead to degraded performance in the display of the data, and overhead in the consistency upkeep of the metadata.
 
 
-![RDBMS model](/doc/img/RDBMS-schema_1.1.png)
+![RDBMS model](../../img/RDBMS-schema_1.1.png)
