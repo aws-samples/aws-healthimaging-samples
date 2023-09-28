@@ -41,9 +41,10 @@ class BackendStack(Stack):
         if (config.VPC["USE_VPC"] == True):
             if (config.VPC["EXISTING_VPC_ID"] != ""):
                 vpc = ec2.Vpc.from_lookup(self, "VPC", vpc_id=config.VPC["EXISTING_VPC_ID"])
-            vpc_cidr = config.VPC["NEW_VPC_CIDR"]
-            vpc_construct = Vpc(self, "Network", vpc_cidr)
-            vpc = vpc_construct.getVpc()
+            else:
+                vpc_cidr = config.VPC["NEW_VPC_CIDR"]
+                vpc_construct = Vpc(self, "Network", vpc_cidr)
+                vpc = vpc_construct.getVpc()
         else:
             vpc=None
         # Create Security groups
