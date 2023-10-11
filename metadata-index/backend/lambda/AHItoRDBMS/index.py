@@ -341,7 +341,7 @@ def generateSQLValues( tags : [] , datamodel : []):
                 if column["type"].upper() == "DATE":
                     # Convert date in YYYMMDD format to a date string that MYSQL can understand.
                     try:
-                        data_value = datetime.strptime( str(tags[tag]), '%Y%m%d').strftime('%m/%d/%Y')
+                        data_value = datetime.strptime( str(tags[tag]), '%Y%m%d').strftime('%y-%m-%d')
                     except:
                         data_value = None
                         continue
