@@ -32,7 +32,14 @@ function getInitialTags(flatMetadata) {
     return initialTags;
 }
 
-export function MetadataEditor({ imageSetMetadata, saveEnabled, maxVersion, metadataLoading, navigate }) {
+export function MetadataEditor({
+    imageSetMetadata,
+    setMetadataMode,
+    saveEnabled,
+    maxVersion,
+    metadataLoading,
+    handleRetrieveMetadata,
+}) {
     const { setToolsOpen } = useContext(AppContext);
     const [tags, setTags] = useState([]);
     const [saving, setSaving] = useState(false);
@@ -120,7 +127,8 @@ export function MetadataEditor({ imageSetMetadata, saveEnabled, maxVersion, meta
             updatableAttributes: updateData,
         });
 
-        navigate(-1);
+        setMetadataMode('viewer');
+        handleRetrieveMetadata();
         setSaving(false);
     }
 
@@ -138,7 +146,7 @@ export function MetadataEditor({ imageSetMetadata, saveEnabled, maxVersion, meta
                     }
                     actions={
                         <SpaceBetween direction="horizontal" size="xs">
-                            <Button onClick={() => navigate(-1)}>Cancel</Button>
+                            <Button onClick={() => setMetadataMode('viewer')}>Cancel</Button>
                             <Button variant="primary" disabled={!saveEnabled} onClick={() => handleSave()}>
                                 Save
                             </Button>

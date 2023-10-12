@@ -13,13 +13,20 @@ import {
     ExpandableSection,
     Form,
     Header,
+    Link,
     SpaceBetween,
     Spinner,
 } from '@cloudscape-design/components';
 
 // App
 import { DEFAULT_SETTINGS } from '../../consts/defaultSettings';
-import { appRegionOptions, tlmAuthOptions, imageFrameOverrideAuthOptions, onOffOptions } from './selectOptions';
+import {
+    appRegionOptions,
+    tlmAuthOptions,
+    imageFrameOverrideAuthOptions,
+    onOffOptions,
+    yesNoOptions,
+} from './selectOptions';
 import { SettingsSelect, SettingsInput } from './FormComponents';
 
 export default function Settings({ setAppSettings }) {
@@ -99,7 +106,69 @@ export default function Settings({ setAppSettings }) {
                             settings={settings}
                             updateSettings={updateSettings}
                         />
-                        <ExpandableSection headerText="Viewer">
+                        <ExpandableSection
+                            headerText="Global Content Delivery"
+                            headerDescription={
+                                <>
+                                    Use Amazon CloudFront, a content delivery network (CDN) to securely and rapidly
+                                    deliver image metadata and frames to anywhere in the world. Refer to the{' '}
+                                    <Link
+                                        variant="info"
+                                        target="_blank"
+                                        href="https://github.com/aws-samples/aws-healthimaging-samples/tree/main/amazon-cloudfront-delivery"
+                                    >
+                                        Amazon CloudFront Delivery
+                                    </Link>{' '}
+                                    project in the AWS HealthImaging Samples repo on GitHub.
+                                </>
+                            }
+                        >
+                            <SpaceBetween direction="vertical" size="m">
+                                <SettingsInput
+                                    label="Amazon CloudFront Distribution Endpoint Override"
+                                    description="This endpoint should proxy AWS HealthImaging calls."
+                                    placeholder="https://image-frame-endpoint-override-url"
+                                    settingKey="cloudfront.endpointUrl"
+                                    settings={settings}
+                                    updateSettings={updateSettings}
+                                    inputArgs={{ inputMode: 'url', type: 'url' }}
+                                />
+                                <SettingsSelect
+                                    label="Amazon CloudFront Distribution Endpoint Override Authentication"
+                                    options={imageFrameOverrideAuthOptions}
+                                    settingKey="cloudfront.endpointUrlAuth"
+                                    settings={settings}
+                                    updateSettings={updateSettings}
+                                    selectArgs={{ disabled: !settings['cloudfront.endpointUrl'] }}
+                                />
+                                <SettingsSelect
+                                    label="Convert POST to GET for GetImageSet, GetImageSetMetadata, and GetImageFrame"
+                                    description="Allow CloudFront to cache imageset and imageset metadata along with image frames."
+                                    options={yesNoOptions}
+                                    settingKey="cloudfront.posttoget"
+                                    settings={settings}
+                                    updateSettings={updateSettings}
+                                    selectArgs={{ disabled: !settings['cloudfront.endpointUrl'] }}
+                                />
+                            </SpaceBetween>
+                        </ExpandableSection>
+                        <ExpandableSection
+                            headerText="Resolution Level Access"
+                            headerDescription={
+                                <>
+                                    Retrieve image frames at discrete, sub-resolutions. Potential use cases include
+                                    thumbnails and AI/ML training. Refer to the{' '}
+                                    <Link
+                                        variant="info"
+                                        target="_blank"
+                                        href="https://github.com/aws-samples/aws-healthimaging-samples/tree/main/tile-level-marker-proxy"
+                                    >
+                                        Tile Level Marker
+                                    </Link>{' '}
+                                    project in the AWS HealthImaging Samples repo on GitHub.
+                                </>
+                            }
+                        >
                             <SpaceBetween direction="vertical" size="m">
                                 <SettingsInput
                                     label="Tile Level Marker (TLM) Proxy URL"
@@ -117,23 +186,6 @@ export default function Settings({ setAppSettings }) {
                                     settings={settings}
                                     updateSettings={updateSettings}
                                     selectArgs={{ disabled: !settings['viewer.tlmProxyUrl'] }}
-                                />
-                                <SettingsInput
-                                    label="Image Frame Endpoint Override"
-                                    description="This endpoint should accept an image frame retrieval URL."
-                                    placeholder="https://image-frame-endpoint-override-url"
-                                    settingKey="viewer.imageFrameOverrideUrl"
-                                    settings={settings}
-                                    updateSettings={updateSettings}
-                                    inputArgs={{ inputMode: 'url', type: 'url' }}
-                                />
-                                <SettingsSelect
-                                    label="Image Frame Endpoint Override Authentication"
-                                    options={imageFrameOverrideAuthOptions}
-                                    settingKey="viewer.imageFrameOverrideAuth"
-                                    settings={settings}
-                                    updateSettings={updateSettings}
-                                    selectArgs={{ disabled: !settings['viewer.imageFrameOverrideUrl'] }}
                                 />
                             </SpaceBetween>
                         </ExpandableSection>

@@ -78,8 +78,6 @@ export default function ImageViewer() {
     // Viewer settings
     const tlmProxyUrl = appSettings['viewer.tlmProxyUrl'];
     const tlmProxyAuth = appSettings['viewer.tlmProxyAuth']?.value;
-    const imageFrameOverrideUrl = appSettings['viewer.imageFrameOverrideUrl'];
-    const imageFrameOverrideAuth = appSettings['viewer.imageFrameOverrideAuth']?.value;
 
     // Viewer element
     const imageBoxRef = useRef();
@@ -257,7 +255,7 @@ export default function ImageViewer() {
         const metadata = await getMetadata(inputData.datastoreId, inputData.imageSetId);
 
         // If metadata fails, return
-        if (metadata === {} || !metadata?.Study?.Series) return;
+        if (metadata == null || !metadata?.Study?.Series) return;
         // Otherwise get a list of series []
         const seriesOpts = getSeriesDataFromMetadata(metadata);
         setSeriesOptions(seriesOpts);
@@ -375,18 +373,6 @@ export default function ImageViewer() {
             });
         }
     }, [selectedLoadMethod.value, setSelectedLoadMethod, tlmProxyAuth, tlmProxyUrl]);
-
-    /**
-     * Update imageLoader with the imageFrameOverride URL and auth options
-     */
-    useEffect(() => {
-        if (imageFrameOverrideUrl || imageFrameOverrideAuth) {
-            imageLoader.updateConfig({
-                imageFrameOverrideUrl: imageFrameOverrideUrl,
-                imageFrameOverrideAuth: imageFrameOverrideAuth,
-            });
-        }
-    }, [imageFrameOverrideUrl, imageFrameOverrideAuth]);
 
     /**
      * Reset web workers on unload in case there's activity still happening

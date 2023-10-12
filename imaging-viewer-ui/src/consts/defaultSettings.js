@@ -3,13 +3,14 @@ const DEFAULT_SETTINGS = {
     'app.controlPlaneEndpointOverride': '',
     'app.dataPlaneEndpointOverride': '',
     'app.apiTiming': { label: 'Off', value: false },
+    'cloudfront.posttoget': { label: 'Yes', value: true },
     'viewer.tlmProxyUrl': '',
     'viewer.tlmProxyAuth': {
         label: 'Cognito JWT',
         value: 'cognito_jwt',
     },
-    'viewer.imageFrameOverrideUrl': '',
-    'viewer.imageFrameOverrideAuth': {
+    'cloudfront.endpointUrl': '',
+    'cloudfront.endpointUrlAuth': {
         label: 'Cognito JWT',
         value: 'cognito_jwt',
     },

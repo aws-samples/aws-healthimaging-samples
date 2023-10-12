@@ -20,4 +20,9 @@ const onOffOptions = [
     { label: 'Off', value: false },
 ];
 
-export { appRegionOptions, tlmAuthOptions, imageFrameOverrideAuthOptions, onOffOptions };
+const yesNoOptions = [
+    { label: 'Yes', value: true },
+    { label: 'No', value: false },
+];
+
+export { appRegionOptions, tlmAuthOptions, imageFrameOverrideAuthOptions, onOffOptions, yesNoOptions };
