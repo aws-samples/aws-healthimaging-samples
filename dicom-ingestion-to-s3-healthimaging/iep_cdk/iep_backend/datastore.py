@@ -15,7 +15,7 @@ class Datastore(Construct):
         stack_name = Stack.of(self).stack_name.lower()
         self._datastoreid = None
         self.custom_resource = CustomResource(
-            self, "CustomLambdaResource", service_token=lambda_handler.function_arn,resource_type="Custom::AHLIDatastore",
+            self, "CustomLambdaResource", service_token=lambda_handler.function_arn,resource_type="Custom::AHLIDatastore", properties={"StackName":stack_name}
         )
         self._datastoreid = self.custom_resource.get_att_string("datastoreId")
         self._datastoreid

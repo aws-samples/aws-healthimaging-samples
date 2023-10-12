@@ -33,7 +33,7 @@ class GreenGrassComponent(Construct):
         recipe = f"""{{
                         "RecipeFormatVersion": "2020-01-25",
                         "ComponentName": "{stack_name}-DIMSEtoS3",
-                        "ComponentVersion": "1.0.30",
+                        "ComponentVersion": "1.0.31",
                         "ComponentType": "aws.greengrass.generic",
                         "ComponentDescription": "Edge device component for DICOM data ingestion in S3 and Amazon HealthImaging.",
                         "ComponentPublisher": "Amazon Web Services",

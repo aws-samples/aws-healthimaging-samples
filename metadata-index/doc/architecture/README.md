@@ -1,0 +1,3 @@
+# Solution Architecture
+The project deploys an event notification system that triggers an event to a topic in the SNS service when the S3 bucket used by AWS HealthImaing to ouput the import manifest receives a new manifest file (job-output-manifest.json). The topic is subscribed by Lambda functions used to parse the metadata and export it to the target data store ( Aurora MYSQL , AWS S3 Datalake or AWS OpenSearch Service).
+![architecture diagram](../img/lambda-dataflow.png)

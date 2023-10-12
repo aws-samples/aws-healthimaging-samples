@@ -32,6 +32,8 @@ def create_datastore(event, context):
   #Get the database credentials
   print(event)
   print(context)
+  props = event["ResourceProperties"]
+  stack_name = props["StackName"]
   session = boto3.session.Session()
   client = session.client(service_name='secretsmanager',region_name=region_name)
   # Calling SecretsManager
@@ -45,7 +47,7 @@ def create_datastore(event, context):
   statuscode=200
   try:
     print("trying to create the datastore")
-    datastoreResponse = miclient.create_datastore(datastoreName="IEP")
+    datastoreResponse = miclient.create_datastore(datastoreName=stack_name+"IEP")
     datastoreId = str(datastoreResponse["datastoreId"])
     print("Datastore created  : " + datastoreId)
     print("Trying to insert into the database")

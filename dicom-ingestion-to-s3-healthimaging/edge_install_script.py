@@ -25,7 +25,7 @@ def assumed_role_session(role_arn: str, base_session: botocore.session.Session =
     botocore_session._credentials = creds
     return boto3.Session(botocore_session = botocore_session)
 
-stack_name = config.CDK_APP_NAME
+stack_name = config.CDK_APP_NAME.lower()
 account_id = boto3.client('sts').get_caller_identity().get('Account')
 session = assumed_role_session(f"arn:aws:iam::{account_id}:role/{stack_name}-GGInstallerRole")
 aws_region = session.region_name    
