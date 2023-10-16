@@ -6,7 +6,10 @@ __pycache__
 *.egg-info
 unused
 iep_ui
+venv/
+cdk.context.json
 
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+

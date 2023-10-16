@@ -122,7 +122,7 @@ LAMBDA_CONFIG = {
         "index": "index",
         "timeout": 1,
         "memory": 256,
-        "layers": ["mysqlConnectionFactory", "mysqlConnector"],
+        "layers": ["mysqlConnectionFactory", "mysqlConnector", "sqs-extended-client"],
         "reserved_concurrency": 0,
         "need_db":  True,
         "envs": {
