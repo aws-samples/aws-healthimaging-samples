@@ -6,7 +6,7 @@ Config file for the solution deployment via CDK
 """
 
 
-CDK_APP_NAME = "iep-01"
+CDK_APP_NAME = "iep-02"
 
 VPC_CIDR = "10.10.0.0/22"
 
@@ -122,7 +122,7 @@ LAMBDA_CONFIG = {
         "index": "index",
         "timeout": 1,
         "memory": 256,
-        "layers": ["mysqlConnectionFactory", "mysqlConnector"],
+        "layers": ["mysqlConnectionFactory", "mysqlConnector", "sqs-extended-client"],
         "reserved_concurrency": 0,
         "need_db":  True,
         "envs": {

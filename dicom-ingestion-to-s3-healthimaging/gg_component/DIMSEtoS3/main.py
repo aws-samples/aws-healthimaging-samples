@@ -38,6 +38,7 @@ from S3FetchManager import *
 from SQSManager import *
 from SQSReceiver import *
 from dicomObject import *
+import gzip
 
 
 # Config pynetdicom to log to a file.
@@ -197,14 +198,14 @@ def DICOMSendMonitor(arg):
         sleep(5)
 
 def SQSReceive(arg):
-    sqsreceiver = SQSReceiver(EdgeId)
+    sqsreceiver = SQSReceiver(EdgeId, sqs_bucket=bucketname)
     while(True):
         sqsreceiver.ReceiveFromQueue()
         sendjobs = sqsreceiver.GetSendJobs()
         fethInc=0
         for sj in sendjobs:
             SQSJobJSONRep = json.loads(sj)
-            print(str(sj))
+            #print(str(sj))
             jobid = SQSJobJSONRep["JobId"]
             logging.debug(f"[SQSReceive] - DICOM Send job received with id {jobid}")
             for DCMObjs in SQSJobJSONRep["DCMObjs"]:
@@ -249,7 +250,6 @@ def SQSSend(arg):
                             #print(instanceuids[i][0])
                         stu.addSeries(ser)
                     Studiestable.append(stu)
-                obj = json.dumps(Studiestable, default=lambda o: o.__dict__)
                 instances=dbq.Query(dbq.GET_ALL_SOPS_PER_ASSOCIATION,(r[0],))
                 obj = {
 
@@ -263,9 +263,9 @@ def SQSSend(arg):
                     "JobId" : instances[0][1],
                     "SourceAE" : instances[0][2],
                     "DestinationAE" : instances[0][3],
-                    "DCMObjs" : Studiestable
+                    "DCMObjs" : Studiestable,
+                    "Type" : "manifest"
                 }
-                #jsonobj = json.dumps(obj)
                 jsonobj =json.dumps(obj, default=lambda o: o.__dict__)
                 try:
                     SQSInboundNotif.AddSendJob(jsonobj)
@@ -366,8 +366,24 @@ def storeObject(event, destination):
     ds = event.dataset
     # Add the File Meta Information
     ds.file_meta = event.file_meta
+    #extract the study date to use it as part of the prefix if possible. Study date is supposed to be comvertable as int if not we will fall back to today's date.
+    # try:
+    #     studydate=str(int(ds.StudyDate))
+    #     year = studydate[0:4]
+    #     month = studydate[4:6]
+    #     day = studydate[6:8]
+    #     studydate=year+"/"+month+"/"+day
+    # except:
+    #     studydate=str(datetime.datetime.now().strftime("%Y%m%d"))
+    #     year = studydate[0:4]
+    #     month = studydate[4:6]
+    #     day = studydate[6:8]
+    #     studydate=year+"/"+month+"/"+day        
     try:
-        destination = destination+"/"+event.assoc.name
+        #destination = destination+"/"+event.assoc.name
+        # 10/13/2023 - jpleger : we will use the study date as part of the prefix to avoid having too many files in the same prefix and faciliate browsing the s3 bucket.
+        #destination = destination+"/"+event.assoc.name+"/"+studydate+"/"+ds.StudyInstanceUID+"/"+ds.SeriesInstanceUID
+        destination = destination+"/"+event.assoc.name+"/"+ds.StudyInstanceUID+"/"+ds.SeriesInstanceUID
         os.makedirs(destination, exist_ok=True)
     except:
             # Unable to create output dir, return failure status
@@ -383,6 +399,7 @@ def storeObject(event, destination):
     scu_ae=event.assoc.requestor.primitive.calling_ae_title
     scp_ae=event.assoc.requestor.primitive.called_ae_title
     entry = (event.assoc.name, scu_ae, scp_ae, ds.StudyInstanceUID, ds.SeriesInstanceUID, ds.SOPInstanceUID,  os.path.join(destination, event.request.AffectedSOPInstanceUID))
+    #print(os.path.join(destination, event.request.AffectedSOPInstanceUID))
     
 
     try:
@@ -476,7 +493,7 @@ def main(argv):
     try:
         if (os.environ['S3_TRANSFER_ACCELERATION']).lower() in ("yes", "true", "t", "1"):
             s3_transfer_acceleration = True
-            logging.warning("Enabling S3 trasnfer acceleration.")
+            logging.warning("Enabling S3 transfer acceleration.")
     except:
         logging.warning("No S3 transfer accelerations specificed. Defaulting to default S3 transfer.")
     try:
@@ -538,10 +555,10 @@ def main(argv):
     logging.debug("[ServiceInit] - DICOM Send Monitor thread started.")
 
     logging.debug("[ServiceInit] - Starting SQS Outbound notification emitter.")
-    SQSOutboundNotif = SQSManager(EdgeId, "outbound")
+    SQSOutboundNotif = SQSManager(EdgeId, "outbound", bucketname )
 
     logging.debug("[ServiceInit] - Starting SQS Inbound notification emitter.")
-    SQSInboundNotif = SQSManager(EdgeId, "inbound")
+    SQSInboundNotif = SQSManager(EdgeId, "inbound", bucketname)
 
     logging.info("[ServiceInit] - Spawning DICOM interface on port "+str(dicom_port)+".")
     ae.start_server(("0.0.0.0", dicom_port), block=False, evt_handlers=handlers)

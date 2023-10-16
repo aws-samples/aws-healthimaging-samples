@@ -28,12 +28,12 @@ class PythonLambda(Construct):
             layers.append( aws_lambda_python.PythonLayerVersion(self, "IEP-"+l,
                 #code=lambda_.Code.from_asset("lambda_layer/"+l),
                 entry="lambda_layer/"+l,
-                compatible_runtimes=[lambda_.Runtime.PYTHON_3_9],
+                compatible_runtimes=[lambda_.Runtime.PYTHON_3_11],
                 license="Apache-2.0",
                 description="A layer to test the L2 construct"
             ))
         self._fn = lambda_.Function(self, "MyFunction",
-            runtime=lambda_.Runtime.PYTHON_3_9,
+            runtime=lambda_.Runtime.PYTHON_3_11,
             handler=config["index"]+"."+config["handler"],
             code=lambda_.Code.from_asset(config["entry"]),
             layers=layers,
