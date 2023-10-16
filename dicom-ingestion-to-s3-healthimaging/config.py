@@ -6,7 +6,7 @@ Config file for the solution deployment via CDK
 """
 
 
-CDK_APP_NAME = "iep-02"
+CDK_APP_NAME = "iep-01"
 
 VPC_CIDR = "10.10.0.0/22"
 
