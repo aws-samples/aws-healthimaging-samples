@@ -15,7 +15,8 @@ from aws_cdk import (
     aws_ec2 as ec2,
     Stack,
     aws_secretsmanager as secretsmanager,
-    aws_logs as logs
+    aws_logs as logs,
+    CfnOutput,
 )
 from aws_cdk import SecretValue
 from constructs import Construct
@@ -94,7 +95,7 @@ class BackendStack(Stack):
             fn_ahi_to_rdbms.getFn().add_environment(key="DB_SECRET", value=db_user_secret.secret_arn )
             fn_ahi_to_rdbms.getFn().add_environment(key="POPULATE_INSTANCE_LEVEL", value=str(config.RDBMS_CONFIG["populate_instance_level"])) 
             fn_ahi_to_rdbms.getFn().add_environment(key="POPULATE_FRAME_LEVEL", value=str(config.RDBMS_CONFIG["populate_frame_level"])) 
-            fn_ahi_to_rdbms.getFn().add_environment(key="AHLI_ENDPOINT", value="") #T08/27/2023 - jpleger : This is a workaround for the medical-imaging service descriptor, not nice... Will fix soon.
+            fn_ahi_to_rdbms.getFn().add_environment(key="AHLI_ENDPOINT", value="") #08/27/2023 - jpleger : This is a workaround for the medical-imaging service descriptor, not nice... Will fix soon.
             ahi_output_bucket.grant_read(fn_ahi_to_rdbms.getFn())
             
             
@@ -134,5 +135,14 @@ class BackendStack(Stack):
             
             fn_ahi_to_datalake.getFn().add_permission("ahi-to-datalake-allows-sns", principal=iam.ServicePrincipal("sns.amazonaws.com"), action="lambda:InvokeFunction")
             sns.Subscription(self, "ahi-to-datalke-sns-subscription",topic=sns_topic,endpoint=fn_ahi_to_datalake.getFn().function_arn ,protocol=sns.SubscriptionProtocol.LAMBDA)
-
-
+        if (config.VPC["USE_VPC"] == True):
+            CfnOutput(self, "ahi-vpc-id", export_name=f"{stack_name}-ahi-vpc-id", value=vpc.vpc_id)
+        CfnOutput(self, "ahi-output-bucket", export_name=f"{stack_name}-ahi-output-bucket", value=ahi_output_bucket.bucket_name)
+        CfnOutput(self, "ahi-datastore-arn", export_name=f"{stack_name}-ahi-datastore-arn", value=ahi_datastore_arn)
+        if config.RDBMS_CONFIG["enabled"] == True:
+            CfnOutput(self, "rdbms-cluster-id", export_name=f"{stack_name}-rdbms-database-arn", value=db.getDbCluster().cluster_resource_identifier)
+            CfnOutput(self, "rdbms-database-secret-arn", export_name=f"{stack_name}-rdbms-database-secret-arn", value=db_secret_arn)
+            CfnOutput(self, "rdbms-database-name", export_name=f"{stack_name}-rdbms-database-name", value=db_name)
+            CfnOutput(self, "rdbms-database-security-group", export_name=f"{stack_name}-rdbms-database-security-group", value=aurora_security_group.security_group_id)  
+        if config.DATALAKE_CONFIG["enabled"] == True:
+            CfnOutput(self, "datalake-destination-bucket", export_name=f"{stack_name}-datalake-destination-bucket", value=destination_bucket.bucket_name)
