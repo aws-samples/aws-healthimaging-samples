@@ -36,3 +36,4 @@ yarn-error.log*
 .gitlab-ci.yml
 
 TODO
+.idea
