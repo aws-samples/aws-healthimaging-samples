@@ -1,0 +1,1628 @@
+{
+	"SchemaVersion": "1.1",
+	"DatastoreID": "169224ef14db49839f628fb887d50291",
+	"ImageSetID": "1e29a254a6ff080f17e9c318c7cb45af",
+	"Patient": {
+		"DICOM": {
+			"PatientBirthDate": null,
+			"PatientSex": null,
+			"PatientID": null,
+			"PatientName": "US Echo"
+		}
+	},
+	"Study": {
+		"DICOM": {
+			"StudyTime": "152643",
+			"PatientWeight": null,
+			"ReferringPhysicianName": null,
+			"StudyID": null,
+			"StudyDate": "20120418",
+			"StudyDescription": "US Dopler",
+			"AccessionNumber": null,
+			"PatientSize": null,
+			"StudyInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082458.1"
+		},
+		"Series": {
+			"1.3.6.1.4.1.25403.166563008443.732.20120418082458.2": {
+				"DICOM": {
+					"SoftwareVersions": [
+						"1.06"
+					],
+					"ProtocolName": null,
+					"SeriesDate": "20120418",
+					"Manufacturer": "ACUSON",
+					"SeriesNumber": null,
+					"DeviceSerialNumber": null,
+					"Modality": "US",
+					"BodyPartExamined": null,
+					"SeriesInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082458.2",
+					"SeriesDescription": null
+				},
+				"Instances": {
+					"1.3.6.1.4.1.25403.166563008443.732.20120418082502.1": {
+						"DICOM": {
+							"SpecificCharacterSet": [
+								"ISO-IR 100"
+							],
+							"StageNumber": "3",
+							"HeartRate": "124",
+							"InstanceNumber": "19",
+							"NumberOfViewsInStage": "20",
+							"SamplesPerPixel": 3,
+							"BitsStored": 8,
+							"PixelRepresentation": 0,
+							"SequenceOfUltrasoundRegions": [
+								{
+									"RegionLocationMaxY1": 463,
+									"RegionLocationMinY0": 32,
+									"RegionLocationMaxX1": 639,
+									"RegionLocationMinX0": 0,
+									"PhysicalDeltaX": 1,
+									"RegionFlags": 1,
+									"RegionDataType": 0,
+									"PhysicalUnitsXDirection": 0,
+									"PhysicalDeltaY": 1,
+									"RegionSpatialFormat": 0,
+									"PhysicalUnitsYDirection": 0
+								},
+								{
+									"RegionLocationMinY0": 48,
+									"ReferencePixelY0": 0,
+									"RegionLocationMinX0": 164,
+									"ReferencePixelX0": 170,
+									"PhysicalDeltaX": -0.07937499999068676,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 3,
+									"ReferencePixelPhysicalValueX": 21.417323475444576,
+									"PhysicalDeltaY": 0.07937499999068676,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 1,
+									"RegionLocationMaxY1": 175,
+									"RegionLocationMaxX1": 503,
+									"RegionDataType": 1,
+									"PhysicalUnitsYDirection": 3
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 48,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 68072048,
+									"PhysicalDeltaY": 6.4435144847407,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 344,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 355,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 67959432,
+									"PhysicalDeltaY": 6.4435144847407,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 623,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								}
+							],
+							"ImageType": [
+								"ORIGINAL",
+								"PRIMARY",
+								"",
+								"0015"
+							],
+							"BitsAllocated": 8,
+							"FileMetaInformationVersion": "AAE=",
+							"LossyImageCompression": "00",
+							"EventElapsedTimes": [
+								"45000"
+							],
+							"ImplementationClassUID": "1.2.840.113747.20080222",
+							"PlanarConfiguration": 0,
+							"PhotometricInterpretation": "YBR_FULL",
+							"MediaStorageSOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"MediaStorageSOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082502.1",
+							"AcquisitionDate": "20120418",
+							"TriggerTime": "0",
+							"TransducerType": "VECTOR_PHASED",
+							"7FDD1090": "",
+							"ContentDate": "20120418",
+							"PatientOrientation": null,
+							"7FDD1030": "",
+							"SOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082502.1",
+							"SourceApplicationEntityTitle": null,
+							"SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"NumberOfFrames": "1",
+							"7FDF1001": "AQA=",
+							"Rows": 480,
+							"7FDF0010": "ACUSON:1.2.840.113680.1.0",
+							"7FDF1000": "MCA=",
+							"TransferSyntaxUID": "1.2.840.10008.1.2",
+							"HighBit": 7,
+							"StageName": "Im Post 400",
+							"PixelData": null,
+							"ImplementationVersionName": "VIMS_1.0",
+							"Columns": 640,
+							"7FDF100D": "MCA=",
+							"AcquisitionTime": null,
+							"ContentTime": "153451",
+							"NumberOfStages": "3",
+							"NumberOfEventTimers": "1",
+							"EventTimerNames": [
+								"STAGE TIME"
+							],
+							"7FDD0010": "TSC Private Group"
+						},
+						"DICOMVRs": {
+							"7FDD1090": "UN",
+							"7FDD1030": "UN",
+							"7FDF100D": "UN",
+							"7FDD0010": "LO",
+							"7FDF1001": "UN",
+							"7FDF0010": "LO",
+							"7FDF1000": "UN"
+						},
+						"ImageFrames": [
+							{
+								"ID": "575f838ec9c7db93e731de407e1bed6c",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 740549643
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 13255855
+									},
+									{
+										"Width": 640,
+										"Height": 480,
+										"Checksum": 2095233973
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 921600
+							}
+						]
+					},
+					"1.3.6.1.4.1.25403.166563008443.732.20120418082503.1": {
+						"DICOM": {
+							"SpecificCharacterSet": [
+								"ISO-IR 100"
+							],
+							"StageNumber": "3",
+							"HeartRate": "116",
+							"InstanceNumber": "20",
+							"NumberOfViewsInStage": "20",
+							"SamplesPerPixel": 3,
+							"BitsStored": 8,
+							"PixelRepresentation": 0,
+							"SequenceOfUltrasoundRegions": [
+								{
+									"RegionLocationMaxY1": 463,
+									"RegionLocationMinY0": 32,
+									"RegionLocationMaxX1": 639,
+									"RegionLocationMinX0": 0,
+									"PhysicalDeltaX": 1,
+									"RegionFlags": 1,
+									"RegionDataType": 0,
+									"PhysicalUnitsXDirection": 0,
+									"PhysicalDeltaY": 1,
+									"RegionSpatialFormat": 0,
+									"PhysicalUnitsYDirection": 0
+								},
+								{
+									"RegionLocationMinY0": 48,
+									"ReferencePixelY0": 0,
+									"RegionLocationMinX0": 164,
+									"ReferencePixelX0": 170,
+									"PhysicalDeltaX": -0.07937499999068676,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 3,
+									"ReferencePixelPhysicalValueX": 21.417323475444576,
+									"PhysicalDeltaY": 0.07937499999068676,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 1,
+									"RegionLocationMaxY1": 175,
+									"RegionLocationMaxX1": 503,
+									"RegionDataType": 1,
+									"PhysicalUnitsYDirection": 3
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 48,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 68456592,
+									"PhysicalDeltaY": 6.4435144847407,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 588,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								}
+							],
+							"ImageType": [
+								"ORIGINAL",
+								"PRIMARY",
+								"",
+								"0015"
+							],
+							"BitsAllocated": 8,
+							"FileMetaInformationVersion": "AAE=",
+							"LossyImageCompression": "00",
+							"EventElapsedTimes": [
+								"55000"
+							],
+							"ImplementationClassUID": "1.2.840.113747.20080222",
+							"PlanarConfiguration": 0,
+							"PhotometricInterpretation": "YBR_FULL",
+							"MediaStorageSOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"MediaStorageSOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082503.1",
+							"AcquisitionDate": "20120418",
+							"TriggerTime": "0",
+							"TransducerType": "VECTOR_PHASED",
+							"7FDD1090": "",
+							"ContentDate": "20120418",
+							"PatientOrientation": null,
+							"7FDD1030": "",
+							"SOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082503.1",
+							"SourceApplicationEntityTitle": null,
+							"SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"NumberOfFrames": "1",
+							"7FDF1001": "AQA=",
+							"Rows": 480,
+							"7FDF0010": "ACUSON:1.2.840.113680.1.0",
+							"7FDF1000": "MCA=",
+							"TransferSyntaxUID": "1.2.840.10008.1.2",
+							"HighBit": 7,
+							"StageName": "Im Post 400",
+							"PixelData": null,
+							"ImplementationVersionName": "VIMS_1.0",
+							"Columns": 640,
+							"7FDF100D": "MCA=",
+							"AcquisitionTime": null,
+							"ContentTime": "153500",
+							"NumberOfStages": "3",
+							"NumberOfEventTimers": "1",
+							"EventTimerNames": [
+								"STAGE TIME"
+							],
+							"7FDD0010": "TSC Private Group"
+						},
+						"DICOMVRs": {
+							"7FDD1090": "UN",
+							"7FDD1030": "UN",
+							"7FDF100D": "UN",
+							"7FDD0010": "LO",
+							"7FDF1001": "UN",
+							"7FDF0010": "LO",
+							"7FDF1000": "UN"
+						},
+						"ImageFrames": [
+							{
+								"ID": "edbf345d8637f30f6c01555655f755bb",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 2944680141
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 1079329001
+									},
+									{
+										"Width": 640,
+										"Height": 480,
+										"Checksum": 849124165
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 921600
+							}
+						]
+					},
+					"1.3.6.1.4.1.25403.166563008443.732.20120418082505.1": {
+						"DICOM": {
+							"SpecificCharacterSet": [
+								"ISO-IR 100"
+							],
+							"StageNumber": "3",
+							"HeartRate": "115",
+							"InstanceNumber": "21",
+							"NumberOfViewsInStage": "20",
+							"SamplesPerPixel": 3,
+							"BitsStored": 8,
+							"PixelRepresentation": 0,
+							"SequenceOfUltrasoundRegions": [
+								{
+									"RegionLocationMaxY1": 463,
+									"RegionLocationMinY0": 32,
+									"RegionLocationMaxX1": 639,
+									"RegionLocationMinX0": 0,
+									"PhysicalDeltaX": 1,
+									"RegionFlags": 1,
+									"RegionDataType": 0,
+									"PhysicalUnitsXDirection": 0,
+									"PhysicalDeltaY": 1,
+									"RegionSpatialFormat": 0,
+									"PhysicalUnitsYDirection": 0
+								},
+								{
+									"RegionLocationMinY0": 48,
+									"ReferencePixelY0": 0,
+									"RegionLocationMinX0": 164,
+									"ReferencePixelX0": 170,
+									"PhysicalDeltaX": -0.07937499999068676,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 3,
+									"ReferencePixelPhysicalValueX": 21.417323475444576,
+									"PhysicalDeltaY": 0.07937499999068676,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 1,
+									"RegionLocationMaxY1": 175,
+									"RegionLocationMaxX1": 503,
+									"RegionDataType": 1,
+									"PhysicalUnitsYDirection": 3
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 48,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 69179808,
+									"PhysicalDeltaY": 6.4435144847407,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 114,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 125,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 68971272,
+									"PhysicalDeltaY": 6.4435144847407,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 623,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								}
+							],
+							"ImageType": [
+								"ORIGINAL",
+								"PRIMARY",
+								"",
+								"0015"
+							],
+							"BitsAllocated": 8,
+							"FileMetaInformationVersion": "AAE=",
+							"LossyImageCompression": "00",
+							"EventElapsedTimes": [
+								"65000"
+							],
+							"ImplementationClassUID": "1.2.840.113747.20080222",
+							"PlanarConfiguration": 0,
+							"PhotometricInterpretation": "YBR_FULL",
+							"MediaStorageSOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"MediaStorageSOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082505.1",
+							"AcquisitionDate": "20120418",
+							"TriggerTime": "0",
+							"TransducerType": "VECTOR_PHASED",
+							"7FDD1090": "",
+							"ContentDate": "20120418",
+							"PatientOrientation": null,
+							"7FDD1030": "",
+							"SOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082505.1",
+							"SourceApplicationEntityTitle": null,
+							"SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"NumberOfFrames": "1",
+							"7FDF1001": "AQA=",
+							"Rows": 480,
+							"7FDF0010": "ACUSON:1.2.840.113680.1.0",
+							"7FDF1000": "MCA=",
+							"TransferSyntaxUID": "1.2.840.10008.1.2",
+							"HighBit": 7,
+							"StageName": "Im Post 400",
+							"PixelData": null,
+							"ImplementationVersionName": "VIMS_1.0",
+							"Columns": 640,
+							"7FDF100D": "MCA=",
+							"AcquisitionTime": null,
+							"ContentTime": "153511",
+							"NumberOfStages": "3",
+							"NumberOfEventTimers": "1",
+							"EventTimerNames": [
+								"STAGE TIME"
+							],
+							"7FDD0010": "TSC Private Group"
+						},
+						"DICOMVRs": {
+							"7FDD1090": "UN",
+							"7FDD1030": "UN",
+							"7FDF100D": "UN",
+							"7FDD0010": "LO",
+							"7FDF1001": "UN",
+							"7FDF0010": "LO",
+							"7FDF1000": "UN"
+						},
+						"ImageFrames": [
+							{
+								"ID": "98dc2529e761ae4bf2cbab0df662c9aa",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 2286902764
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 3982476053
+									},
+									{
+										"Width": 640,
+										"Height": 480,
+										"Checksum": 4222843145
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 921600
+							}
+						]
+					},
+					"1.3.6.1.4.1.25403.166563008443.732.20120418082506.1": {
+						"DICOM": {
+							"SpecificCharacterSet": [
+								"ISO-IR 100"
+							],
+							"StageNumber": "3",
+							"HeartRate": "115",
+							"InstanceNumber": "22",
+							"NumberOfViewsInStage": "20",
+							"SamplesPerPixel": 3,
+							"BitsStored": 8,
+							"PixelRepresentation": 0,
+							"SequenceOfUltrasoundRegions": [
+								{
+									"RegionLocationMaxY1": 463,
+									"RegionLocationMinY0": 32,
+									"RegionLocationMaxX1": 639,
+									"RegionLocationMinX0": 0,
+									"PhysicalDeltaX": 1,
+									"RegionFlags": 1,
+									"RegionDataType": 0,
+									"PhysicalUnitsXDirection": 0,
+									"PhysicalDeltaY": 1,
+									"RegionSpatialFormat": 0,
+									"PhysicalUnitsYDirection": 0
+								},
+								{
+									"RegionLocationMinY0": 48,
+									"ReferencePixelY0": 0,
+									"RegionLocationMinX0": 164,
+									"ReferencePixelX0": 170,
+									"PhysicalDeltaX": -0.07937499999068676,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 3,
+									"ReferencePixelPhysicalValueX": 21.417323475444576,
+									"PhysicalDeltaY": 0.07937499999068676,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 1,
+									"RegionLocationMaxY1": 175,
+									"RegionLocationMaxX1": 503,
+									"RegionDataType": 1,
+									"PhysicalUnitsYDirection": 3
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 48,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 69179808,
+									"PhysicalDeltaY": 6.4435144847407,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 114,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 125,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 68971272,
+									"PhysicalDeltaY": 6.4435144847407,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 623,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								}
+							],
+							"ImageType": [
+								"ORIGINAL",
+								"PRIMARY",
+								"",
+								"0015"
+							],
+							"BitsAllocated": 8,
+							"FileMetaInformationVersion": "AAE=",
+							"LossyImageCompression": "00",
+							"EventElapsedTimes": [
+								"65000"
+							],
+							"ImplementationClassUID": "1.2.840.113747.20080222",
+							"PlanarConfiguration": 0,
+							"PhotometricInterpretation": "YBR_FULL",
+							"MediaStorageSOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"MediaStorageSOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082506.1",
+							"AcquisitionDate": "20120418",
+							"TriggerTime": "0",
+							"TransducerType": "VECTOR_PHASED",
+							"7FDD1090": "",
+							"ContentDate": "20120418",
+							"PatientOrientation": null,
+							"7FDD1030": "",
+							"SOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082506.1",
+							"SourceApplicationEntityTitle": null,
+							"SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"NumberOfFrames": "1",
+							"7FDF1001": "AQA=",
+							"Rows": 480,
+							"7FDF0010": "ACUSON:1.2.840.113680.1.0",
+							"7FDF1000": "MCA=",
+							"TransferSyntaxUID": "1.2.840.10008.1.2",
+							"HighBit": 7,
+							"StageName": "Im Post 400",
+							"PixelData": null,
+							"ImplementationVersionName": "VIMS_1.0",
+							"Columns": 640,
+							"7FDF100D": "MCA=",
+							"AcquisitionTime": null,
+							"ContentTime": "153800",
+							"NumberOfStages": "3",
+							"NumberOfEventTimers": "1",
+							"ViewNumber": "2",
+							"EventTimerNames": [
+								"STAGE TIME"
+							],
+							"7FDD0010": "TSC Private Group"
+						},
+						"DICOMVRs": {
+							"7FDD1090": "UN",
+							"7FDD1030": "UN",
+							"7FDF100D": "UN",
+							"7FDD0010": "LO",
+							"7FDF1001": "UN",
+							"7FDF0010": "LO",
+							"7FDF1000": "UN"
+						},
+						"ImageFrames": [
+							{
+								"ID": "1767a6dd216aa32de71b22b89c183760",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 1393307992
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 1953464090
+									},
+									{
+										"Width": 640,
+										"Height": 480,
+										"Checksum": 2731429426
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 921600
+							}
+						]
+					},
+					"1.3.6.1.4.1.25403.166563008443.732.20120418082508.1": {
+						"DICOM": {
+							"SpecificCharacterSet": [
+								"ISO-IR 100"
+							],
+							"InstanceNumber": "3",
+							"NumberOfViewsInStage": "20",
+							"StartTrim": "1",
+							"SequenceOfUltrasoundRegions": [
+								{
+									"RegionLocationMaxY1": 231,
+									"RegionLocationMinY0": 16,
+									"RegionLocationMaxX1": 319,
+									"RegionLocationMinX0": 0,
+									"PhysicalDeltaX": 1,
+									"RegionFlags": 1,
+									"RegionDataType": 0,
+									"PhysicalUnitsXDirection": 0,
+									"PhysicalDeltaY": 1,
+									"RegionSpatialFormat": 0,
+									"PhysicalUnitsYDirection": 0
+								},
+								{
+									"RegionLocationMinY0": 16,
+									"ReferencePixelY0": -82,
+									"RegionLocationMinX0": 0,
+									"ReferencePixelX0": 183,
+									"PhysicalDeltaX": -0.2293750081863255,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 3,
+									"ReferencePixelPhysicalValueX": 7.978201587906682,
+									"PhysicalDeltaY": 0.2293750081863255,
+									"ReferencePixelPhysicalValueY": -3.5749318590620107,
+									"RegionSpatialFormat": 1,
+									"RegionLocationMaxY1": 217,
+									"RegionLocationMaxX1": 319,
+									"RegionDataType": 1,
+									"PhysicalUnitsYDirection": 3
+								}
+							],
+							"ImageType": [
+								"ORIGINAL",
+								"PRIMARY",
+								"",
+								"0011"
+							],
+							"BitsAllocated": 8,
+							"MediaStorageSOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+							"7FDD1090": "",
+							"ContentDate": "20120418",
+							"SOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082508.1",
+							"SourceApplicationEntityTitle": null,
+							"SOPClassUID": "1.2.840.10008.5.1.4.1.1.3.1",
+							"7FDF0010": "ACUSON:1.2.840.113680.1.0",
+							"HighBit": 7,
+							"PixelData": null,
+							"ImplementationVersionName": "VIMS_1.0",
+							"AcquisitionTime": null,
+							"FrameTimeVector": [
+								"33.333",
+								"33.333",
+								"50.000",
+								"33.333",
+								"50.000",
+								"50.000",
+								"50.000",
+								"33.333",
+								"50.000",
+								"50.000",
+								"33.333",
+								"50.000",
+								"50.000",
+								"43.333"
+							],
+							"ViewNumber": "1",
+							"StageNumber": "1",
+							"HeartRate": "90",
+							"SamplesPerPixel": 3,
+							"BitsStored": 8,
+							"PixelRepresentation": 0,
+							"FileMetaInformationVersion": "AAE=",
+							"LossyImageCompression": "01",
+							"ImplementationClassUID": "1.2.840.113747.20080222",
+							"PlanarConfiguration": 0,
+							"PhotometricInterpretation": "RGB",
+							"MediaStorageSOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082508.1",
+							"AcquisitionDate": "20120418",
+							"TriggerTime": "0",
+							"TransducerType": "VECTOR_PHASED",
+							"PatientOrientation": null,
+							"7FDD1030": "",
+							"NumberOfFrames": "14",
+							"7FDF1001": "BwA=",
+							"Rows": 240,
+							"7FDF1000": "NiA=",
+							"TransferSyntaxUID": "1.2.840.10008.1.2",
+							"StageName": "Rest",
+							"Columns": 320,
+							"7FDF100D": "MCA=",
+							"FrameIncrementPointer": [
+								"00181065"
+							],
+							"ContentTime": "152825",
+							"StopTrim": "14",
+							"NumberOfStages": "3",
+							"7FDD0010": "TSC Private Group"
+						},
+						"DICOMVRs": {
+							"7FDD1090": "UN",
+							"7FDD1030": "UN",
+							"7FDF100D": "UN",
+							"7FDD0010": "LO",
+							"7FDF1001": "UN",
+							"7FDF0010": "LO",
+							"7FDF1000": "UN"
+						},
+						"ImageFrames": [
+							{
+								"ID": "63d59c5dd8c8a68821e50031c8e82c3b",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 4181466661
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 3014344982
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "0560212227d9a3bd1928a2c20cc15868",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 1975737980
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 4292905187
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "b9ff5da995969b6498e9408b0c3a712e",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 2499411791
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 3505593081
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "45dec3bae07e013d47faa0665da15648",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 3188326023
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 845091711
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "9d63a0d884ba385bb29fa4e1b067be2b",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 3292498087
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 957194527
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "75a996d6510d02f8b47db40b5081ac04",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 3080801541
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 2087322968
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "e01f3aea5a5cd46bcf9467c8aec1b9ef",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 1566033201
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 3247360190
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "86da92e46aee052b4225d883dd18ac10",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 1118757969
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 775847818
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "6ad7a24e2f3fc6014208f4f50c441269",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 3441910974
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 4284275363
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "297d6e0c13c883e80b05df4de45b2eea",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 597988013
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 3487728505
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "188b00e5b7d4890d7cfe265c9fc29cba",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 3928965898
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 2168365880
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "8976e25774cbd5c85dda52c462cc5140",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 1543496281
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 1445777899
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "14bb2a85a2f0d1a60826388bf6bc22bf",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 710826973
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 738769257
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							},
+							{
+								"ID": "ac98eea8c44c5949ea5f313f13803aaf",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 1117274850
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 3326726510
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 230400
+							}
+						]
+					},
+					"1.3.6.1.4.1.25403.166563008443.732.20120418082509.1": {
+						"DICOM": {
+							"SpecificCharacterSet": [
+								"ISO-IR 100"
+							],
+							"StageNumber": "1",
+							"HeartRate": "92",
+							"InstanceNumber": "5",
+							"NumberOfViewsInStage": "20",
+							"SamplesPerPixel": 3,
+							"BitsStored": 8,
+							"PixelRepresentation": 0,
+							"SequenceOfUltrasoundRegions": [
+								{
+									"RegionLocationMaxY1": 463,
+									"RegionLocationMinY0": 32,
+									"RegionLocationMaxX1": 639,
+									"RegionLocationMinX0": 0,
+									"PhysicalDeltaX": 1,
+									"RegionFlags": 1,
+									"RegionDataType": 0,
+									"PhysicalUnitsXDirection": 0,
+									"PhysicalDeltaY": 1,
+									"RegionSpatialFormat": 0,
+									"PhysicalUnitsYDirection": 0
+								},
+								{
+									"RegionLocationMinY0": 48,
+									"ReferencePixelY0": 0,
+									"RegionLocationMinX0": 164,
+									"ReferencePixelX0": 170,
+									"PhysicalDeltaX": -0.07937499999068676,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 3,
+									"ReferencePixelPhysicalValueX": 21.417323475444576,
+									"PhysicalDeltaY": 0.07937499999068676,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 1,
+									"RegionLocationMaxY1": 175,
+									"RegionLocationMaxX1": 503,
+									"RegionDataType": 1,
+									"PhysicalUnitsYDirection": 3
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 48,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 53800292,
+									"PhysicalDeltaY": 4.295676323160467,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 234,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 245,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 53641800,
+									"PhysicalDeltaY": 4.295676323160467,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 623,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								}
+							],
+							"ImageType": [
+								"ORIGINAL",
+								"PRIMARY",
+								"",
+								"0015"
+							],
+							"BitsAllocated": 8,
+							"FileMetaInformationVersion": "AAE=",
+							"LossyImageCompression": "00",
+							"ImplementationClassUID": "1.2.840.113747.20080222",
+							"PlanarConfiguration": 0,
+							"PhotometricInterpretation": "YBR_FULL",
+							"MediaStorageSOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"MediaStorageSOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082509.1",
+							"AcquisitionDate": "20120418",
+							"TriggerTime": "0",
+							"TransducerType": "VECTOR_PHASED",
+							"7FDD1090": "",
+							"ContentDate": "20120418",
+							"PatientOrientation": null,
+							"7FDD1030": "",
+							"SOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082509.1",
+							"SourceApplicationEntityTitle": null,
+							"SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"NumberOfFrames": "1",
+							"7FDF1001": "AQA=",
+							"Rows": 480,
+							"7FDF0010": "ACUSON:1.2.840.113680.1.0",
+							"7FDF1000": "MCA=",
+							"TransferSyntaxUID": "1.2.840.10008.1.2",
+							"HighBit": 7,
+							"StageName": "Rest",
+							"PixelData": null,
+							"ImplementationVersionName": "VIMS_1.0",
+							"Columns": 640,
+							"7FDF100D": "MCA=",
+							"AcquisitionTime": null,
+							"ContentTime": "153004",
+							"NumberOfStages": "3",
+							"7FDD0010": "TSC Private Group"
+						},
+						"DICOMVRs": {
+							"7FDD1090": "UN",
+							"7FDD1030": "UN",
+							"7FDF100D": "UN",
+							"7FDD0010": "LO",
+							"7FDF1001": "UN",
+							"7FDF0010": "LO",
+							"7FDF1000": "UN"
+						},
+						"ImageFrames": [
+							{
+								"ID": "921d9ab6265abce1db9b78457043af23",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 230349975
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 1043442805
+									},
+									{
+										"Width": 640,
+										"Height": 480,
+										"Checksum": 546143140
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 921600
+							}
+						]
+					},
+					"1.3.6.1.4.1.25403.166563008443.732.20120418082510.1": {
+						"DICOM": {
+							"SpecificCharacterSet": [
+								"ISO-IR 100"
+							],
+							"StageNumber": "1",
+							"HeartRate": "98",
+							"InstanceNumber": "6",
+							"NumberOfViewsInStage": "20",
+							"SamplesPerPixel": 3,
+							"BitsStored": 8,
+							"PixelRepresentation": 0,
+							"SequenceOfUltrasoundRegions": [
+								{
+									"RegionLocationMaxY1": 463,
+									"RegionLocationMinY0": 32,
+									"RegionLocationMaxX1": 639,
+									"RegionLocationMinX0": 0,
+									"PhysicalDeltaX": 1,
+									"RegionFlags": 1,
+									"RegionDataType": 0,
+									"PhysicalUnitsXDirection": 0,
+									"PhysicalDeltaY": 1,
+									"RegionSpatialFormat": 0,
+									"PhysicalUnitsYDirection": 0
+								},
+								{
+									"RegionLocationMinY0": 48,
+									"ReferencePixelY0": 0,
+									"RegionLocationMinX0": 164,
+									"ReferencePixelX0": 170,
+									"PhysicalDeltaX": -0.07937499999068676,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 3,
+									"ReferencePixelPhysicalValueX": 21.417323475444576,
+									"PhysicalDeltaY": 0.07937499999068676,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 1,
+									"RegionLocationMaxY1": 175,
+									"RegionLocationMaxX1": 503,
+									"RegionDataType": 1,
+									"PhysicalUnitsYDirection": 3
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 48,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 54325848,
+									"PhysicalDeltaY": 4.295676323160467,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 406,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 417,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 54239096,
+									"PhysicalDeltaY": 4.295676323160467,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 623,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								}
+							],
+							"ImageType": [
+								"ORIGINAL",
+								"PRIMARY",
+								"",
+								"0015"
+							],
+							"BitsAllocated": 8,
+							"FileMetaInformationVersion": "AAE=",
+							"LossyImageCompression": "00",
+							"ImplementationClassUID": "1.2.840.113747.20080222",
+							"PlanarConfiguration": 0,
+							"PhotometricInterpretation": "YBR_FULL",
+							"MediaStorageSOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"MediaStorageSOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082510.1",
+							"AcquisitionDate": "20120418",
+							"TriggerTime": "0",
+							"TransducerType": "VECTOR_PHASED",
+							"7FDD1090": "",
+							"ContentDate": "20120418",
+							"PatientOrientation": null,
+							"7FDD1030": "",
+							"SOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082510.1",
+							"SourceApplicationEntityTitle": null,
+							"SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"NumberOfFrames": "1",
+							"7FDF1001": "AQA=",
+							"Rows": 480,
+							"7FDF0010": "ACUSON:1.2.840.113680.1.0",
+							"7FDF1000": "MCA=",
+							"TransferSyntaxUID": "1.2.840.10008.1.2",
+							"HighBit": 7,
+							"StageName": "Rest",
+							"PixelData": null,
+							"ImplementationVersionName": "VIMS_1.0",
+							"Columns": 640,
+							"7FDF100D": "MCA=",
+							"AcquisitionTime": null,
+							"ContentTime": "153016",
+							"NumberOfStages": "3",
+							"7FDD0010": "TSC Private Group"
+						},
+						"DICOMVRs": {
+							"7FDD1090": "UN",
+							"7FDD1030": "UN",
+							"7FDF100D": "UN",
+							"7FDD0010": "LO",
+							"7FDF1001": "UN",
+							"7FDF0010": "LO",
+							"7FDF1000": "UN"
+						},
+						"ImageFrames": [
+							{
+								"ID": "67a824cd07e75f0124aaf871d3f6dad1",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 743292060
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 1653297073
+									},
+									{
+										"Width": 640,
+										"Height": 480,
+										"Checksum": 1479472794
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 921600
+							}
+						]
+					},
+					"1.3.6.1.4.1.25403.166563008443.732.20120418082511.1": {
+						"DICOM": {
+							"SpecificCharacterSet": [
+								"ISO-IR 100"
+							],
+							"StageNumber": "1",
+							"HeartRate": "89",
+							"InstanceNumber": "7",
+							"NumberOfViewsInStage": "20",
+							"SamplesPerPixel": 3,
+							"BitsStored": 8,
+							"PixelRepresentation": 0,
+							"SequenceOfUltrasoundRegions": [
+								{
+									"RegionLocationMaxY1": 463,
+									"RegionLocationMinY0": 32,
+									"RegionLocationMaxX1": 639,
+									"RegionLocationMinX0": 0,
+									"PhysicalDeltaX": 1,
+									"RegionFlags": 1,
+									"RegionDataType": 0,
+									"PhysicalUnitsXDirection": 0,
+									"PhysicalDeltaY": 1,
+									"RegionSpatialFormat": 0,
+									"PhysicalUnitsYDirection": 0
+								},
+								{
+									"RegionLocationMinY0": 48,
+									"ReferencePixelY0": 0,
+									"RegionLocationMinX0": 164,
+									"ReferencePixelX0": 170,
+									"PhysicalDeltaX": -0.07937499999068676,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 3,
+									"ReferencePixelPhysicalValueX": 21.417323475444576,
+									"PhysicalDeltaY": 0.07937499999068676,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 1,
+									"RegionLocationMaxY1": 175,
+									"RegionLocationMaxX1": 503,
+									"RegionDataType": 1,
+									"PhysicalUnitsYDirection": 3
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 55,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 57202848,
+									"PhysicalDeltaY": 4.295676323160467,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 620,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								}
+							],
+							"ImageType": [
+								"ORIGINAL",
+								"PRIMARY",
+								"",
+								"0015"
+							],
+							"BitsAllocated": 8,
+							"FileMetaInformationVersion": "AAE=",
+							"LossyImageCompression": "00",
+							"ImplementationClassUID": "1.2.840.113747.20080222",
+							"PlanarConfiguration": 0,
+							"PhotometricInterpretation": "YBR_FULL",
+							"MediaStorageSOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"MediaStorageSOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082511.1",
+							"AcquisitionDate": "20120418",
+							"TriggerTime": "0",
+							"TransducerType": "VECTOR_PHASED",
+							"7FDD1090": "",
+							"ContentDate": "20120418",
+							"PatientOrientation": null,
+							"7FDD1030": "",
+							"SOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082511.1",
+							"SourceApplicationEntityTitle": null,
+							"SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"NumberOfFrames": "1",
+							"7FDF1001": "AQA=",
+							"Rows": 480,
+							"7FDF0010": "ACUSON:1.2.840.113680.1.0",
+							"7FDF1000": "MCA=",
+							"TransferSyntaxUID": "1.2.840.10008.1.2",
+							"HighBit": 7,
+							"StageName": "Rest",
+							"PixelData": null,
+							"ImplementationVersionName": "VIMS_1.0",
+							"Columns": 640,
+							"7FDF100D": "MCA=",
+							"AcquisitionTime": null,
+							"ContentTime": "153115",
+							"NumberOfStages": "3",
+							"7FDD0010": "TSC Private Group"
+						},
+						"DICOMVRs": {
+							"7FDD1090": "UN",
+							"7FDD1030": "UN",
+							"7FDF100D": "UN",
+							"7FDD0010": "LO",
+							"7FDF1001": "UN",
+							"7FDF0010": "LO",
+							"7FDF1000": "UN"
+						},
+						"ImageFrames": [
+							{
+								"ID": "9f46068e5992e7ed2bda6445b0936c3c",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 3872778259
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 1447939678
+									},
+									{
+										"Width": 640,
+										"Height": 480,
+										"Checksum": 2137914851
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 921600
+							}
+						]
+					},
+					"1.3.6.1.4.1.25403.166563008443.732.20120418082512.1": {
+						"DICOM": {
+							"SpecificCharacterSet": [
+								"ISO-IR 100"
+							],
+							"StageNumber": "1",
+							"HeartRate": "89",
+							"InstanceNumber": "8",
+							"NumberOfViewsInStage": "20",
+							"SamplesPerPixel": 3,
+							"BitsStored": 8,
+							"PixelRepresentation": 0,
+							"SequenceOfUltrasoundRegions": [
+								{
+									"RegionLocationMaxY1": 463,
+									"RegionLocationMinY0": 32,
+									"RegionLocationMaxX1": 639,
+									"RegionLocationMinX0": 0,
+									"PhysicalDeltaX": 1,
+									"RegionFlags": 1,
+									"RegionDataType": 0,
+									"PhysicalUnitsXDirection": 0,
+									"PhysicalDeltaY": 1,
+									"RegionSpatialFormat": 0,
+									"PhysicalUnitsYDirection": 0
+								},
+								{
+									"RegionLocationMinY0": 48,
+									"ReferencePixelY0": 0,
+									"RegionLocationMinX0": 164,
+									"ReferencePixelX0": 170,
+									"PhysicalDeltaX": -0.07937499999068676,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 3,
+									"ReferencePixelPhysicalValueX": 21.417323475444576,
+									"PhysicalDeltaY": 0.07937499999068676,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 1,
+									"RegionLocationMaxY1": 175,
+									"RegionLocationMaxX1": 503,
+									"RegionDataType": 1,
+									"PhysicalUnitsYDirection": 3
+								},
+								{
+									"RegionLocationMinY0": 208,
+									"ReferencePixelY0": 90,
+									"RegionLocationMinX0": 55,
+									"ReferencePixelX0": 0,
+									"PhysicalDeltaX": 0.008341666666666948,
+									"RegionFlags": 1,
+									"PhysicalUnitsXDirection": 4,
+									"ReferencePixelPhysicalValueX": 57202848,
+									"PhysicalDeltaY": 4.295676323160467,
+									"ReferencePixelPhysicalValueY": 0,
+									"RegionSpatialFormat": 3,
+									"RegionLocationMaxY1": 447,
+									"RegionLocationMaxX1": 620,
+									"RegionDataType": 4,
+									"PhysicalUnitsYDirection": 7
+								}
+							],
+							"ImageType": [
+								"ORIGINAL",
+								"PRIMARY",
+								"",
+								"0015"
+							],
+							"BitsAllocated": 8,
+							"FileMetaInformationVersion": "AAE=",
+							"LossyImageCompression": "00",
+							"ImplementationClassUID": "1.2.840.113747.20080222",
+							"PlanarConfiguration": 0,
+							"PhotometricInterpretation": "YBR_FULL",
+							"MediaStorageSOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"MediaStorageSOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082512.1",
+							"AcquisitionDate": "20120418",
+							"TriggerTime": "0",
+							"TransducerType": "VECTOR_PHASED",
+							"7FDD1090": "",
+							"ContentDate": "20120418",
+							"PatientOrientation": null,
+							"7FDD1030": "",
+							"SOPInstanceUID": "1.3.6.1.4.1.25403.166563008443.732.20120418082512.1",
+							"SourceApplicationEntityTitle": null,
+							"SOPClassUID": "1.2.840.10008.5.1.4.1.1.6.1",
+							"NumberOfFrames": "1",
+							"7FDF1001": "AQA=",
+							"Rows": 480,
+							"7FDF0010": "ACUSON:1.2.840.113680.1.0",
+							"7FDF1000": "MCA=",
+							"TransferSyntaxUID": "1.2.840.10008.1.2",
+							"HighBit": 7,
+							"StageName": "Rest",
+							"PixelData": null,
+							"ImplementationVersionName": "VIMS_1.0",
+							"Columns": 640,
+							"7FDF100D": "MCA=",
+							"AcquisitionTime": null,
+							"ContentTime": "153147",
+							"NumberOfStages": "3",
+							"ViewNumber": "2",
+							"7FDD0010": "TSC Private Group"
+						},
+						"DICOMVRs": {
+							"7FDD1090": "UN",
+							"7FDD1030": "UN",
+							"7FDF100D": "UN",
+							"7FDD0010": "LO",
+							"7FDF1001": "UN",
+							"7FDF0010": "LO",
+							"7FDF1000": "UN"
+						},
+						"ImageFrames": [
+							{
+								"ID": "520637c5761635c6990c38f34e2ac041",
+								"PixelDataChecksumFromBaseToFullResolution": [
+									{
+										"Width": 160,
+										"Height": 120,
+										"Checksum": 2355607022
+									},
+									{
+										"Width": 320,
+										"Height": 240,
+										"Checksum": 3729115635
+									},
+									{
+										"Width": 640,
+										"Height": 480,
+										"Checksum": 2475783413
+									}
+								],
+								"MinPixelValue": 0,
+								"MaxPixelValue": 255,
+								"FrameSizeInBytes": 921600
+							}
+						]
+					}
+				}
+			}
+		}
+	}
+}
