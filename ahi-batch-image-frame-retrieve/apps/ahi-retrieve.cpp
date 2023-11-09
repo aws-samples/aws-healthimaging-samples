@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 
         configureLogger(args);
 
-        CURLGlobal curlGlobal();
+        CURLGlobal curlGlobal;
 
         AHIImageFrameRetrieve ahiRetrieve(ifrargs);
 

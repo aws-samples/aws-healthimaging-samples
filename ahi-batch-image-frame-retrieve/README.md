@@ -48,6 +48,8 @@ Note: Older versions of the above may work but have not been tested
 
 ### Initilize git submodules
 
+From the git repository root directory:
+
 ```sh
 > git submodule update --init --recursive
 ```
@@ -55,6 +57,7 @@ Note: Older versions of the above may work but have not been tested
 ### Create build directory
 
 ```sh
+> cd ahi-batch-image-frame-retrieve
 > mkdir build
 ```
 
