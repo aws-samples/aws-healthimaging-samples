@@ -166,25 +166,28 @@ Retreival starting
 ## Performance Tuning
 
 You can achieve very high download rates (saturate a 1Gbps residential internet connection, > 5Gbps
-from an EC2 instance) with this library. They key is to take advantage multireading and HTTP/2 multiplexing.
-The download performance varies based on bandwidth, latency and cpu power. To tune your download performance,
+from an EC2 instance) with this library. They key is to take advantage multithreading and HTTP/2 request multiplexing.
+The actual download performance varies based on bandwidth and cpu power.  Latency only impacts the time to first image
+but does not impact aggregate bandwidth with appropriate concurrency settings.  To tune your download performance,
 adjust each of the following settings in order:
 
 1. Number of concurrent requests per connection.
 2. Number of connections per thread.
 3. Number of download threads.
-4. Number of decode threads.
 
-The default values for each of these are relatively low.  Adjust each one up until no further benefit is achieved, 
-then go to the next one.  For example, if increasing the number of concurrent requests does not yield any further 
-speed benefit, try increasing connections per thread. Once connections per thread yields no benefit, try increasing 
+The default values for each of these in the CLI is relatively low.  Increase the setting for each of the above 
+until no further benefit is achieved, then go to the next setting.  For example, if increasing the number of concurrent requests does not yield any further 
+speed benefit, start increasing connections per thread. Once connections per thread yields no benefit, try increasing 
 the number of download threads.  At some point you will either saturate your bandwidth or CPU in which case no further 
-performance gains will be possible without increasing one or the other.
+performance gains will be possible.
 
 NOTE - As of Nov 8, 2023, performance does not scale up beyond ~20 concurrent requests/connection and connections
 are dropped if the number is too high.  We recommend staying below 20 concurrent requests and increasing the
 number of connections and threads accordingly.  Higher numbers of concurrent requests/connection may be 
 possible in the future.
+
+HTJ2K decoding is extremely fast and the default of 10 decode threads should generally keep up until download
+rates exceed 4 Gbps and large datasets (e.g. > 1GB uncompressed size)
 
 ## TODO
 
