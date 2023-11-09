@@ -1,6 +1,3 @@
-[submodule "ahi-batch-image-frame-retrieve/extern/openjphjs"]
-	path = ahi-batch-image-frame-retrieve/extern/openjphjs
-	url = https://github.com/chafey/openjphjs.git
 [submodule "ahi-batch-image-frame-retrieve/extern/json"]
 	path = ahi-batch-image-frame-retrieve/extern/json
 	url = https://github.com/nlohmann/json.git
