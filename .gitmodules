@@ -7,3 +7,6 @@
 [submodule "ahi-batch-image-frame-retrieve/extern/curl"]
 	path = ahi-batch-image-frame-retrieve/extern/curl
 	url = https://github.com/curl/curl.git
+[submodule "ahi-batch-image-frame-retrieve/extern/openjphjs"]
+	path = ahi-batch-image-frame-retrieve/extern/openjphjs
+	url = https://github.com/chafey/openjphjs.git
