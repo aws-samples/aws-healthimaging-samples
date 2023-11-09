@@ -28,7 +28,7 @@ This project may require some tweaks for Windows builds
 
 ## Features
 
--   Concurrent download of multiple image frames over one or more HTTP/2 connections
+-   Concurrent download of multiple image frames over multiple threads and multiple HTTP/2 connections
 -   Concurrent decoding of HTJ2K image frames with multiple threads after downloaded
 -   Callback design makes it easy to customize post download workflows (e.g. conversion to other file formats or file names)
 -   Includes callback implementations for common workflows (e.g. save ImageFrames to disk in HTJ2K (jph) or uncompressed (raw) formats)
@@ -78,17 +78,17 @@ NOTE - OpenJPH currently features SIMD acceleration on Intel processors only. AR
 
 ## Using the C++ Library
 
-This C++ library is built using [modern cmake](https://cliutils.gitlab.io/modern-cmake/) principles. This means you can add this git repository as a submodule, include it in your project using cmake add_subdirectory() and link to it using target_link_librar(${APP_NAME} ahi-retrieve-lib). See the cli application for an example of using the C++ library. Note that you can create your own DownloadCallback implementation to control the post download workflow (e.g. decode the image frame and copy the result into the memory buffer of another runtime such as NodeJS or Python)
+This C++ library is built using [modern cmake](https://cliutils.gitlab.io/modern-cmake/) principles. This means you can add this git repository as a submodule, include it in your project using cmake add_subdirectory() and link to it using target_link_librar(${APP_NAME} ahi-retrieve-lib). See the cli application for an example of using the C++ library. Note that you can create your own ImageFrameDownloadCallback implementation to control the post download workflow (e.g. decode the image frame and copy the result into the memory buffer of another runtime such as NodeJS or Python)
 
 ## Using the CLI
 
-ahi-retrieve takes as input one or more [JSON documents](docs/input.md) as input files. These input files describe the ImageFrames to download from AWS HealthImaging. All ImageFrames in each input file are downloaded using a single thread and HTTP/2 connection. Multiple input files will be processed concurrently (up to maxDownloadThreads). Once an ImageFrame is downloaded, the format parameter describes whether or not to save the HTJ2K encoded (jph) files to disk or to decompress them first (raw). Each ImageFrame is saved as a separate file with the imageFrameId followed by the format extension (e.g. 7a9d6d62177792250da227bd2815ef7c.raw or 7a9d6d62177792250da227bd2815ef7c.jpc). These files are stored in a directory structure in the current working directory which includes the datastoreId and imageSetId. For example:
+ahi-retrieve takes as input one or more [JSON documents](docs/input.md) as input files. These input files describe the ImageFrames to download from AWS HealthImaging. ahi-retrieve will download all image frames in parallel for each input file using the configured download threads and download connections. Once an ImageFrame is downloaded, the format parameter describes whether or not to save the HTJ2K encoded (jph) files to disk or to decompress them first (raw). Each ImageFrame is saved as a separate file with the imageFrameId followed by the format extension (e.g. 7a9d6d62177792250da227bd2815ef7c.raw or 7a9d6d62177792250da227bd2815ef7c.jpc). These files are stored in a directory structure in the current working directory which includes the datastoreId and imageSetId. For example:
 
 169224ef14db49839f628fb887d50291/d91be0830da6a8550ddef2491cf1f10b/7a9d6d62177792250da227bd2815ef7c.raw
 
 ImageFrames are always downloaded and saved overwriting existing files of the same name if they exist. It is up to the caller to manage deletion of the ImageFrame files.
 
-The ability to control the number of download threads and number of input files gives the caller some flexibiliy in optimizing the download speed and order of the desired image frames. For example - a client on a low bandwidth connection may not benefit from more than one download thread/connection while a client on an EC2 instance in the same region as the AHI datastore may benefit from multiple download threads/connections. The size of the image frames may also influence the strategy (e.g many smaller PET images may benefit from multiple threads/connections while a few larger XRay images may not)
+See performance tuning section below for more information.
 
 ```sh
 $ build/apps/ahi-retrieve --help
@@ -166,20 +166,25 @@ Retreival starting
 ## Performance Tuning
 
 You can achieve very high download rates (saturate a 1Gbps residential internet connection, > 5Gbps
-from an EC2 instance) with this library. They key is to take advantage of HTTP/2 multiplexing and
-sending multiple requests over the same HTTP/2 connection. The download performance varies based
-on your bandwidth, latency and cpu power. Try tuning the following parameters in this order:
+from an EC2 instance) with this library. They key is to take advantage multireading and HTTP/2 multiplexing.
+The download performance varies based on bandwidth, latency and cpu power. To tune your download performance,
+adjust each of the following settings in order:
 
 1. Number of concurrent requests per connection.
 2. Number of connections per thread.
 3. Number of download threads.
 4. Number of decode threads.
 
-If you saturate your CPU, you may want to consider improved hardware (faster and/or more CPU cores)
+The default values for each of these are relatively low.  Adjust each one up until no further benefit is achieved, 
+then go to the next one.  For example, if increasing the number of concurrent requests does not yield any further 
+speed benefit, try increasing connections per thread. Once connections per thread yields no benefit, try increasing 
+the number of download threads.  At some point you will either saturate your bandwidth or CPU in which case no further 
+performance gains will be possible without increasing one or the other.
 
-NOTE - As of Nov 8, 2023, AWS HealthImaging will drop connections for high numbers of
-concurrent requests per connection. Dropped connections reduce your performance significantly
-so we recommend keeping the max number of requests per connection below 40
+NOTE - As of Nov 8, 2023, performance does not scale up beyond ~20 concurrent requests/connection and connections
+are dropped if the number is too high.  We recommend staying below 20 concurrent requests and increasing the
+number of connections and threads accordingly.  Higher numbers of concurrent requests/connection may be 
+possible in the future.
 
 ## TODO
 
@@ -192,7 +197,6 @@ so we recommend keeping the max number of requests per connection below 40
 -   Consider switching from polling to events?
 -   Consider configuring libcurl to use shared ssl keys?
 -   Explore ways to presize the decode buffer size smarter (currently hard coded to 256k - perhaps Content-Size HTTP Header?)
--   Add support for cancelling downloads
 
 ## Security
 
