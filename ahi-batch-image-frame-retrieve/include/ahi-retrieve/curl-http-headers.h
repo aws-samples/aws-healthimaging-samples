@@ -19,7 +19,7 @@ namespace AHIRetrieve
 
         virtual void setup(CURLEasyHandle &handle);
 
-        std::vector<std::string> headers; // HEADER: VALUE
+        std::vector<std::string> headers; // string format = "HTTPHEADER: VALUE"
         curl_slist *list;
     };
 }

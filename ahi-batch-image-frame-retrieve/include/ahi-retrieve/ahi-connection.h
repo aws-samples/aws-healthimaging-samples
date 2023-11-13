@@ -8,7 +8,7 @@
 
 namespace AHIRetrieve
 {
-
+    // Forward declarations
     class ImageFrameDownloadCallback;
     class ImageFrameRequest;
     struct AHIConnectionImpl;

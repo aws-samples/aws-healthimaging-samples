@@ -21,9 +21,4 @@ fi
 (cd build && make -j) || { exit 1; }
 
 # Run it
-#(cd imageFrames && ../build/apps/ahi-retrieve -f raw -l INFO -c 16 -d 10 -p 5 -t 250 -m 20 -i "../test/ct2465.json")
 (cd imageFrames && ../build/apps/ahi-retrieve  -i "../test/ct2465.json")
-#(cd imageFrames && ../build/apps/ahi-retrieve -e "https://iad-runtime.external-healthlake-imaging.ai.aws.dev" -f jph  -i "../cta.json" -p 5 -l DEBUG -m 10 -c 32 -d 5 > out.log)
-#(cd imageFrames && ../build/apps/ahi-retrieve -e "https://iad-runtime.external-healthlake-imaging.ai.aws.dev" -f jph -c 1 -d 10 -i "../cta.json" -p 20 -l WARN -m 256)
-#(cd imageFrames && ../build/apps/ahi-retrieve -e "https://iad-runtime.external-healthlake-imaging.ai.aws.dev" -f jph -c 1 -d 10 -i "../cta.json" -p 20 -l WARN -m 256)
-

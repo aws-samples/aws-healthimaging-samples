@@ -31,6 +31,5 @@ void AHIRetrieve::writeFileSync(const char *filePath, const std::vector<unsigned
         bytesWritten += result;
     }
 
-    // Cleanup
     close(fd);
 }

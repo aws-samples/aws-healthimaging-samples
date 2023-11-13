@@ -11,7 +11,7 @@ CURHTTPHeaders::CURHTTPHeaders() : list(NULL)
 
 CURHTTPHeaders::~CURHTTPHeaders()
 {
-    curl_slist_free_all(list); /* free the list */
+    curl_slist_free_all(list); // safe to pass NULL
 }
 
 void CURHTTPHeaders::setup(CURLEasyHandle &handle)

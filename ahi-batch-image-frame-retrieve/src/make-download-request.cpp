@@ -11,11 +11,6 @@ std::vector<ImageFrameRequest> makeDownloadRequest(const AHIImageFrameRetrieveAr
 {
     std::vector<ImageFrameRequest> requests;
 
-    // downloadRequest.region = args.region;
-    // downloadRequest.datastoreId = input.get_datastore_id();
-    // downloadRequest.imageSetId = input.get_image_set_id();
-    // downloadRequest.awsAccessSecretKey = stringFormat("%s:%s", args.awsAccessKeyId.c_str(), args.awsSecretAccessKey.c_str());
-
     auto series = input.get_study().get_series();
     for (auto i = series.begin(); i != series.end(); i++)
     {

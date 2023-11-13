@@ -35,7 +35,6 @@ void retrieveAllInputFiles(AHIImageFrameRetrieve &ahiRetrieve, cxxopts::ParseRes
     {
         RetrieveRequest request;
         readFileSync(inputFiles[i].c_str(), request.requestJSON);
-        // request.pCallback = pCallback;
         ahiRetrieve.addRequest(request);
     }
 }

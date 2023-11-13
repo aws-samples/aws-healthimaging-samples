@@ -21,7 +21,7 @@ DecodeThreadContext::~DecodeThreadContext()
 
 /**
  * @brief A thread pool that handles decoding of HTJ2K image frames.  The task is a vector of unsigned char which contains
- *        the HTJ2K image frame returned by AWS Curie.
+ *        the HTJ2K image frame returned by AWS HealthImaging
  *
  */
 DecodeThreadPool::DecodeThreadPool(const size_t numThreads) : ThreadPool<DecodeRequest, DecodeThreadContext>(numThreads)

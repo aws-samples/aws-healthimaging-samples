@@ -46,7 +46,6 @@ bool AHIImageFrameRetrieve::isBusy()
 
 size_t AHIImageFrameRetrieve::getBytesDownloaded()
 {
-    // return CURLWriteToBuffer::getBytesDownloaded();
     return imageFrameThreadPool->getBytesDownloaded();
 }
 
