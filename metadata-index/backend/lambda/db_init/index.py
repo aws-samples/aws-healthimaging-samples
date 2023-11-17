@@ -48,7 +48,7 @@ def db_create_tables(event, context):
   print("Creating tables...")
   IterateandCreate(cnx, "schema/tables")
   print("Creating views...")
-  # IterateandCreate(cnx, "schema/views")
+  IterateandCreate(cnx, "schema/views")
   # print("Creating store procedures...")
   # IterateandCreate(cnx, "schema/storeprocs")
   # print("Creating triggers...")
