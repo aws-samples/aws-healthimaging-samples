@@ -45,6 +45,11 @@ patient_table_columns = [
     "Comment": ""
   },
   {
+    "Name": "updatedat",
+    "Type": "timestamp",
+    "Comment": ""
+  },
+  {
     "Name": "year",
     "Type": "string",
     "Comment": "",
@@ -138,6 +143,11 @@ study_table_columns =[
   {
     "Name": "patientstate",
     "Type": "string",
+    "Comment": ""
+  },
+  {
+    "Name": "updatedat",
+    "Type": "timestamp",
     "Comment": ""
   },
   {
@@ -269,6 +279,11 @@ series_table_columns =  [
   {
     "Name": "bodypartexamined",
     "Type": "string",
+    "Comment": ""
+  },
+  {
+    "Name": "updatedat",
+    "Type": "timestamp",
     "Comment": ""
   },
   {
@@ -620,6 +635,11 @@ instance_table_columns = [
   {
     "Name": "rescaletype",
     "Type": "string",
+    "Comment": ""
+  },
+  {
+    "Name": "updatedat",
+    "Type": "timestamp",
     "Comment": ""
   },
   {
