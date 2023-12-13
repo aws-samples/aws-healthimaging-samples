@@ -102,30 +102,34 @@ def extractTags(level: str, metadatas: []):
             json_block = metadata["Patient"]["DICOM"]
             json_block.update({"IssuerOfPatientID" : IssuerOfPatientID})
             json_block.update({"PatientID" : PatientID})
+            json_block.update({"UpdatedAt" : datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
             jsonDICOMTags.append({"identifier" :file_prefix+IssuerOfPatientID+"-"+PatientID , "data" : json_block})
         elif level == "study":
             json_block = metadata["Study"]["DICOM"]
             json_block.update({"IssuerOfPatientID" : IssuerOfPatientID})
             json_block.update({"PatientID" : PatientID})
-            json_block.update({"datastoreId" : datastoreid})
+            json_block.update({"DatastoreId" : datastoreid})
             json_block.update( {"ImagesetId" : imagesetid})  
+            json_block.update({"UpdatedAt" : datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
             jsonDICOMTags.append({"identifier" : file_prefix+json_block["StudyInstanceUID"] , "data" : json_block})
         elif level == "series":
             json_block = metadata["Study"]["Series"][series_key]["DICOM"]
-            json_block.update({"datastoreId" : datastoreid})
+            json_block.update({"DatastoreId" : datastoreid})
             json_block.update( {"ImagesetId" : imagesetid}) 
+            json_block.update({"UpdatedAt" : datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
             json_block.update({"StudyInstanceUID" : StudyInstanceUID})    
             jsonDICOMTags.append({"identifier" : file_prefix+series_key , "data" : json_block})
         elif level == "instance":
             for key in metadata["Study"]["Series"][series_key]["Instances"].keys():
                 json_block = metadata["Study"]["Series"][series_key]["Instances"][key]["DICOM"]
                 json_block.update({"SeriesInstanceUID" : series_key})
-                json_block.update({"datastoreId" : datastoreid})
-                json_block.update({"ImagesetId" : imagesetid})                  
+                json_block.update({"DatastoreId" : datastoreid})
+                json_block.update({"ImagesetId" : imagesetid})      
+                json_block.update({"UpdatedAt" : datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")})            
                 jsonDICOMTags.append({ "identifier" : file_prefix+key , "data" : json_block})
         else:
             return []   
-
+    
     return jsonDICOMTags
 
 
