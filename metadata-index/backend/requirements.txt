@@ -1,11 +1,8 @@
 attrs==23.1.0
-aws-cdk-lib==2.95.1
+aws-cdk-lib
 aws-cdk.asset-awscli-v1==2.2.200
-aws-cdk.asset-kubectl-v20==2.1.2
-aws-cdk.asset-node-proxy-agent-v5==2.0.166
-aws-cdk.asset-node-proxy-agent-v6==2.0.1
-aws-cdk.aws-glue-alpha==2.95.1a0
-aws-cdk.aws-lambda-python-alpha==2.95.1a0
+aws-cdk.aws-glue-alpha
+aws-cdk.aws-lambda-python-alpha
 cattrs==23.1.2
 cdk-nag==2.27.128
 constructs==10.2.70
