@@ -484,7 +484,7 @@ instance_table_columns = [
   },
   {
     "Name": "kvp",
-    "Type": "int",
+    "Type": "float",
     "Comment": ""
   },
   {
