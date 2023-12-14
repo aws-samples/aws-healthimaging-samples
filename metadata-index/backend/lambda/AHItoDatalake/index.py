@@ -146,7 +146,7 @@ def generateFilePrefix(level: str , metadata ):
     def buildCurrentDatePrefix():
         print("No study date found, defaulting to today for prefix creation.")
         now = datetime.date.today()
-        date_prefix = "year="+now.year+"/month="+now.month+"/day="+now.day+"/"
+        date_prefix = "year="+str(now.year)+"/month="+str(now.month)+"/day="+str(now.day)+"/"
         return date_prefix
         
     try:
@@ -156,7 +156,7 @@ def generateFilePrefix(level: str , metadata ):
             year = study_date[0:4]
             month = study_date[4:6]
             day = study_date[6:8]
-            date_prefix = "year="+year+"/month="+month+"/day="+day+"/"
+            date_prefix = "year="+str(year)+"/month="+str(month)+"/day="+str(day)+"/"
         else:
             print("No study date found, defaulting to today for prefix creation.")
             date_prefix = buildCurrentDatePrefix()
