@@ -12,6 +12,7 @@ namespace AHIRetrieve
      */
     struct AHIImageFrameRetrieveArgs
     {
+        AHIImageFrameRetrieveArgs(ImageFrameDownloadCallback &callback) : callback(callback) {}
         std::string region; // aws region - e.g. "use-east-1"
         std::string awsAccessKeyId;
         std::string awsSecretAccessKey;

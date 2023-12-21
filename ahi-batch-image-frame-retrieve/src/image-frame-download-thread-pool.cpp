@@ -103,9 +103,9 @@ void ImageFrameDownloadThreadPool::run(ImageFrameDownloadThread &thread)
     std::vector<std::shared_ptr<AHIConnection>> connections;
     for (int i = 0; i < this->args.numConnectionsPerThread; i++)
     {
-        AHIConnectionOptions options{
-            .logger = logger,
-            .maxConcurrentRequestsPerConnection = this->args.maxConcurrentRequestsPerConnection};
+        AHIConnectionOptions options;
+        options.logger = logger;
+        options.maxConcurrentRequestsPerConnection = this->args.maxConcurrentRequestsPerConnection;
         options.logger.prefixes.push_back(stringFormat("C#%d", i));
 
         connections.push_back(std::make_shared<AHIConnection>(args, options));

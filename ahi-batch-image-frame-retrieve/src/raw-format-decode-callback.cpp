@@ -17,7 +17,7 @@ void RawFormatDecodeCallback::ImageFrameDecoded(const DecodeRequest &request, co
                                               request.imageFrameRequest.datastoreId.c_str(),
                                               request.imageFrameRequest.imageSetId.c_str());
 
-    if (!imageFramePaths.contains(imageFramePath))
+    if (imageFramePaths.find(imageFramePath) == imageFramePaths.end())
     {
         imageFramePaths.insert(imageFramePath);
         makeOutputDirectories(request.imageFrameRequest.datastoreId.c_str(), request.imageFrameRequest.imageSetId.c_str());

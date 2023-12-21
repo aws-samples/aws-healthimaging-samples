@@ -127,7 +127,7 @@ void getMaxDownloadTmaxConcurrentRequestsPerConnectionhreads(size_t &result, con
 AHIImageFrameRetrieveArgs getImageFrameRetrieveArgs(cxxopts::ParseResult &args)
 {
     ImageFrameDownloadCallback *pCallback = getDownloadCallback(args["format"].as<std::string>());
-    AHIImageFrameRetrieveArgs ifrargs{.callback = *pCallback};
+    AHIImageFrameRetrieveArgs ifrargs(*pCallback);
 
     getRegion(ifrargs.region, args);
     getAWSAccessKeyId(ifrargs.awsAccessKeyId, args);

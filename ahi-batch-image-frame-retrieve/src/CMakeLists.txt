@@ -15,8 +15,7 @@ include_directories(ahi-retrieve-lib PRIVATE
     ${PROJECT_SOURCE_DIR}/extern/json/single_include/nlohmann
 )
 
-target_compile_features(ahi-retrieve-lib PUBLIC cxx_std_20)
-
+target_compile_features(ahi-retrieve-lib PUBLIC cxx_std_17)
 target_sources(ahi-retrieve-lib PRIVATE
     ahi-connection.cpp
     ahi-request.cpp

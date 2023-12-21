@@ -29,7 +29,7 @@ void JPHFormatDownloadCallback::ImageFrameRequestComplete(
                                                   request.datastoreId.c_str(),
                                                   request.imageSetId.c_str());
 
-        if (!imageFramePaths.contains(imageFramePath))
+        if (imageFramePaths.find(imageFramePath) == imageFramePaths.end())
         {
             imageFramePaths.insert(imageFramePath);
             makeOutputDirectories(request.datastoreId.c_str(), request.imageSetId.c_str());
