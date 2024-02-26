@@ -21,30 +21,49 @@ This project is considered beta quality. All GA features are fully implemented w
 
 This project is known to build on the following platforms:
 
--   Mac OS X 13.6 (M1 Pro), Apple clang version 15.0.0, CMake 3.27.6, nghttp2 1.56.0 and openssl 3.1.3
--   Ubuntu 22.04.2 ARM64, g++ 11.4.0, CMake 3.22.1, nghttp2 1.43.0 and openssl 3.0.2
+- Mac OS X 13.6 (M1 Pro), Apple clang version 15.0.0, CMake 3.27.6. Use homebrew to install dependencies:
+- Ubuntu 22.04.2 ARM64, g++ 11.4.0, CMake 3.22.1, nghttp2 1.43.0 and openssl 3.0.2
 
 This project may require some tweaks for Windows builds
 
 ## Features
 
--   Concurrent download of multiple image frames over multiple threads and multiple HTTP/2 connections
--   Concurrent decoding of HTJ2K image frames with multiple threads after downloaded
--   Callback design makes it easy to customize post download workflows (e.g. conversion to other file formats or file names)
--   Includes callback implementations for common workflows (e.g. save ImageFrames to disk in HTJ2K (jph) or uncompressed (raw) formats)
--   Design and implementation optimized for extremly high performance
--   Library logging can be integrated with application logging system
+- Concurrent download of multiple image frames over multiple threads and multiple HTTP/2 connections
+- Concurrent decoding of HTJ2K image frames with multiple threads after downloaded
+- Callback design makes it easy to customize post download workflows (e.g. conversion to other file formats or file names)
+- Includes callback implementations for common workflows (e.g. save ImageFrames to disk in HTJ2K (jph) or uncompressed (raw) formats)
+- Design and implementation optimized for extremly high performance
+- Library logging can be integrated with application logging system
 
 ## Building the CLI Application
 
 ### Pre-requisites
 
--   C++ build tools that support [C++20](https://en.wikipedia.org/wiki/C%2B%2B20). Older compilers could probably be supported with minimal changes.
--   [CMake](https://cmake.org/) version 3.22.1 or later (e.g. on Ubuntu - sudo apt install cmake)
--   [openssl](https://github.com/openssl/openssl) version 3.0.2 or later (e.g. on Ubuntu - sudo apt install libssl-dev)
--   [nghttp2](https://nghttp2.org/) version 1.43.0 or later (e.g. on Ubuntu - sudo apt-get install -y libnghttp2-dev)
+- C++ build tools that support [C++17](https://en.wikipedia.org/wiki/C%2B%2B20). Older compilers could probably be supported with minimal changes.
+- [CMake](https://cmake.org/) version 3.22.1 or later
+- [nghttp2](https://nghttp2.org/) version 1.43.0
+- [openssl](https://github.com/openssl/openssl) version 3.0.2
+- [libcurl](https://curl.se/libcurl/) version 8.4.0
+- [nlohmann-json](https://github.com/nlohmann/json) version 3.11.3
+- [cxxopts](https://github.com/jarro2783/cxxopts) version 3.1.1
 
-Note: Older versions of the above may work but have not been tested
+Note: Different versions of the above libraries may work but have not been tested
+
+### Dependencies
+
+#### Mac OS X
+
+Use [homebrew](https://brew.sh/)
+
+```sh
+brew cmake install libnghttp2 openssl@3 curl nlohmann-json cxxopts
+```
+
+#### Ubuntu
+
+```sh
+sudo apt install cmake libnghttp2-dev libssl-dev libcurl nlohmann-json-dev cxxopts
+```
 
 ### Initilize git submodules
 
@@ -170,23 +189,23 @@ Retreival starting
 
 You can achieve very high download rates (saturate a 1Gbps residential internet connection, > 5Gbps
 from an EC2 instance) with this library. They key is to take advantage multithreading and HTTP/2 request multiplexing.
-The actual download performance varies based on bandwidth and cpu power.  Latency only impacts the time to first image
-but does not impact aggregate bandwidth with appropriate concurrency settings.  To tune your download performance,
+The actual download performance varies based on bandwidth and cpu power. Latency only impacts the time to first image
+but does not impact aggregate bandwidth with appropriate concurrency settings. To tune your download performance,
 adjust each of the following settings in order:
 
 1. Number of concurrent requests per connection.
 2. Number of connections per thread.
 3. Number of download threads.
 
-The default values for each of these in the CLI is relatively low.  Increase the setting for each of the above 
-until no further benefit is achieved, then go to the next setting.  For example, if increasing the number of concurrent requests does not yield any further 
-speed benefit, start increasing connections per thread. Once connections per thread yields no benefit, try increasing 
-the number of download threads.  At some point you will either saturate your bandwidth or CPU in which case no further 
+The default values for each of these in the CLI is relatively low. Increase the setting for each of the above
+until no further benefit is achieved, then go to the next setting. For example, if increasing the number of concurrent requests does not yield any further
+speed benefit, start increasing connections per thread. Once connections per thread yields no benefit, try increasing
+the number of download threads. At some point you will either saturate your bandwidth or CPU in which case no further
 performance gains will be possible.
 
 NOTE - As of Nov 8, 2023, performance does not scale up beyond ~20 concurrent requests/connection and connections
-are dropped if the number is too high.  We recommend staying below 20 concurrent requests and increasing the
-number of connections and threads accordingly.  Higher numbers of concurrent requests/connection may be 
+are dropped if the number is too high. We recommend staying below 20 concurrent requests and increasing the
+number of connections and threads accordingly. Higher numbers of concurrent requests/connection may be
 possible in the future.
 
 HTJ2K decoding is extremely fast and the default of 10 decode threads should generally keep up until download
@@ -194,15 +213,15 @@ rates exceed 4 Gbps and large datasets (e.g. > 1GB uncompressed size)
 
 ## TODO
 
--   Add more error handling
--   Add more logging
--   Add support for verifying the ImageFrame CRC checksum
--   Add support for decoding with Kakadu library
--   Add support for getting aws credentials in other ways (e.g. ~/.aws/credentials, STS)?
--   Add support for generating Nifti volumes as an output format?
--   Consider switching from polling to events?
--   Consider configuring libcurl to use shared ssl keys?
--   Explore ways to presize the decode buffer size smarter (currently hard coded to 256k - perhaps Content-Size HTTP Header?)
+- Add more error handling
+- Add more logging
+- Add support for verifying the ImageFrame CRC checksum
+- Add support for decoding with Kakadu library
+- Add support for getting aws credentials in other ways (e.g. ~/.aws/credentials, STS)?
+- Add support for generating Nifti volumes as an output format?
+- Consider switching from polling to events?
+- Consider configuring libcurl to use shared ssl keys?
+- Explore ways to presize the decode buffer size smarter (currently hard coded to 256k - perhaps Content-Size HTTP Header?)
 
 ## Security
 

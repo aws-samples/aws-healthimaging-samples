@@ -3,7 +3,7 @@
 #include <curl/curlver.h>
 #include <openssl/opensslv.h>
 #include "ojph_defs.h"
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 #include "ahi-retrieve/string-format.h"
 
 #define AUX(x) #x

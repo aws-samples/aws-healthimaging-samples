@@ -1,19 +1,12 @@
 find_package(Threads REQUIRED)
-find_package(NGHTTP2 REQUIRED) # only used by this library to get version info
-find_package(OpenSSL REQUIRED) # only used by this library to get version info
+find_package(NGHTTP2 1.56.0 REQUIRED)
+find_package(OpenSSL 3.1.3 REQUIRED)
+find_package(CURL 8.4.0 REQUIRED)
+find_package(nlohmann_json 3.11.3 REQUIRED)
 
-# find_package(CURL REQUIRED) # only used by this library to get version info
 file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/ahi-retrieve/*")
 
 add_library(ahi-retrieve-lib STATIC)
-
-include_directories(ahi-retrieve-lib PRIVATE
-    ${NGHTTP2_INCLUDE_DIRS}
-    ${OPENSSL_INCLUDE_DIR}
-    ${CURL_INCLUDE_DIR}
-    ${PROJECT_SOURCE_DIR}/extern/openjphjs/extern/OpenJPH/src/core/common
-    ${PROJECT_SOURCE_DIR}/extern/json/single_include/nlohmann
-)
 
 target_compile_features(ahi-retrieve-lib PUBLIC cxx_std_17)
 target_sources(ahi-retrieve-lib PRIVATE
@@ -49,16 +42,15 @@ target_sources(ahi-retrieve-lib PRIVATE
 target_include_directories(ahi-retrieve-lib PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 target_link_libraries(ahi-retrieve-lib PRIVATE
+    ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
     openjph
     nlohmann_json::nlohmann_json
-    libcurl
-    ${CMAKE_THREAD_LIBS_INIT}
 )
 
 include_directories(
     ${CURL_INCLUDE_DIR}
-    "${PROJECT_SOURCE_DIR}/extern/json/single_include/nlohmann"
+    ${NLOHMANN_JSON_INCLUDE_DIR}
     "${PROJECT_SOURCE_DIR}/extern/openjphjs/src"
 )
 
