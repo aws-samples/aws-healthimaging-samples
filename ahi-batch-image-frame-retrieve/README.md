@@ -35,35 +35,7 @@ This project may require some tweaks for Windows builds
 - Design and implementation optimized for extremly high performance
 - Library logging can be integrated with application logging system
 
-## Building the CLI Application
-
-### Pre-requisites
-
-- C++ build tools that support [C++17](https://en.wikipedia.org/wiki/C%2B%2B20). Older compilers could probably be supported with minimal changes.
-- [CMake](https://cmake.org/) version 3.22.1 or later
-- [nghttp2](https://nghttp2.org/) version 1.43.0
-- [openssl](https://github.com/openssl/openssl) version 3.0.2
-- [libcurl](https://curl.se/libcurl/) version 8.4.0
-- [nlohmann-json](https://github.com/nlohmann/json) version 3.11.3
-- [cxxopts](https://github.com/jarro2783/cxxopts) version 3.1.1
-
-Note: Different versions of the above libraries may work but have not been tested
-
-### Dependencies
-
-#### Mac OS X
-
-Use [homebrew](https://brew.sh/)
-
-```sh
-brew cmake install libnghttp2 openssl@3 curl nlohmann-json cxxopts
-```
-
-#### Ubuntu
-
-```sh
-sudo apt install cmake libnghttp2-dev libssl-dev libcurl nlohmann-json-dev cxxopts
-```
+## Building
 
 ### Initilize git submodules
 
@@ -80,22 +52,39 @@ From the git repository root directory:
 > mkdir build
 ```
 
-### Generate makefile with cmake
+### Pre-requisites
+
+- C++ build tools that support [C++17](https://en.wikipedia.org/wiki/C%2B%2B20). Older compilers could probably be supported with minimal changes.
+- [CMake](https://cmake.org/) version 3.22.1 or later
+
+#### Install Library Dependencies
+
+- [nghttp2](https://nghttp2.org/) version 1.43.0
+- [openssl](https://github.com/openssl/openssl) version 3.0.2
+- [libcurl](https://curl.se/libcurl/) version 8.4.0
+- [nlohmann-json](https://github.com/nlohmann/json) version 3.11.3
+- [cxxopts](https://github.com/jarro2783/cxxopts) version 3.1.1
+
+Note: Different versions of the above libraries may work but have not been tested
+
+##### Using [homebrew](https://brew.sh/) on Mac OS X
 
 ```sh
-> cd build
-# for Intel processors:
-> cmake -DCMAKE_BUILD_TYPE=Release -DOJPH_DISABLE_INTEL_SIMD=OFF ..
-# for non intel processors (ARM/Apple Silicon)
-> cmake -DCMAKE_BUILD_TYPE=Release -DOJPH_DISABLE_INTEL_SIMD=ON ..
+brew cmake install libnghttp2 openssl@3 curl nlohmann-json cxxopts
+./build.sh
 ```
 
-NOTE - OpenJPH currently features SIMD acceleration on Intel processors only. ARM is not currently accelerated with SIMD
-
-### Build
+##### Using apt on Ubuntu
 
 ```sh
-> make -j
+sudo apt install cmake libnghttp2-dev libssl-dev libcurl nlohmann-json-dev cxxopts
+./build.sh
+```
+
+##### Using vcpkg on Mac OS X, Windows or Linux
+
+```sh
+./vcpkgbuild.sh
 ```
 
 ## Using the C++ Library

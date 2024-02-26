@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    "curl",
+    "nghttp2",
+    "nlohmann-json",
+    "openssl",
+    "cxxopts"
+  ]
+}
