@@ -7,7 +7,7 @@ mkdir -p build
 mkdir -p imageFrames
 rm -rf imageFrames/*
 
-#rm -rf build/* 
+rm -rf build/* 
 
 export CMAKE_BUILD_TYPE=Debug
 

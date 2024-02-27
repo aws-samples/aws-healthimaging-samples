@@ -21,10 +21,9 @@ This project is considered beta quality. All GA features are fully implemented w
 
 This project is known to build on the following platforms:
 
-- Mac OS X 13.6 (M1 Pro), Apple clang version 15.0.0, CMake 3.27.6. Use homebrew to install dependencies:
-- Ubuntu 22.04.2 ARM64, g++ 11.4.0, CMake 3.22.1, nghttp2 1.43.0 and openssl 3.0.2
-
-This project may require some tweaks for Windows builds
+- Mac OS X 13.6 (M1 Pro), Apple clang version 15.0.0, CMake 3.27.6.
+- Ubuntu 22.04.2 ARM64, g++ 11.4.0, CMake 3.22.1
+- Windows Server 2022, Visual Studio Community 2022, CMake 3.28.0-msvc1
 
 ## Features
 
@@ -59,32 +58,37 @@ From the git repository root directory:
 
 #### Install Library Dependencies
 
-- [nghttp2](https://nghttp2.org/) version 1.43.0
-- [openssl](https://github.com/openssl/openssl) version 3.0.2
-- [libcurl](https://curl.se/libcurl/) version 8.4.0
-- [nlohmann-json](https://github.com/nlohmann/json) version 3.11.3
-- [cxxopts](https://github.com/jarro2783/cxxopts) version 3.1.1
+- [nghttp2](https://nghttp2.org/) version 1.43.0 or later
+- [openssl](https://github.com/openssl/openssl) version 3.0.2 or later
+- [libcurl](https://curl.se/libcurl/) version 8.4.0 or later
+- [nlohmann-json](https://github.com/nlohmann/json) version 3.11.3 or later
+- [cxxopts](https://github.com/jarro2783/cxxopts) version 3.1.1 or later
 
-Note: Different versions of the above libraries may work but have not been tested
+Note: Earlier versions of the above libraries may work but have not been tested
 
 ##### Using [homebrew](https://brew.sh/) on Mac OS X
 
 ```sh
 brew cmake install libnghttp2 openssl@3 curl nlohmann-json cxxopts
-./build.sh
+#(cd build && cmake -DOJPH_DISABLE_INTEL_SIMD=OFF ..) # for Intel x86
+(cd build && cmake -DOJPH_DISABLE_INTEL_SIMD=ON ..) # For Apple Silicon
+(cd build && make -j) || { exit 1; }
 ```
 
 ##### Using apt on Ubuntu
 
 ```sh
 sudo apt install cmake libnghttp2-dev libssl-dev libcurl nlohmann-json-dev cxxopts
-./build.sh
+(cd build && cmake -DOJPH_DISABLE_INTEL_SIMD=ON ..) # For Intel x86
+#(cd build && cmake -DOJPH_DISABLE_INTEL_SIMD=OFF ..) # For Arm
+(cd build && make -j) || { exit 1; }
 ```
 
 ##### Using vcpkg on Mac OS X, Windows or Linux
 
 ```sh
-./vcpkgbuild.sh
+(cd build && cmake --preset=default -DOJPH_DISABLE_INTEL_SIMD=OFF ..) # For Intel x86
+#(cd build && cmake --preset=default -DOJPH_DISABLE_INTEL_SIMD=ON ..) # For Arm
 ```
 
 ## Using the C++ Library
