@@ -3,3 +3,4 @@ dl-*
 .DS_Store
 bin
 imageFrames
+.envrc

@@ -1,9 +1,12 @@
 #pragma once
 #include <time.h>
 #include <stdio.h>
+#include <chrono>
 
 namespace AHIRetrieve
 {
+
+    typedef std::chrono::high_resolution_clock Clock;
 
     /**
      * @brief Simple timer class used to measure clock time.
@@ -14,68 +17,54 @@ namespace AHIRetrieve
     public:
         Stopwatch(const char *label = 0) : label_(label)
         {
-            finish_.tv_nsec = 0;
-            finish_.tv_sec = 0;
             start();
         }
 
         void start()
         {
-            clock_gettime(CLOCK_REALTIME, &start_);
+            start_ = std::chrono::system_clock::now();
+            // clock_gettime(CLOCK_REALTIME, &start_);
         }
 
-        timespec stop()
+        void stop()
         {
-            clock_gettime(CLOCK_REALTIME, &finish_);
-            sub_timespec(start_, finish_, &delta_);
+            finish_ = std::chrono::system_clock::now();
+            delta_ = std::chrono::duration_cast<std::chrono::milliseconds>(finish_ - start_);
+
+            // clock_gettime(CLOCK_REALTIME, &finish_);
+            // sub_timespec(start_, finish_, &delta_);
             if (label_)
             {
                 printf("%s took %.3f ms\n", label_, getDurationInMs());
             }
-            return delta_;
+            // return delta_;
         }
 
         float getDurationInMs()
         {
-            clock_gettime(CLOCK_REALTIME, &finish_);
-            sub_timespec(start_, finish_, &delta_);
-            auto ns = delta_.tv_sec * 1000000000.0 + delta_.tv_nsec;
-            auto totalTimeMS = ns / 1000000.0;
-            return totalTimeMS;
+            finish_ = std::chrono::system_clock::now();
+            delta_ = std::chrono::duration_cast<std::chrono::milliseconds>(finish_ - start_);
+
+            // clock_gettime(CLOCK_REALTIME, &finish_);
+            // sub_timespec(start_, finish_, &delta_);
+            // auto ns = delta_.tv_sec * 1000000000.0 + delta_.tv_nsec;
+            // auto totalTimeMS = ns / 1000000.0;
+            return delta_.count();
+            // return totalTimeMS;
         }
 
         ~Stopwatch()
         {
-            if (finish_.tv_nsec == 0 && finish_.tv_sec == 0)
+            if (finish_ == std::chrono::time_point<std::chrono::system_clock>{})
             {
                 stop();
             }
         }
 
     private:
-        enum
-        {
-            NS_PER_SECOND = 1000000000
-        };
-
-        void sub_timespec(struct timespec t1, struct timespec t2, struct timespec *td)
-        {
-            td->tv_nsec = t2.tv_nsec - t1.tv_nsec;
-            td->tv_sec = t2.tv_sec - t1.tv_sec;
-            if (td->tv_sec > 0 && td->tv_nsec < 0)
-            {
-                td->tv_nsec += NS_PER_SECOND;
-                td->tv_sec--;
-            }
-            else if (td->tv_sec < 0 && td->tv_nsec > 0)
-            {
-                td->tv_nsec -= NS_PER_SECOND;
-                td->tv_sec++;
-            }
-        }
-
         const char *label_;
-        timespec start_, finish_, delta_;
+        std::chrono::time_point<std::chrono::system_clock> start_, finish_;
+        std::chrono::milliseconds delta_;
     };
 
 } // Namespae AHIRetrieve
