@@ -7,8 +7,8 @@ namespace AHIRetrieve
     enum LOGLEVEL
     {
         OFF = 0,
-        FATAL,
-        ERROR,
+        FATALZ,
+        ERRORZ,
         WARN,
         INFO,
         DEBUG,

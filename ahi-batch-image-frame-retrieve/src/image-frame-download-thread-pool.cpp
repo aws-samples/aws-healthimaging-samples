@@ -5,7 +5,11 @@
 #include "ahi-retrieve/logger.h"
 #include "ahi-retrieve/trace.h"
 #include <curl/curl.h>
+#ifdef _WINDOWS
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
 #include <algorithm>
 
 using namespace AHIRetrieve;
@@ -167,12 +171,12 @@ void ImageFrameDownloadThreadPool::getRequestsToAdd(std::vector<ImageFrameReques
     // Sanity check to make sure we have the mutex locked
     if (!lock.owns_lock())
     {
-        log(FATAL, "getRequestsToAdd() called without mutex locked\n");
+        log(FATALZ, "getRequestsToAdd() called without mutex locked\n");
         return;
     }
 
     const size_t maxRequestsToAdd = (args.maxConcurrentRequestsPerConnection > connection.getRequestCount()) ? (args.maxConcurrentRequestsPerConnection - connection.getRequestCount()) : 0;
-    size_t numRequestsToAdd = std::min(imageFrameRequests.size(), maxRequestsToAdd);
+        size_t numRequestsToAdd = std::min< size_t> (imageFrameRequests.size(), maxRequestsToAdd);
     if (numRequestsToAdd > 0)
     {
         options.logger.log(DEBUG, "Adding %d requests\n", numRequestsToAdd);

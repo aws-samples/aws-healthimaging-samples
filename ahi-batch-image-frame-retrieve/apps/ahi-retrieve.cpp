@@ -4,7 +4,13 @@
 #include "ahi-retrieve/raw-format-download-callback.h"
 #include "cxxopts.hpp"
 #include <iostream>
+#ifdef _WINDOWS
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
+#include <chrono>
+#include <thread>
 
 using namespace AHIRetrieve;
 
@@ -54,7 +60,7 @@ int main(int argc, char **argv)
 
             if (loops > 1)
             {
-                usleep(1 * 1000 * 1000); // sleep one second between each iteration
+                std::this_thread::sleep_for(std::chrono::seconds(1)); // sleep one second between each iteration
             }
         }
         ahiRetrieve.stop();

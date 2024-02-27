@@ -20,7 +20,7 @@ void JPHFormatDownloadCallback::ImageFrameRequestComplete(
     }
     else if (request.status == -1) // failure
     {
-        log(LOGLEVEL::ERROR, "JPHFormatDownloadCallback - request for imageFrameId %s failed with http status code %d (%s)\n", request.imageFrameId.c_str(), request.httpCode, (const char *)request.bytes->data());
+        log(LOGLEVEL::ERRORZ, "JPHFormatDownloadCallback - request for imageFrameId %s failed with http status code %d (%s)\n", request.imageFrameId.c_str(), request.httpCode, (const char *)request.bytes->data());
         return;
     }
     else if (request.status == 0) // success

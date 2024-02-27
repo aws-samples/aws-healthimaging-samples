@@ -82,11 +82,11 @@ namespace AHIRetrieve
         }
         else if (logLevelStr == "FATAL")
         {
-            return FATAL;
+            return FATALZ;
         }
         else if (logLevelStr == "ERROR")
         {
-            return ERROR;
+            return ERRORZ;
         }
         else if (logLevelStr == "WARN")
         {
@@ -113,11 +113,11 @@ namespace AHIRetrieve
         {
             return "OFF";
         }
-        else if (logLevel == FATAL)
+        else if (logLevel == FATALZ)
         {
             return "FATAL";
         }
-        else if (logLevel == ERROR)
+        else if (logLevel == ERRORZ)
         {
             return "ERROR";
         }

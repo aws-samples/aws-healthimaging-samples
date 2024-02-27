@@ -37,7 +37,7 @@ void RawFormatDownloadCallback::ImageFrameRequestComplete(
     }
     else if (request.status == -1) // error
     {
-        log(LOGLEVEL::ERROR, "RawFormatDownloadCallback - ImageFrameId %s failed with http status code %d (%s)\n", request.imageFrameId.c_str(), request.httpCode, request.bytes->data());
+        log(LOGLEVEL::ERRORZ, "RawFormatDownloadCallback - ImageFrameId %s failed with http status code %d (%s)\n", request.imageFrameId.c_str(), request.httpCode, request.bytes->data());
     }
     else if (request.status == 0) // success
     {

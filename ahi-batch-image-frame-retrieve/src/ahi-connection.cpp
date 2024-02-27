@@ -98,7 +98,7 @@ namespace AHIRetrieve
 
         if (mc != CURLM_OK)
         {
-            options.logger.log(LOGLEVEL::ERROR, "curl_multi_perform() returned %d\n", mc);
+            options.logger.log(LOGLEVEL::ERRORZ, "curl_multi_perform() returned %d\n", mc);
         }
 
         mc = curl_multi_poll(impl->multi_handle, NULL, 0, options.timeoutInMS, NULL);
@@ -106,13 +106,13 @@ namespace AHIRetrieve
 
         if (mc == CURLM_UNRECOVERABLE_POLL)
         {
-            options.logger.log(LOGLEVEL::ERROR, "CURLM_UNRECOVERABLE_POLL\n");
+            options.logger.log(LOGLEVEL::ERRORZ, "CURLM_UNRECOVERABLE_POLL\n");
             return -1;
         }
 
         if (mc != CURLM_OK)
         {
-            options.logger.log(LOGLEVEL::ERROR, "curl_multi_poll() returned non OK result %d\n", mc);
+            options.logger.log(LOGLEVEL::ERRORZ, "curl_multi_poll() returned non OK result %d\n", mc);
             return -2;
         }
 
@@ -188,7 +188,7 @@ namespace AHIRetrieve
                     }
                     else
                     {
-                        options.logger.log(LOGLEVEL::ERROR, "Unexpected CURLcode %d (%s)\n", m->data.result, curl_easy_strerror(m->data.result));
+                        options.logger.log(LOGLEVEL::ERRORZ, "Unexpected CURLcode %d (%s)\n", m->data.result, curl_easy_strerror(m->data.result));
                     }
                     // We will retry any error forever until it goes through
                     addImageFrameRequest(state->imageFrameRequest);
@@ -252,7 +252,7 @@ namespace AHIRetrieve
         }
         catch (CURLcode &code)
         {
-            options.logger.log(LOGLEVEL::ERROR, "libcurl API returned non OK code %s\n", curl_easy_strerror(code));
+            options.logger.log(LOGLEVEL::ERRORZ, "libcurl API returned non OK code %s\n", curl_easy_strerror(code));
         }
     }
 

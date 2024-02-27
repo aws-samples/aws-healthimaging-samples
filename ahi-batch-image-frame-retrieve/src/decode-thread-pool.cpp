@@ -73,7 +73,7 @@ void DecodeThreadPool::executeTask(DecodeRequest &request, DecodeThreadContext &
     }
     catch (std::runtime_error &error)
     {
-        log(LOGLEVEL::ERROR, "OpenJPH failed to decode ImageFrameId %s\n", request.imageFrameRequest.imageFrameId.c_str());
+        log(LOGLEVEL::ERRORZ, "OpenJPH failed to decode ImageFrameId %s\n", request.imageFrameRequest.imageFrameId.c_str());
         if (request.pCallback)
         {
             request.pCallback->ImageFrameDecodeFailed(request);

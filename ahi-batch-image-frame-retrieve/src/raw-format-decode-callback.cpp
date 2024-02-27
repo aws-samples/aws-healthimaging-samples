@@ -34,5 +34,5 @@ void RawFormatDecodeCallback::ImageFrameDecoded(const DecodeRequest &request, co
 
 void RawFormatDecodeCallback::ImageFrameDecodeFailed(const DecodeRequest &request)
 {
-    log(LOGLEVEL::ERROR, "RawFormatDecodeCallback - ImageFrame %s decode failed for request #%zu\n", request.imageFrameRequest.imageFrameId.c_str(), request.requestNumber);
+    log(LOGLEVEL::ERRORZ, "RawFormatDecodeCallback - ImageFrame %s decode failed for request #%zu\n", request.imageFrameRequest.imageFrameId.c_str(), request.requestNumber);
 }

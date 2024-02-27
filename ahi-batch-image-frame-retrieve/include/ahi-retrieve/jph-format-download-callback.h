@@ -2,6 +2,7 @@
 #include "ahi-retrieve/image-frame-download-callback.h"
 #include <memory>
 #include <set>
+#include <string>
 
 namespace AHIRetrieve
 {

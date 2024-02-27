@@ -1,5 +1,11 @@
 #include "ahi-retrieve/stopwatch.h"
+#ifdef _WINDOWS
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
+#include <chrono>
+#include <thread>
 #include "ahi-retrieve/ahi-retrieve.h"
 #include "ahi-retrieve/raw-format-download-callback.h"
 
@@ -15,8 +21,8 @@ void reportProgress(AHIImageFrameRetrieve &ahiRetrieve, size_t &totalBytesDownlo
     while (ahiRetrieve.isBusy() || rawFormatDownloadCallback.pDecodeThreadPool->busy())
     {
         // printf("ahiRetrieve.isBusy=%d rawFormatDownloadCallback.pDecodeThreadPool->busy()=%d\n", ahiRetrieve.isBusy(), rawFormatDownloadCallback.pDecodeThreadPool->busy());
-
-        usleep(sleepTimeInMS * 1000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(sleepTimeInMS));
+        //usleep(sleepTimeInMS * 1000);
         float durationInMS = stopwatch.getDurationInMs();
         float durationSinceLastLoop = durationInMS - totalDuration;
         size_t bytesDownloaded = ahiRetrieve.getBytesDownloaded() - startingBytesDownloaded;
