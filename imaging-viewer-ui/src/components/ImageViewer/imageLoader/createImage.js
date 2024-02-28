@@ -6,8 +6,9 @@ import getPixelData from './getPixelData';
 import cornerstone from 'cornerstone-core';
 
 const createImage = (instance, frameInfo, uncompressedImageFrame, workerStats = {}) => {
-    const pixelData = getPixelData(instance, uncompressedImageFrame);
+    const pixelData = getPixelData(instance, uncompressedImageFrame, frameInfo);
     const minMax = getMinMax(pixelData);
+
     const image = {
         imageId: '' + Date.now(),
         minPixelValue: minMax.min,
@@ -24,7 +25,7 @@ const createImage = (instance, frameInfo, uncompressedImageFrame, workerStats = 
         columns: frameInfo.width,
         height: frameInfo.height,
         width: frameInfo.width,
-        color: instance.DICOM.PhotometricInterpretation === 'RGB',
+        color: frameInfo?.componentCount === 3,
         columnPixelSpacing: instance.DICOM.PixelSpacing ? parseFloat(instance.DICOM.PixelSpacing[1]) : undefined,
         rowPixelSpacing: instance.DICOM.PixelSpacing ? parseFloat(instance.DICOM.PixelSpacing[0]) : undefined,
         invert: instance.DICOM.PhotometricInterpretation === 'MONOCHROME1',

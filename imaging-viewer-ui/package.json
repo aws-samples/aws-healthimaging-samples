@@ -3,15 +3,15 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
-        "@aws-amplify/ui-react": "^5.3.1",
-        "@cloudscape-design/component-toolkit": "^1.0.0-beta.25",
-        "@cloudscape-design/components": "^3.0.411",
-        "@cloudscape-design/global-styles": "^1.0.13",
-        "ace-builds": "^1.30.0",
-        "aws-amplify": "^5.3.11",
-        "axios": "^1.5.1",
+        "@aws-amplify/ui-react": "^5.3.3",
+        "@cloudscape-design/component-toolkit": "^1.0.0-beta.40",
+        "@cloudscape-design/components": "^3.0.553",
+        "@cloudscape-design/global-styles": "^1.0.23",
+        "ace-builds": "^1.32.6",
+        "aws-amplify": "^5.3.16",
+        "axios": "^1.6.7",
         "buffer": "^6.0.3",
-        "clipboardy": "^3.0.0",
+        "clipboardy": "^4.0.0",
         "cornerstone-core": "^2.6.1",
         "cornerstone-math": "^0.1.10",
         "cornerstone-tools": "^6.0.10",
@@ -21,7 +21,7 @@
         "pretty-bytes": "^6.1.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-router-dom": "^6.17.0"
+        "react-router-dom": "^6.22.2"
     },
     "devDependencies": {
         "react-scripts": "^5.0.1"
