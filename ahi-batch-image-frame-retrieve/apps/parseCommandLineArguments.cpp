@@ -1,7 +1,7 @@
 #include "ahi-retrieve/version.h"
+#include "ahi-retrieve/string-format.h"
 #include <cxxopts.hpp>
 #include <iostream>
-#include "ahi-retrieve/string-format.h"
 
 using namespace AHIRetrieve;
 

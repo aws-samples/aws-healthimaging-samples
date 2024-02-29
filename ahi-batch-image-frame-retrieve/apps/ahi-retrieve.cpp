@@ -2,15 +2,16 @@
 #include "ahi-retrieve/ahi-retrieve.h"
 #include "ahi-retrieve/string-format.h"
 #include "ahi-retrieve/raw-format-download-callback.h"
-#include "cxxopts.hpp"
+#include <cxxopts.hpp>
 #include <iostream>
+#include <chrono>
+#include <thread>
+
 #ifdef _WINDOWS
 #include <io.h>
 #else
 #include <unistd.h>
 #endif
-#include <chrono>
-#include <thread>
 
 using namespace AHIRetrieve;
 

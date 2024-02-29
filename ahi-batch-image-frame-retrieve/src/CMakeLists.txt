@@ -9,6 +9,7 @@ file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/ahi-retri
 add_library(ahi-retrieve-lib STATIC)
 
 target_compile_features(ahi-retrieve-lib PUBLIC cxx_std_20)
+
 target_sources(ahi-retrieve-lib PRIVATE
     ahi-connection.cpp
     ahi-request.cpp
@@ -44,14 +45,18 @@ target_include_directories(ahi-retrieve-lib PUBLIC ${PROJECT_SOURCE_DIR}/include
 target_link_libraries(ahi-retrieve-lib PRIVATE
     ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
-    openjph
+    ${HTJ2K_LIBRARIES}
     nlohmann_json::nlohmann_json
 )
 
-include_directories(
+if(KAKADU_ROOT)
+    target_compile_definitions(ahi-retrieve-lib PRIVATE KAKADU)
+endif()
+
+target_include_directories(ahi-retrieve-lib PRIVATE
     ${CURL_INCLUDE_DIR}
     ${NLOHMANN_JSON_INCLUDE_DIR}
-    "${PROJECT_SOURCE_DIR}/extern/openjphjs/src"
+    ${HTJ2K_INCLUDES}
 )
 
 source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${HEADER_LIST})

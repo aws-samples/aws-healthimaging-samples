@@ -44,6 +44,11 @@ From the git repository root directory:
 > git submodule update --init --recursive
 ```
 
+### Install Kakadu
+
+This project will use the commercial Kakadu library for HTJ2K decoding if it finds the source code in extern/kakadujs/extern/v8_4_1\*. If the Kakadu source
+code is not found, it will fall back to the open source OpenJPH library for HTJ2K decoding.
+
 ### Create build directory
 
 ```sh
@@ -209,7 +214,6 @@ rates exceed 4 Gbps and large datasets (e.g. > 1GB uncompressed size)
 - Add more error handling
 - Add more logging
 - Add support for verifying the ImageFrame CRC checksum
-- Add support for decoding with Kakadu library
 - Add support for getting aws credentials in other ways (e.g. ~/.aws/credentials, STS)?
 - Add support for generating Nifti volumes as an output format?
 - Consider switching from polling to events?

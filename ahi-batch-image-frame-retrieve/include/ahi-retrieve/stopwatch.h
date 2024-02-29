@@ -23,7 +23,6 @@ namespace AHIRetrieve
         void start()
         {
             start_ = std::chrono::system_clock::now();
-            // clock_gettime(CLOCK_REALTIME, &start_);
         }
 
         void stop()
@@ -31,13 +30,10 @@ namespace AHIRetrieve
             finish_ = std::chrono::system_clock::now();
             delta_ = std::chrono::duration_cast<std::chrono::milliseconds>(finish_ - start_);
 
-            // clock_gettime(CLOCK_REALTIME, &finish_);
-            // sub_timespec(start_, finish_, &delta_);
             if (label_)
             {
                 printf("%s took %.3f ms\n", label_, getDurationInMs());
             }
-            // return delta_;
         }
 
         float getDurationInMs()
@@ -45,12 +41,7 @@ namespace AHIRetrieve
             finish_ = std::chrono::system_clock::now();
             delta_ = std::chrono::duration_cast<std::chrono::milliseconds>(finish_ - start_);
 
-            // clock_gettime(CLOCK_REALTIME, &finish_);
-            // sub_timespec(start_, finish_, &delta_);
-            // auto ns = delta_.tv_sec * 1000000000.0 + delta_.tv_nsec;
-            // auto totalTimeMS = ns / 1000000.0;
             return delta_.count();
-            // return totalTimeMS;
         }
 
         ~Stopwatch()

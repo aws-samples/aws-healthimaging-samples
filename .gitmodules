@@ -1,3 +1,6 @@
 [submodule "ahi-batch-image-frame-retrieve/extern/openjphjs"]
 	path = ahi-batch-image-frame-retrieve/extern/openjphjs
 	url = https://github.com/chafey/openjphjs.git
+[submodule "ahi-batch-image-frame-retrieve/extern/kakadujs"]
+	path = ahi-batch-image-frame-retrieve/extern/kakadujs
+	url = https://github.com/chafey/kakadujs.git

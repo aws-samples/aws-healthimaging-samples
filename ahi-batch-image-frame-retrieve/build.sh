@@ -19,7 +19,7 @@ export CMAKE_BUILD_TYPE=Debug
 # use cmake to generate the makefile
 if [ $(arch) = 'x86_64' ]
 then
-  (cd build && cmake  -DOJPH_DISABLE_INTEL_SIMD=OFF ..)
+  (cd build && cmake -DOJPH_DISABLE_INTEL_SIMD=OFF ..)
 else
   (cd build && cmake -DOJPH_DISABLE_INTEL_SIMD=ON ..)
 fi

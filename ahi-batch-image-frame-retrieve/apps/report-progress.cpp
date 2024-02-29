@@ -22,7 +22,6 @@ void reportProgress(AHIImageFrameRetrieve &ahiRetrieve, size_t &totalBytesDownlo
     {
         // printf("ahiRetrieve.isBusy=%d rawFormatDownloadCallback.pDecodeThreadPool->busy()=%d\n", ahiRetrieve.isBusy(), rawFormatDownloadCallback.pDecodeThreadPool->busy());
         std::this_thread::sleep_for(std::chrono::milliseconds(sleepTimeInMS));
-        //usleep(sleepTimeInMS * 1000);
         float durationInMS = stopwatch.getDurationInMs();
         float durationSinceLastLoop = durationInMS - totalDuration;
         size_t bytesDownloaded = ahiRetrieve.getBytesDownloaded() - startingBytesDownloaded;

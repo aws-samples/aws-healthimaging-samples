@@ -176,7 +176,7 @@ void ImageFrameDownloadThreadPool::getRequestsToAdd(std::vector<ImageFrameReques
     }
 
     const size_t maxRequestsToAdd = (args.maxConcurrentRequestsPerConnection > connection.getRequestCount()) ? (args.maxConcurrentRequestsPerConnection - connection.getRequestCount()) : 0;
-        size_t numRequestsToAdd = std::min< size_t> (imageFrameRequests.size(), maxRequestsToAdd);
+    size_t numRequestsToAdd = std::min<size_t>(imageFrameRequests.size(), maxRequestsToAdd);
     if (numRequestsToAdd > 0)
     {
         options.logger.log(DEBUG, "Adding %d requests\n", numRequestsToAdd);

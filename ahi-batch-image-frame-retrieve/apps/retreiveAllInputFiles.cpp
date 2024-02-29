@@ -3,7 +3,7 @@
 #include "ahi-retrieve/read-file-sync.h"
 #include "ahi-retrieve/jph-format-download-callback.h"
 #include "ahi-retrieve/raw-format-download-callback.h"
-#include "cxxopts.hpp"
+#include <cxxopts.hpp>
 
 using namespace AHIRetrieve;
 

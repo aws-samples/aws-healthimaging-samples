@@ -1,5 +1,5 @@
 #include "ahi-retrieve/logger.h"
-#include "cxxopts.hpp"
+#include <cxxopts.hpp>
 #include <string>
 
 using namespace AHIRetrieve;

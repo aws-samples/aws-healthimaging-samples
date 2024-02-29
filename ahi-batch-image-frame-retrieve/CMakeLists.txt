@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project(AHIRetrieve, LANGUAGES CXX)
 
+find_path(KAKADU_ROOT NAMES Enabling_HT.txt HINTS ${CMAKE_SOURCE_DIR}/extern/kakadujs/extern/* NO_CACHE)
+
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 
 # set the build type if not specified
@@ -14,9 +16,21 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE "${default_build_type}")
 endif()
 
-set(OJPH_ENABLE_TIFF_SUPPORT OFF CACHE BOOL "")
-set(OJPH_BUILD_EXECUTABLES OFF CACHE BOOL "")
-add_subdirectory(${PROJECT_SOURCE_DIR}/extern/openjphjs EXCLUDE_FROM_ALL)
+if(KAKADU_ROOT)
+  message("BUILDING WITH KAKADU")
+  set(HTJ2K_LIBRARIES "kakadu" "kakaduappsupport" "kakadujs")
+  set(HTJ2K_INCLUDES "${PROJECT_SOURCE_DIR}/extern/kakadujs/src")
+
+  # include_directories("${PROJECT_SOURCE_DIR}/extern/kakadujs/extern/kakadu")
+  add_subdirectory(${PROJECT_SOURCE_DIR}/extern/kakadujs EXCLUDE_FROM_ALL)
+else()
+  message("BUILDING WITH OPENJPH")
+  set(OJPH_ENABLE_TIFF_SUPPORT OFF CACHE BOOL "")
+  set(OJPH_BUILD_EXECUTABLES OFF CACHE BOOL "")
+  set(HTJ2K_LIBRARIES "openjph")
+  set(HTJ2K_INCLUDES "${PROJECT_SOURCE_DIR}/extern/openjphjs/src")
+  add_subdirectory(${PROJECT_SOURCE_DIR}/extern/openjphjs EXCLUDE_FROM_ALL)
+endif()
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
