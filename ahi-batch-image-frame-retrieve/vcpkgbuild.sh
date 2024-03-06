@@ -10,7 +10,7 @@ rm -rf imageFrames/*
 rm -rf build/* 
 
 export CMAKE_BUILD_TYPE=Release # | Debug
-#export VERBOSE=1
+export VERBOSE=1
 
 # use cmake to generate the makefile
 if [ $(arch) = 'x86_64' ]

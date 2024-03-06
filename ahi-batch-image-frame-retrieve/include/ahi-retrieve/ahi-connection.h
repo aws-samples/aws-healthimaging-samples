@@ -19,6 +19,7 @@ namespace AHIRetrieve
      */
     struct AHIConnectionArgs
     {
+        AHIConnectionArgs(ImageFrameDownloadCallback &callback) : callback(callback) {}
         std::shared_ptr<AHIRegion> ahiRegion;
         ImageFrameDownloadCallback &callback;
     };

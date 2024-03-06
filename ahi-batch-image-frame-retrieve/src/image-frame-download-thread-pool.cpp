@@ -100,9 +100,8 @@ void ImageFrameDownloadThreadPool::run(ImageFrameDownloadThread &thread)
     ahiRegion->endpoint = this->args.endpoint;
     ahiRegion->awsAccessSecretKey = this->args.awsAccessSecretKey;
 
-    AHIConnectionArgs args{
-        .ahiRegion = ahiRegion,
-        .callback = *(this)};
+    AHIConnectionArgs args(*(this));
+    args.ahiRegion = ahiRegion;
 
     std::vector<std::shared_ptr<AHIConnection>> connections;
     for (int i = 0; i < this->args.numConnectionsPerThread; i++)

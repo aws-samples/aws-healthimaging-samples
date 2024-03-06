@@ -20,8 +20,6 @@ if(KAKADU_ROOT)
   message("BUILDING WITH KAKADU")
   set(HTJ2K_LIBRARIES "kakadu" "kakaduappsupport" "kakadujs")
   set(HTJ2K_INCLUDES "${PROJECT_SOURCE_DIR}/extern/kakadujs/src")
-
-  # include_directories("${PROJECT_SOURCE_DIR}/extern/kakadujs/extern/kakadu")
   add_subdirectory(${PROJECT_SOURCE_DIR}/extern/kakadujs EXCLUDE_FROM_ALL)
 else()
   message("BUILDING WITH OPENJPH")

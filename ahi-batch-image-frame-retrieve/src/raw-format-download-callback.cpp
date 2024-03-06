@@ -44,11 +44,10 @@ void RawFormatDownloadCallback::ImageFrameRequestComplete(
         bytesDownloaded += request.bytes->size();
 
         // decode image
-        DecodeRequest decodeRequest{
-            .requestNumber = 0,
-            .imageFrameRequest = request,
-            .pCallback = &rawFormatDecodeCallback};
-
+        DecodeRequest decodeRequest;
+        decodeRequest.requestNumber = 0;
+        decodeRequest.imageFrameRequest = request;
+        decodeRequest.pCallback = &rawFormatDecodeCallback;
         pDecodeThreadPool->addTask(decodeRequest);
     }
 }

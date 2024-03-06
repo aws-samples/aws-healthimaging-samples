@@ -2,7 +2,7 @@ add_executable(ahi-retrieve)
 
 find_package(cxxopts 3.1.1 REQUIRED)
 
-target_compile_features(ahi-retrieve PRIVATE cxx_std_20)
+target_compile_features(ahi-retrieve PRIVATE cxx_std_14)
 
 target_sources(ahi-retrieve PRIVATE
     ahi-retrieve.cpp

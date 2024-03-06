@@ -26,6 +26,7 @@ namespace AHIRetrieve
 
     struct ImageFrameDownloadThreadPoolArgs
     {
+        ImageFrameDownloadThreadPoolArgs(ImageFrameDownloadCallback &callback) : callback(callback) {}
         std::string region;
         std::string endpoint;
         std::string awsAccessSecretKey;

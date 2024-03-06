@@ -14,7 +14,7 @@ AHIImageFrameRetrieve::AHIImageFrameRetrieve(const AHIImageFrameRetrieveArgs &ar
 {
     log(LOGLEVEL::INFO, "Starting %zu download threads\n", args.numDownloadThreads);
 
-    ImageFrameDownloadThreadPoolArgs ifargs{.callback = args.callback};
+    ImageFrameDownloadThreadPoolArgs ifargs(args.callback);
     ifargs.region = args.region;
     ifargs.endpoint = args.endpoint;
     ifargs.awsAccessSecretKey = stringFormat("%s:%s", args.awsAccessKeyId.c_str(), args.awsSecretAccessKey.c_str());

@@ -8,7 +8,7 @@ file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/ahi-retri
 
 add_library(ahi-retrieve-lib STATIC)
 
-target_compile_features(ahi-retrieve-lib PUBLIC cxx_std_20)
+target_compile_features(ahi-retrieve-lib PUBLIC cxx_std_17)
 
 target_sources(ahi-retrieve-lib PRIVATE
     ahi-connection.cpp
