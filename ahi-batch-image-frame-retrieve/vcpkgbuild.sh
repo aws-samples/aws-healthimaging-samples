@@ -9,19 +9,19 @@ rm -rf imageFrames/*
 
 rm -rf build/* 
 
-export CMAKE_BUILD_TYPE=Debug
+export CMAKE_BUILD_TYPE=Release # | Debug
+#export VERBOSE=1
 
 # use cmake to generate the makefile
 if [ $(arch) = 'x86_64' ]
 then
-  (cd build && cmake --preset=default -DOJPH_DISABLE_INTEL_SIMD=OFF ..)
+  (cmake -S . -B build --preset=default -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DOJPH_DISABLE_INTEL_SIMD=OFF) || (exit 1;)
 else
-  (cd build && cmake --preset=default -DOJPH_DISABLE_INTEL_SIMD=ON ..)
+  (cmake -S . -B build --preset=default -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE -DOJPH_DISABLE_INTEL_SIMD=ON) || (exit 1;)
 fi
 
 # Build it
-#(cd build && make VERBOSE=1 -j) || { exit 1; }
-(cd build && make -j) || { exit 1; }
+(cmake --build build --  -j) || (exit 1;)
 
 # Run it
 (cd imageFrames && ../build/apps/ahi-retrieve  -i "../test/ct2465.json")

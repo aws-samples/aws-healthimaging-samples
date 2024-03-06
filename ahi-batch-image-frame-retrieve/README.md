@@ -63,37 +63,51 @@ code is not found, it will fall back to the open source OpenJPH library for HTJ2
 
 #### Install Library Dependencies
 
-- [nghttp2](https://nghttp2.org/) version 1.43.0 or later
-- [openssl](https://github.com/openssl/openssl) version 3.0.2 or later
-- [libcurl](https://curl.se/libcurl/) version 8.4.0 or later
-- [nlohmann-json](https://github.com/nlohmann/json) version 3.11.3 or later
-- [cxxopts](https://github.com/jarro2783/cxxopts) version 3.1.1 or later
+- [nghttp2](https://nghttp2.org/) version 1.59.0
+- [openssl](https://github.com/openssl/openssl) version 3.2.1
+- [libcurl](https://curl.se/libcurl/) version 8.6.0
+- [nlohmann-json](https://github.com/nlohmann/json) version 3.11.3
+- [cxxopts](https://github.com/jarro2783/cxxopts) version 3.2.0
 
-Note: Earlier versions of the above libraries may work but have not been tested
+Note: Newer and older versions of the libraries above may work but have not been tested. Please use
+the vcpkg approach first to establish a baseline for functionality and performance.
+
+##### Using [vcpkg](https://vcpkg.io/en/) on Mac OS X, Windows or Linux (RECOMMENDED)
+
+vcpkg will ensure that versions of the above libraries that are known to work are used
+
+```sh
+cmake -S . -B build --preset=default -DCMAKE_BUILD_TYPE=Release -DOJPH_DISABLE_INTEL_SIMD=OFF # For Intel x86
+#cmake -S . -B build --preset=default -DCMAKE_BUILD_TYPE=Release -DOJPH_DISABLE_INTEL_SIMD=ON # For Arm
+cmake --build build -j --config release
+```
 
 ##### Using [homebrew](https://brew.sh/) on Mac OS X
 
+WARNING: homebrew will install versions of the libraries above that have not been tested - functionality and
+performance may be impacted! We recommend that you start with a vcpkg build to establish a baseline
+for functionality and performance.
+
 ```sh
+export PKG_CONFIG_PATH="/opt/homebrew/opt/curl/lib/pkgconfig" # allows cmake to find curl in homebrew directory on mac os x since it is installed as a keg to avoid conflicts with the system libcurl
+export CMAKE_PREFIX_PATH="/opt/homebrew" # allows cmake to find packages installed via homebrew
 brew cmake install libnghttp2 openssl@3 curl nlohmann-json cxxopts
-#(cd build && cmake -DOJPH_DISABLE_INTEL_SIMD=OFF ..) # for Intel x86
-(cd build && cmake -DOJPH_DISABLE_INTEL_SIMD=ON ..) # For Apple Silicon
-(cd build && make -j) || { exit 1; }
+#cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DOJPH_DISABLE_INTEL_SIMD=OFF  # for Intel x86
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DOJPH_DISABLE_INTEL_SIMD=ON  # For Apple Silicon
+cmake --build build -- -j
 ```
 
 ##### Using apt on Ubuntu
 
+WARNING: apt will install versions of the libraries above that have not been tested - functionality and
+performance may be impacted! We recommend that you start with a vcpkg build to establish a baseline
+for functionality and performance.
+
 ```sh
 sudo apt install cmake libnghttp2-dev libssl-dev libcurl nlohmann-json-dev cxxopts
-(cd build && cmake -DOJPH_DISABLE_INTEL_SIMD=ON ..) # For Intel x86
-#(cd build && cmake -DOJPH_DISABLE_INTEL_SIMD=OFF ..) # For Arm
-(cd build && make -j) || { exit 1; }
-```
-
-##### Using vcpkg on Mac OS X, Windows or Linux
-
-```sh
-(cd build && cmake --preset=default -DOJPH_DISABLE_INTEL_SIMD=OFF ..) # For Intel x86
-#(cd build && cmake --preset=default -DOJPH_DISABLE_INTEL_SIMD=ON ..) # For Arm
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DOJPH_DISABLE_INTEL_SIMD=OFF # For Intel x86
+#cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DOJPH_DISABLE_INTEL_SIMD=ON # For Arm
+cmake --build build -- -j
 ```
 
 ## Using the C++ Library
