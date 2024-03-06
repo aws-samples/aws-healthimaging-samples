@@ -26,7 +26,7 @@ std::vector<ImageFrameRequest> makeDownloadRequest(const AHIImageFrameRetrieveAr
                 request.datastoreId = input.get_datastore_id();
                 request.imageSetId = input.get_image_set_id();
                 request.imageFrameId = k->get_id();
-                request.bytes = std::make_shared<std::vector<unsigned char>>(k->get_frame_size_in_bytes());
+                request.bytes = std::make_shared<std::vector<unsigned char>>((size_t)k->get_frame_size_in_bytes());
                 requests.push_back(request);
             }
         }
