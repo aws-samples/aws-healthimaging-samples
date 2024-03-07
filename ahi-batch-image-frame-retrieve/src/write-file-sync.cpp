@@ -1,10 +1,7 @@
 #include "ahi-retrieve/logger.h"
 #include <fcntl.h>
-#ifdef _WINDOWS
-#include <io.h>
-#else
-#include <unistd.h>
-#endif
+#include <iostream>
+#include <fstream>
 #include <vector>
 #include <stdio.h>
 #include <errno.h>
@@ -15,25 +12,7 @@ using namespace AHIRetrieve;
 
 void AHIRetrieve::writeFileSync(const char *filePath, const std::vector<unsigned char> &buffer)
 {
-    int fd = open(filePath, O_WRONLY | O_CREAT);
-    if (fd == -1)
-    {
-        log(LOGLEVEL::ERRORZ, "Error %s creating file %s\n", strerror(errno), filePath);
-        return;
-    }
-
-    int bytesWritten = 0;
-    while (bytesWritten < buffer.size())
-    {
-        int result = write(fd, buffer.data() + bytesWritten, buffer.size() - bytesWritten);
-
-        if (result == -1)
-        {
-            log(LOGLEVEL::ERRORZ, "Error %s writing file %s\n", strerror(errno), filePath);
-            break;
-        }
-        bytesWritten += result;
-    }
-
-    close(fd);
+    std::ofstream fs(filePath, std::ios::out | std::ios::binary | std::ios::trunc);
+    fs.write((const char *)buffer.data(), buffer.size());
+    fs.close();
 }
