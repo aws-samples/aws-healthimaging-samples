@@ -21,5 +21,10 @@ namespace AHIRetrieve
 
         std::vector<std::string> headers; // string format = "HTTPHEADER: VALUE"
         curl_slist *list;
+
+    private:
+        // prevent copying
+        CURHTTPHeaders(const CURHTTPHeaders &) = delete;
+        CURHTTPHeaders &operator=(const CURHTTPHeaders &) = delete;
     };
 }

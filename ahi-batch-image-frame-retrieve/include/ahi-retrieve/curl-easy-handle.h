@@ -26,6 +26,10 @@ namespace AHIRetrieve
         CURL *get();
 
     private:
+        // prevent copying
+        CURLEasyHandle(const CURLEasyHandle &) = delete;
+        CURLEasyHandle &operator=(const CURLEasyHandle &) = delete;
+
         CURL *easyHandle;
         std::vector<std::shared_ptr<CURLSetup>> setups;
     };

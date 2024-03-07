@@ -33,8 +33,6 @@ ImageFrameDownloadThreadPool::ImageFrameDownloadThreadPool(const ImageFrameDownl
     }
     options.logger.log(INFO, "Using endpoint %s\n", this->args.endpoint.c_str());
 
-    awsSigV4 = stringFormat("aws:amz:%s:medical-imaging", args.region.c_str());
-
     start();
 }
 
@@ -99,6 +97,7 @@ void ImageFrameDownloadThreadPool::run(ImageFrameDownloadThread &thread)
     ahiRegion->region = this->args.region;
     ahiRegion->endpoint = this->args.endpoint;
     ahiRegion->awsAccessSecretKey = this->args.awsAccessSecretKey;
+    ahiRegion->awsSessionToken = this->args.awsSessionToken;
 
     AHIConnectionArgs args(*(this));
     args.ahiRegion = ahiRegion;

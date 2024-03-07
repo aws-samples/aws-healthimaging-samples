@@ -109,7 +109,6 @@ namespace AHIRetrieve
 
         ImageFrameDownloadThreadPoolArgs args;
         ImageFrameDownloadThreadPoolOptions options;
-        std::string awsSigV4;
         std::vector<std::unique_ptr<ImageFrameDownloadThread>> threads;
 
         // begin mutex protected state
