@@ -11,7 +11,7 @@ applications:
         preBuild:
           commands:
             - npm install -g @aws-amplify/cli@latest
-            - yum -y install jq sudo
+            - sudo yum -y install jq
             - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
             - unzip -q /tmp/awscliv2.zip -d /tmp
             - sudo /tmp/aws/install
