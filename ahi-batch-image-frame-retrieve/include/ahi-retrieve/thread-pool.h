@@ -25,6 +25,11 @@ namespace AHIRetrieve
             addThreads(numThreads);
         }
 
+        virtual ~ThreadPool()
+        {
+            stop();
+        }
+
         /**
          * @brief Adds a task to thread pool to execute when a thread becomes available
          *

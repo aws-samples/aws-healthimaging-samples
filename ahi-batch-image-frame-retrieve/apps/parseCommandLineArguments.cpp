@@ -56,7 +56,13 @@ cxxopts::ParseResult parseCommandLineArguments(int argc, char **argv, cxxopts::O
 
     if (args.count("version"))
     {
-        std::cout << "ahi-retrieve version " << getVersion().c_str() << '\n';
+        std::cout << "ahi-retrieve version " << getVersion().c_str();
+#ifdef _DEBUG
+        std::cout << " DEBUG";
+#else
+        std::cout << " RELEASE";
+#endif
+        std::cout << '\n';
         std::vector<std::pair<std::string, std::string>> dependencies = getDependencyVersions();
         dependencies.push_back(std::pair<std::string, std::string>("cxxopts", stringFormat("%d.%d.%d", CXXOPTS__VERSION_MAJOR, CXXOPTS__VERSION_MINOR, CXXOPTS__VERSION_PATCH)));
 

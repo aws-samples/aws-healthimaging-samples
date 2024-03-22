@@ -15,7 +15,7 @@
 
 std::string AHIRetrieve::getVersion()
 {
-    return "1.0 beta-1";
+    return "1.0 beta-2";
 }
 
 std::vector<std::pair<std::string, std::string>> AHIRetrieve::getDependencyVersions()

@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 
         int loops = args["loops"].as<int>();
 
-        for (int iteration = 0; iteration < loops; iteration++)
+            for (int iteration = 0; iteration < loops; iteration++)
         {
             retrieveAllInputFiles(ahiRetrieve, args);
 
@@ -64,6 +64,7 @@ int main(int argc, char **argv)
                 std::this_thread::sleep_for(std::chrono::seconds(1)); // sleep one second between each iteration
             }
         }
+
         ahiRetrieve.stop();
         rawFormatDownloadCallback.pDecodeThreadPool->stop();
 
@@ -71,11 +72,11 @@ int main(int argc, char **argv)
     }
     catch (std::exception &ex)
     {
-        printf("ahi-retrieve: std::exception %s\n", ex.what());
+        printf("ahi-retrieve: std::exception - %s\n", ex.what());
     }
     catch (const char *pError)
     {
-        printf("ahi-retrieve: error %s\n", pError);
+        printf("ahi-retrieve: error - %s\n", pError);
     }
 
     std::cout << options.help() << std::endl;

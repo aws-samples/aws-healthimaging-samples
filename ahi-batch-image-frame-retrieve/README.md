@@ -225,6 +225,7 @@ rates exceed 4 Gbps and large datasets (e.g. > 1GB uncompressed size)
 
 ## TODO
 
+- Add option to pass folder/directory to read json from
 - Add more error handling
 - Add more logging
 - Add support for verifying the ImageFrame CRC checksum
