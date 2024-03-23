@@ -19,7 +19,7 @@ export default function ToolsContent() {
 
     const defaultHeader = (
         <Box variant="h3" textAlign="center">
-            AWS HealthImaging Sample Viewer
+            Jyokti Viewer
         </Box>
     );
 
@@ -31,8 +31,8 @@ export default function ToolsContent() {
         return (
             <div>
                 <h3>Learn more</h3>
-                <Link external href="https://aws.amazon.com/healthimaging">
-                    AWS HealthImaging
+                <Link external href="https://www.jyokti.com">
+                    Jyokti
                 </Link>
                 {additionalLinks.map((l) => (
                     <p key={l.name}>
@@ -47,7 +47,7 @@ export default function ToolsContent() {
 
     const defaultContent = (
         <div>
-            <p>Welcome to the sample app! </p>
+            <p>Welcome to Jyokti Viewer </p>
             <p>
                 Explore using the navigation menu on the left side of the page. This pane provides contextually-aware
                 information on each app component.
@@ -68,76 +68,20 @@ export default function ToolsContent() {
         return (
             <HelpPanel
                 header={<h2>Datastores</h2>}
-                footer={
-                    <Footer
-                        additionalLinks={[
-                            {
-                                name: 'AWS Tagging',
-                                url: 'https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html',
-                            },
-                            {
-                                name: 'Role Based Access Control',
-                                url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction_attribute-based-access-control.html',
-                            },
-                            {
-                                name: 'Attribute Based Access Control',
-                                url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction_attribute-based-access-control.html',
-                            },
-                        ]}
-                    />
-                }
             >
                 <div>
                     <p>
                         A data store provides logical separation of imaging data. This enables multi-tenant use cases.
                     </p>
-                    <p>
-                        Datastores are assigned Amazon Resource Names (ARNs) and can be tagged with keys and values.
-                        This enables fine-grained access controls across organizations using role-based access control
-                        (RBAC) and/or attribute-based access control (ABAC). Tags can also be used for cost allocation.
-                    </p>
                 </div>
             </HelpPanel>
         );
-    } else if (/^\/datastores\/\w+\/tags$/.test(location.pathname)) {
-        return (
-            <HelpPanel
-                header={<h2>Datastore Tags</h2>}
-                footer={
-                    <Footer
-                        additionalLinks={[
-                            {
-                                name: 'AWS Tagging',
-                                url: 'https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html',
-                            },
-                            {
-                                name: 'Role Based Access Control',
-                                url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction_attribute-based-access-control.html',
-                            },
-                            {
-                                name: 'Attribute Based Access Control',
-                                url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction_attribute-based-access-control.html',
-                            },
-                        ]}
-                    />
-                }
-            >
-                <div>
-                    <p>
-                        Tags are words or phrases that you can use to identify and organize your AWS resources. You can
-                        add multiple tags to each resource, and each tag includes a key and a value that you define. For
-                        example, the key might be "domain" and the value might be "example.com". You can search and
-                        filter your resources based on the tags you add.
-                    </p>
-                </div>
-            </HelpPanel>
-        );
-    } else if (location.pathname === '/search') {
+    }  else if (location.pathname === '/search') {
         return (
             <HelpPanel header={<h2>ImageSet Search</h2>} footer={<Footer />}>
                 <div>
                     <p>
-                        The AWS HealthImaging service provides native search functionality. You can search in a
+                        Jyokti viewer service provides native search functionality. You can search in a
                         datastore by the following parameters:
                     </p>
                     <ul>
@@ -159,7 +103,7 @@ export default function ToolsContent() {
         return (
             <HelpPanel header={<h2>ImageSet Metadata</h2>} footer={<Footer />}>
                 <div>
-                    <p>AWS HealthImaging provides an optimized JSON representation of an ImageSet's metadata.</p>
+                    <p>Jyokti viewer provides an optimized JSON representation of an ImageSet's metadata.</p>
                     <p>This includes patient, study, series and instance-level data.</p>
                 </div>
             </HelpPanel>
@@ -181,7 +125,7 @@ export default function ToolsContent() {
             >
                 <div>
                     <p>
-                        AWS HealthImaging stores and provides image frames in lossless High Throughput JPEG 2000 (HTJ2K)
+                        Jyokti viewer stores and provides image frames in lossless High Throughput JPEG 2000 (HTJ2K)
                         format. HTJ2K is a simple extension to the existing JPEG2000 standard that replaces block coder
                         resulting in an order of magnitude speedup.
                     </p>

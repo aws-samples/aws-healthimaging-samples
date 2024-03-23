@@ -132,7 +132,7 @@ export default function TopNav({ signOut, setAppTheme }) {
             <TopNavigation
                 identity={{
                     href: '',
-                    title: 'AWS HealthImaging Sample Viewer',
+                    title: 'Jyokti Viewer',
                 }}
                 utilities={navUtils}
                 i18nStrings={{
