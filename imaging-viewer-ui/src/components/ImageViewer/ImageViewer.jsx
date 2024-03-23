@@ -83,6 +83,60 @@ export default function ImageViewer() {
     const imageBoxRef = useRef();
     const imageBoxElement = imageBoxRef.current;
 
+    const [playState, setPlayState] = useState(false); // Track play state
+    const [intervalId, setIntervalId] = useState(null); // Store interval id
+   
+    // Function to toggle play state
+    const togglePlay = () => {
+        setPlayState((prevState) => !prevState);
+    };
+
+    // Function to play images
+    const playImages = useCallback(() => {
+        const stackState = cornerstoneTools.getToolState(imageBoxRef.current, 'stack');
+        const totalImages = stackState?.data?.[0]?.imageIds.length || 0;
+        let currentIndex = 0;
+
+        const interval = setInterval(() => {
+            if (currentIndex < totalImages) {
+                cornerstone.loadAndCacheImage(stackState.data[0].imageIds[currentIndex]).then((image) => {
+                    cornerstone.displayImage(imageBoxRef.current, image);
+                });
+                currentIndex++;
+            } else {
+                clearInterval(interval);
+                setPlayState(false); // Stop play when all images are played
+            }
+        }, 1000); // Change interval duration as needed
+
+        setIntervalId(interval);
+    }, []);
+
+    useEffect(() => {
+        if (playState) {
+            playImages();
+        } else {
+            clearInterval(intervalId); // Clear interval when play stops
+        }
+
+        return () => {
+            clearInterval(intervalId); // Clear interval on component unmount
+        };
+    }, [playState, intervalId, playImages]);
+
+        // Enable/disable Cornerstone
+    useEffect(() => {
+        const element = imageBoxRef.current;
+        if (element) {
+            if (playState) {
+                enableCornerstone(element);
+            } else {
+                disableCornerstone(element);
+            }
+        }
+    }, [playState, enableCornerstone, disableCornerstone]);
+
+    
     // Set crumbs
     useEffect(() => {
         buildCrumb(location.pathname, 'Image Viewer');
@@ -470,6 +524,17 @@ export default function ImageViewer() {
                                     />
                                 )}
                             </ColumnLayout>
+                                                <div>
+                        {/* Play button */}
+                        <button onClick={togglePlay}>{playState ? 'Stop' : 'Play'}</button>
+                    </div>
+                    <div
+                        ref={imageBoxRef}
+                        style={{ aspectRatio: '1 / 1', width: '100%' }}
+                        onContextMenu={(e) => e.preventDefault()}
+                        onMouseDown={(e) => e.preventDefault()}
+                    />
+
                         </Form>
                     </form>
                 </SpaceBetween>
