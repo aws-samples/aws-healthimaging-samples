@@ -22,4 +22,9 @@ export function override(resources: AmplifyAuthCognitoStackTemplate) {
     resources.userPoolClientWeb.accessTokenValidity = 60;
     resources.userPoolClientWeb.idTokenValidity = 60;
     resources.userPoolClientWeb.tokenValidityUnits = minutesValidityUnit;
+
+    resources.userPool.adminCreateUserConfig = {
+    allowAdminCreateUserOnly: true,
+    };
+
 }
