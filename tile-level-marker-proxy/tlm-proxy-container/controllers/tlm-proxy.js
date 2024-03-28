@@ -18,9 +18,11 @@ const { setCacheValue, getCacheValue } = require('../cache');
 const { Readable } = require('stream');
 
 let imagingClientConfig = {};
-if (process.env.AHI_ENDPOINT) imagingClientConfig.endpoint = AHI_ENDPOINT;
+if (process.env.AHI_ENDPOINT) imagingClientConfig.endpoint = process.env.AHI_ENDPOINT;
 if (process.env.AHI_REGION) {
-    imagingClientConfig.endpoint = AHI_REGION;
+    imagingClientConfig.region = process.env.AHI_REGION;
+} else if (process.env.AWS_REGION) {
+    imagingClientConfig.region = process.env.AWS_REGION;
 } else {
     imagingClientConfig.region = 'us-east-1';
 }
