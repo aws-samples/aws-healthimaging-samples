@@ -1,17 +1,20 @@
 {
-  "name": "overrides-for-auth-resource",
-  "version": "1.0.0",
-  "description": "",
-  "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "@aws-amplify/cli-extensibility-helper": "^3.0.19",
-    "@aws-cdk/aws-cognito": "^1.203.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.2.2"
-  }
+    "name": "overrides-for-auth-resource",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "@aws-amplify/cli-extensibility-helper": "^3.0.26",
+        "@aws-cdk/aws-cognito": "^1.203.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.4.3"
+    },
+    "resolutions": {
+        "ip": "^1.1.9"
+    }
 }
