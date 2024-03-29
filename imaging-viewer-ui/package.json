@@ -4,12 +4,12 @@
     "private": true,
     "dependencies": {
         "@aws-amplify/ui-react": "^5.3.3",
-        "@cloudscape-design/component-toolkit": "^1.0.0-beta.40",
-        "@cloudscape-design/components": "^3.0.553",
-        "@cloudscape-design/global-styles": "^1.0.23",
-        "ace-builds": "^1.32.6",
-        "aws-amplify": "^5.3.16",
-        "axios": "^1.6.7",
+        "@cloudscape-design/component-toolkit": "^1.0.0-beta.41",
+        "@cloudscape-design/components": "^3.0.592",
+        "@cloudscape-design/global-styles": "^1.0.25",
+        "ace-builds": "^1.32.9",
+        "aws-amplify": "^5.3.18",
+        "axios": "^1.6.8",
         "buffer": "^6.0.3",
         "clipboardy": "^4.0.0",
         "cornerstone-core": "^2.6.1",
@@ -21,18 +21,21 @@
         "pretty-bytes": "^6.1.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-router-dom": "^6.22.2"
+        "react-router-dom": "^6.22.3"
     },
     "devDependencies": {
         "react-scripts": "^5.0.1"
     },
     "overrides": {
         "react-scripts": {
-            "webpack": "^5.76.3",
+            "webpack": "^5.91.0",
             "nth-check": "^2.1.1",
-            "postcss": "^8.4.31"
+            "postcss": "^8.4.38"
         },
-        "@babel/traverse": "^7.23.2"
+        "webpack-dev-server": {
+            "express": "^4.19.2",
+            "webpack-dev-middleware": "^7.2.0"
+        }
     },
     "scripts": {
         "start": "react-scripts start",
@@ -57,5 +60,6 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    }
+    },
+    "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }
