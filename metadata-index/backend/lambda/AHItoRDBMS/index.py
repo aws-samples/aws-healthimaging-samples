@@ -341,14 +341,14 @@ def generateSQLValues( tags : [] , datamodel : []):
                 if column["type"].upper() == "DATE":
                     # Convert date in YYYMMDD format to a date string that MYSQL can understand.
                     try:
-                        data_value = datetime.strptime( str(tags[tag]), '%Y%m%d').strftime('%y-%m-%d')
+                        data_value = datetime.strptime( str(tags[tag]), '%Y%m%d').strftime('%Y-%m-%d')
                     except:
                         data_value = None
                         continue
                 if column["type"].upper() == "TIME":
                     try:
                         date_string = str(tags[tag])
-                        data_value = datetime.strptime(date_string, '%Y%m%d%H%M%S')
+                        data_value = datetime.strptime(date_string, '%H%M%S').strftime('%H:%M:%S')
                     except:
                         data_value = None
                         continue
