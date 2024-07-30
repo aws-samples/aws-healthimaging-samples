@@ -1,0 +1,12 @@
+boto3
+botocore
+Flask
+flask-cors
+pydicom>=2.3.0
+waitress
+mysql-connector-python>=8.0.33
+requests-toolbelt>=1.0.0
+highdicom>=0.21.1
+redis>=4.5.5
+orjson
+pillow
