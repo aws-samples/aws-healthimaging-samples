@@ -1,0 +1,10 @@
+cache/
+venv/
+__py_cache__/
+**/__pycache__/
+tools/*.json
+main.bin
+main.build/
+main.dist/
+main.onefile-build/
+tools/
