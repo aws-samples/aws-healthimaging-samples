@@ -1,0 +1,1 @@
+INSERT INTO issuer VALUES (NULL , 'DEFAULT_DOMAIN', 'This domain is assigned to all patients for which the Issuer Of Patient ID is not specified.');

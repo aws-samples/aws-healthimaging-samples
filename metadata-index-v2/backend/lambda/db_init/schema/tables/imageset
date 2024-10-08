@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS imageset;
+CREATE TABLE imageset (
+	`imageset_pkey` bigint NOT NULL AUTO_INCREMENT,
+    `series_pkey` bigint NOT NULL,
+    `imagesetid` varchar(32)NOT NULL,
+    `datastoreid` varchar(32) NOT NULL,
+    CONSTRAINT `imageset_imagesetid_datastoreid_cst` UNIQUE (`imagesetid` , `datastoreid`),
+	PRIMARY KEY (`imageset_pkey`));
+CREATE INDEX `imageset_imagesetid_idx` ON `imageset` (`imagesetid`);
+CREATE INDEX `imageset_datastoreid_idx` ON `imageset` (`datastoreid`);

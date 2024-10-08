@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS frame;
+CREATE TABLE frame (
+	`frame_pkey` bigint NOT NULL AUTO_INCREMENT,
+    `instance_pkey` bigint NOT NULL,
+    `imageset_pkey` bigint NOT NULL,
+    `framenumber` int NOT NULL,
+    `frameid` varchar(32) NOT NULL,
+	PRIMARY KEY (`frame_pkey`),
+    CONSTRAINT `frame_frameid_cst` UNIQUE (`frameid`),
+    FOREIGN KEY (`instance_pkey`) REFERENCES `instance` (`instance_pkey`) ON DELETE CASCADE);
+	CREATE INDEX `frame_instance_pkey_idx` ON `frame` (`instance_pkey`);
+	CREATE INDEX `frame_imageset_pkey_idx` ON `frame` (`imageset_pkey`);
+    CREATE INDEX `frame_frameidy_idx` ON `frame` (`frameid`);
