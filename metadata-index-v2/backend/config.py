@@ -3,8 +3,7 @@ CDK_APP_NAME = "metadata-index-v2"
 
 #AHI settings: This should be set regardless of the mode.
 #The datstore ARN of the AHI datastore. You can find this value in the AHI Web console on your AWS account.
-#AHI_DATASTORE_ARN = "arn:aws:medical-imaging:[REGION]:[ACCOUNT_NUMBER]:datastore/[DATASTORE_ID]"
-AHI_DATASTORE_ARN = "arn:aws:medical-imaging:us-east-1:793803570670:datastore/46015371bee548dd90178e18eaa7b96a"
+AHI_DATASTORE_ARN = "arn:aws:medical-imaging:[REGION]:[ACCOUNT_NUMBER]:datastore/[DATASTORE_ID]"
 
 #Note that to use RDBMS mode requires to havve a VPC. Make sure to set USE_PVC to True in the VPC config below.
 RDBMS_CONFIG = {
