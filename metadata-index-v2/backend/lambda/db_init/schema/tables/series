@@ -1,0 +1,19 @@
+DROP TABLE IF EXISTS series;
+CREATE TABLE series (
+	`series_pkey` bigint NOT NULL AUTO_INCREMENT,
+	`study_pkey` bigint NOT NULL,
+    `seriesinstanceuid` varchar(64) NOT NULL UNIQUE,
+    `modality` varchar(16) NULL,
+    `seriesnumber` varchar(12) NULL,
+    `seriesdescription` varchar(64) NULL,
+    `institutionname` varchar(64) NULL,
+    `bodypartexamined` varchar(16) NULL,
+    `stationname` varchar(16) NULL,
+    `manufacturer` varchar(64) NULL,
+    `protocolname` varchar(64) NULL,
+    `laterality` varchar(16) NULL,
+    `numberofseriesrelatedinstances` int NULL,
+	PRIMARY KEY (`series_pkey`),
+    FOREIGN KEY (`study_pkey`) REFERENCES `study` (`study_pkey`) ON DELETE CASCADE);
+	CREATE INDEX `series_study_pkey_idx` ON `series` (`study_pkey`);
+	CREATE INDEX `series_seriesinstanceuid_idx` ON `series` (`seriesinstanceuid`);
