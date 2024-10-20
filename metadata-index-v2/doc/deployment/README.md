@@ -120,13 +120,13 @@ You need to change the following parameters:
         <th>Description</th>
     </tr>
     <tr>
-        <td>ROOT</td>
+        <td>availability-zones</td>
         <td>ACCOUNT_NUMBER</td>
         <td>""</td>
-        <td>AWS Account Id of the deployment account.</td>
+        <td>AWS Account ID of the deployment account.</td>
     </tr>
     <tr>
-        <td>ROOT</td>
+        <td>availability-zones</td>
         <td>REGION</td>
         <td>us-east-1</td>
         <td>AWS Region for the deployment region.  If you change the default region, please change the list of availability zones to match the changed region.</td>
