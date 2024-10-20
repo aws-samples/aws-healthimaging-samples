@@ -12,13 +12,11 @@ You will need the following software packages installed locally to deploy this s
 
 **Docker:**<br>When running the CDK deploy command, the container images will automatically be built (via docker build command), and sent to AWS ECR registry. Docker must be present on the machine where the cdk deployment is executed. Docker desktop is sufficient. Refer to Docker Desktop documentation to install it on your machine.
 
-**Compatible region:**<br>As of 09/01/203 this project is compatible in the following regions: US East (N. Virginia), US West (Oregon), Asia Pacific (Sydney), and Europe (Ireland).
+**Compatible region:**<br>As of 09/01/2024 this project is compatible in the following regions: US East (N. Virginia), US West (Oregon), Asia Pacific (Sydney), and Europe (Ireland).
 
-
-
-
-## project configuration
-The project configuration is in the file `[project root]/backend/config.py`. You can change the following parameters:
+## Project configuration
+The project configuration is in the file `[project root]/backend/config.py`.
+You can change the following parameters:
 <table>
     <tr>
         <th>section</th>
@@ -112,7 +110,28 @@ The project configuration is in the file `[project root]/backend/config.py`. You
     </tr>
 </table>
 
-
+You also need to edit the file `[project root]/backend/cdk.context.json`.
+You need to change the following parameters:
+<table>
+    <tr>
+        <th>section</th>
+        <th>Parameter</th>
+        <th>Default value</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>ROOT</td>
+        <td>ACCOUNT_NUMBER</td>
+        <td>""</td>
+        <td>AWS Account Id of the deployment account.</td>
+    </tr>
+    <tr>
+        <td>ROOT</td>
+        <td>REGION</td>
+        <td>us-east-1</td>
+        <td>AWS Region for the deployment region.  If you change the default region, please change the list of availability zones to match the changed region.</td>
+    </tr>
+</table>
 
 ## Installation
 1 - Navigate to the `/backend/` folder.
