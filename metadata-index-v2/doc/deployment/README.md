@@ -164,7 +164,13 @@ $ source .venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-6 - At this point you can now synthetize and deploy the CloudFormation template for this code.
+6 - If it is the first time that you are using CDK to deploy in this account and region:
+
+```
+$ cdk bootstrap
+```
+
+7 - At this point you can now synthetize and deploy the CloudFormation template for this code.
 
 ```
 $ cdk deploy
