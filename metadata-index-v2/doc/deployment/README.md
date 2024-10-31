@@ -134,43 +134,44 @@ You need to change the following parameters:
 </table>
 
 ## Installation
-1 - Navigate to the `/backend/` folder.
-```
-cd backend
-```
-
-2 - To manually create a virtualenv on MacOS and Linux:
+1 - From `[project root]/`, create a virtualenv on MacOS and Linux:
 
 ```
 python3 -m venv .venv
 ```
 
-3 - After the init process completes and the virtualenv is created, you can use the following
+2 - After the init process completes and the virtualenv is created, you can use the following
 step to activate your virtualenv.
 
 ```
 source .venv/bin/activate
 ```
 
-4 - If you are a Windows platform, you would activate the virtualenv like this:
+3 - If you are on a Windows platform, you would activate the virtualenv like this:
 
 ```
 .venv\Scripts\activate.bat
 ```
 
-5 - Once the virtualenv is activated, you can install the required dependencies.
+4 - Once the virtualenv has been activated, navigate to the `[project root]/backend/` folder.
+
+```
+cd backend
+```
+
+5 - Install the required dependencies.
 
 ```
 pip install -r requirements.txt
 ```
 
-6 - If it is the first time that you are using CDK to deploy in this account and region:
+6 - If it is the first time that you are using CDK to deploy in this account and region, bootstrap for CDK deployment:
 
 ```
 cdk bootstrap
 ```
 
-7 - At this point you can now synthetize and deploy the CloudFormation template for this code.
+7 - Use CDK to synthetize and deploy the CloudFormation template for this code.
 
 ```
 cdk deploy
