@@ -134,26 +134,26 @@ You need to change the following parameters:
 </table>
 
 ## Installation
-1 - From `[project root]/`, create a virtualenv on MacOS and Linux:
+1 - From `[project root]/`, create a Python virtual environment on MacOS and Linux:
 
 ```
 python3 -m venv .venv
 ```
 
-2 - After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
+2 - After the init process completes and the Python virtual environment has been created, you can use the following
+command to activate your Python virtual environment.
 
 ```
 source .venv/bin/activate
 ```
 
-3 - If you are on a Windows platform, you would activate the virtualenv like this:
+3 - If you are on a Windows platform, you should use the following command to activate your Python virtual environment:
 
 ```
 .venv\Scripts\activate.bat
 ```
 
-4 - Once the virtualenv has been activated, navigate to the `[project root]/backend/` folder.
+4 - Once the Python virtual environment has been activated, navigate to the `[project root]/backend/` folder.
 
 ```
 cd backend
