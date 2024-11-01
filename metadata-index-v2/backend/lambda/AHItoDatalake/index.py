@@ -95,11 +95,11 @@ def extractTags(level: str, metadatas: []):
             try:
                 IssuerOfPatientID=json_block["IssuerOfPatientID"]
             except:
-                pass
+                print("An exception occurred while retrieving IssuerOfPatientID.")
             try:
                 PatientID = json_block["PatientID"]
             except:
-                pass
+                print("An exception occurred while retrieving PatientID.")
         
         #Let's find the StudyInstanceUID and use it to reference the study in the series table.
         if level == "series":
