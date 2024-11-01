@@ -17,4 +17,3 @@ typing_extensions==4.7.1
 bandit
 cdk-nag
 pip-licenses
-semgrep
