@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS conflict;
+CREATE TABLE conflict (
+	`conflict_pkey` bigint NOT NULL AUTO_INCREMENT,
+    `series_pkey` bigint NOT NULL,
+    `imageset_pkey` bigint NOT NULL,
+    `priority` int NOT NULL,
+	PRIMARY KEY (`conflict_pkey`));
+	
