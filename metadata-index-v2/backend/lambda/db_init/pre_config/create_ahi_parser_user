@@ -1,0 +1,3 @@
+CREATE USER `ahi_parser` IDENTIFIED WITH AWSAuthenticationPlugin as 'RDS';
+ALTER USER `ahi_parser` REQUIRE SSL;
+GRANT SELECT, INSERT, UPDATE, DELETE, SHOW VIEW, TRIGGER ON `ahiindex`.* TO `ahi_parser`@`%`;
