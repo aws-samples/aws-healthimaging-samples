@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS importjob;
+CREATE TABLE importjob (
+	`importjob_pkey` bigint NOT NULL AUTO_INCREMENT,
+    `sourceprefix` varchar(2048) NOT NULL,
+    `manifestprefix` varchar(2048) NOT NULL,
+    `submittedat` datetime NOT NULL,
+    `startedat` datetime NULL,
+    `completedat` datetime NULL,
+    `logicalstatus` int NOT NULL,
+    `ahijobid` varchar(32) NOT NULL,
+    `ahijobstatus` int NULL,
+	PRIMARY KEY (`importjob_pkey`));

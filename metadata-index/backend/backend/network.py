@@ -19,7 +19,7 @@ class Vpc(Construct):
             self,
             "Vpc",
             max_azs=3,
-            cidr=vpc_cidr,
+            ip_addresses=ec2.IpAddresses.cidr(vpc_cidr),
             subnet_configuration=[
                 ec2.SubnetConfiguration(
                     subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS,

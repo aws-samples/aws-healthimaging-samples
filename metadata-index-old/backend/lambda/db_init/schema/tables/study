@@ -1,0 +1,20 @@
+DROP TABLE IF EXISTS study;
+CREATE TABLE study (
+	`study_pkey` bigint NOT NULL AUTO_INCREMENT,
+	`patient_pkey` bigint NOT NULL,
+	`studyinstanceuid` varchar(64) NOT NULL UNIQUE,
+	`accessionnumber` varchar(16) NULL,
+	`studyid` varchar(16) NULL,
+	`studydate` date NULL,
+	`studytime` time NULL,
+	`studydescription` varchar(64) NULL,
+	`referringphysicianname` varchar(64) NULL,
+	`numberofstudyrelatedseries` int NULL,
+	`numberofstudyrelatedinstances` int NULL,
+	PRIMARY KEY (`study_pkey`),
+	FOREIGN KEY (`patient_pkey`) REFERENCES `patient` (`patient_pkey`) ON DELETE CASCADE);
+	CREATE INDEX `study_studyinstanceuid_idx` ON `study` (`studyinstanceuid`);
+	CREATE INDEX `study_accessionnumber_idx` ON `study` (`accessionnumber`);
+	
+
+	
