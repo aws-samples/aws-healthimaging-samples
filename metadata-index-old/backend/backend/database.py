@@ -25,7 +25,8 @@ class AuroraServerlessDB(Construct):
         
         self._dbCluster = rds.DatabaseCluster(
             self, 
-            "ahi-index-DBCluster",
+            "ahi-index-DBCluster", 
+            instances=1,
             engine=rds.DatabaseClusterEngine.aurora_mysql( version=rds.AuroraMysqlEngineVersion.of('8.0.mysql_aurora.3.04.0')),
             parameter_group=rds.ParameterGroup.from_parameter_group_name(self, "ahi-index-db-cluster-ParameterGroup", parameter_group_name="default.aurora-mysql8.0"),
             cluster_identifier=stack_name+"-ahi-index-db-cluster",
@@ -38,11 +39,11 @@ class AuroraServerlessDB(Construct):
             storage_encrypted=True,
             iam_authentication=True,
             backtrack_window=Duration.hours(24),
-            writer=rds.ClusterInstance.serverless_v2("writer"),
-            readers=[rds.ClusterInstance.serverless_v2("reader1", scale_with_writer=True)],
-            serverless_v2_min_capacity=8,
-            serverless_v2_max_capacity=64,
-            vpc=vpc
+            instance_props=rds.InstanceProps(
+                vpc=vpc,
+                instance_type=ec2.InstanceType("Serverless"),
+                publicly_accessible=False,
+            )
         )
         self._dbCluster.node.default_child.add_property_override('ServerlessV2ScalingConfiguration', {"MinCapacity": min_acu_capacity, "MaxCapacity": max_acu_capacity})
         #self._dbCluster.add_rotation_single_user(exclude_characters="\"@/\\" , vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS))

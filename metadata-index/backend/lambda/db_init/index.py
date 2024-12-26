@@ -83,11 +83,11 @@ def IterateandCreate(cnx, folderpath):
       try:
         print("Creating {}: ".format(filename), end='')
         results = cursor.execute(content, multi=True)
-        try:
-            for result in results:
-                pass
-        except Exception as e:
-            pass
+        #try:
+        #    for result in results:
+        #        pass
+        #except Exception as e:
+        #    pass
         cnx.commit()
         cursor.close()
       except mysql.connector.Error as err:

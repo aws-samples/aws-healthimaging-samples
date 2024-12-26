@@ -2,7 +2,7 @@
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: MIT-0
 
-Generates Lambdas functions for the application.
+Generates Lambdas functions for the pplication.
 """
 
 from constructs import Construct

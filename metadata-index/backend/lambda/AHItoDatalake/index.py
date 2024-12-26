@@ -12,9 +12,17 @@ def lambda_handler(event, context):
         populateInstanceLevel = True
     else:
         populateInstanceLevel = False
-    bucketsAndKeys = getBucketsAndKeysFromSns(event)
-    datastoreidAndImagesetids = getImageSetIds(bucketsAndKeys)
-    metadatas = getMetadatas(datastoreidAndImagesetids)
+    
+    # retrieve datastore id and image set ids
+    #bucketsAndKeys = getBucketsAndKeysFromSns(event)
+    #datastoreidAndImagesetids = getImageSetIds(bucketsAndKeys)
+    print("event: %s" % (event))
+    datastoreIdAndImageSetIds = getDatastoreIdAndImageSetIds(event)
+    print("datastoreIdAndImageSetIds: %s" % (datastoreIdAndImageSetIds))
+
+    # retrieve metadata based on datastore id and image set ids
+    metadatas = getMetadatas(datastoreIdAndImageSetIds)
+    print("metadatas: %s" % (metadatas))
     
     print("Processing Patient level metadata")
     patientLeveLTags = extractTags('patient', metadatas)
@@ -87,11 +95,11 @@ def extractTags(level: str, metadatas: []):
             try:
                 IssuerOfPatientID=json_block["IssuerOfPatientID"]
             except:
-                pass
+                print("An exception occurred while retrieving IssuerOfPatientID.")
             try:
                 PatientID = json_block["PatientID"]
             except:
-                pass
+                print("An exception occurred while retrieving PatientID.")
         
         #Let's find the StudyInstanceUID and use it to reference the study in the series table.
         if level == "series":
@@ -164,24 +172,57 @@ def generateFilePrefix(level: str , metadata ):
         date_prefix = buildCurrentDatePrefix()
     return level+"/"+date_prefix
 
-def getMetadatas(bucketsdatastoreidAndImagesetidsAndkeys : []):
+def getMetadatas(datastoreIdAndImageSetIds : []):
     """Fetch the metadata from AHI service and returns it as an array of json objects.
 
     Parameters:
-    event (dict): The list of dict containing the datastoreId and imageSetId for each metadata to fetch.
+    datastoreIdAndImageSetIds (dict): The list of dict containing the datastoreId and imageSetId for each metadata to fetch.
 
     Returns:
     list of metadata json objects
     """
     metadatas = []
     helper = AHItoDICOM()
-    for dIdandIId in bucketsdatastoreidAndImagesetidsAndkeys:
-        metadata = helper.getMetadata(datastore_id=dIdandIId["datastoreid"] , imageset_id=dIdandIId["imagesetid"])
+    for dIdandIId in datastoreIdAndImageSetIds:
+        metadata = helper.getMetadata(datastore_id=dIdandIId["datastoreId"] , imageset_id=dIdandIId["imageSetId"])
         metadatas.append(metadata)
     return metadatas
         
 
+def getDatastoreIdAndImageSetIds(event):
+    """Fetch the data ImageSetIds in it.
 
+    Parameters:
+    event (dict): list of SQS messages
+    
+    Returns:
+    list of dict containing the datastoreId and imageSetId as str type. eg. [{"datastoreId" : "xxxxx" , "imageSetId" : "xxxx"}]
+    """
+    datastoreIdAndImageSetIds = []
+    
+    for message in event['Records']:
+        datastoreIdAndImageSetIds.append(processMessage(message))
+        
+    return datastoreIdAndImageSetIds
+    
+    
+def processMessage(message):
+    datastoreIdAndImageSetId = {}
+    try:
+        print(f"Processing message {message['body']}")
+        Body = json.loads(message['body'])
+        datastoreId = Body['detail']['datastoreId']
+        imageSetId = Body['detail']['imageSetId']
+        datastoreIdAndImageSetId = {
+            "datastoreId": datastoreId,
+            "imageSetId": imageSetId
+        }
+    except Exception as err:
+        print("An error occurred: %s" % (err))
+    
+    return datastoreIdAndImageSetId
+    
+    
 def getImageSetIds(bucketsAndkeys : []):
     """Fetch the job-output-manifest.json file from the S3 bucket and returns the ImageSetIds in it.
 

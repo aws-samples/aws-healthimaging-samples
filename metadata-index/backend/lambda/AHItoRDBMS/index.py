@@ -62,9 +62,17 @@ def lambda_handler(event, context):
         populateInstanceLevel = True
     else:
         populateInstanceLevel = False
-    bucketsAndKeys = getBucketsAndKeysFromSns(event)
-    datastoreidAndImagesetids = getImageSetIds(bucketsAndKeys)
-    metadatas = getMetadatas(datastoreidAndImagesetids, ahi_client)
+    
+    # retrieve datastore id and image set ids
+    #bucketsAndKeys = getBucketsAndKeysFromSns(event)
+    #datastoreidAndImagesetids = getImageSetIds(bucketsAndKeys)
+    print("event: %s" % (event))
+    datastoreIdAndImageSetIds = getDatastoreIdAndImageSetIds(event)
+    print("datastoreIdAndImageSetIds: %s" % (datastoreIdAndImageSetIds))
+
+    # retrieve metadata based on datastore id and image set ids
+    metadatas = getMetadatas(datastoreIdAndImageSetIds, ahi_client)
+    print("metadatas: %s" % (metadatas))
 
     for metadata in metadatas:
         datastore_id = metadata["DatastoreID"]
@@ -239,23 +247,57 @@ def getFrameInfo(metadata, seriesinstanceuid , sopinstanceuid):
     return frame_info
 
 
-def getMetadatas(bucketsdatastoreidAndImagesetidsAndkeys : [], ahi_client):
+def getMetadatas(datastoreIdAndImageSetIds : [], ahi_client):
     """Fetch the metadata from AHI service and returns it as an array of json objects.
 
     Parameters:
-    event (dict): The list of dict containing the datastoreId and imageSetId for each metadata to fetch.
+    datastoreIdAndImageSetIds (dict): The list of dict containing the datastoreId and imageSetId for each metadata to fetch.
 
     Returns:
     list of metadata json objects
     """
     metadatas = []
-    for dIdandIId in bucketsdatastoreidAndImagesetidsAndkeys:
-        metadata = getMetadata(datastore_id=dIdandIId["datastoreid"] , imageset_id=dIdandIId["imagesetid"] , ahi_client=ahi_client)
+    for dIdandIId in datastoreIdAndImageSetIds:
+        metadata = getMetadata(datastore_id=dIdandIId["datastoreId"] , imageset_id=dIdandIId["imageSetId"] , ahi_client=ahi_client)
         metadatas.append(metadata)
     return metadatas
         
 
 
+def getDatastoreIdAndImageSetIds(event):
+    """Fetch the data ImageSetIds in it.
+
+    Parameters:
+    event (dict): list of SQS messages
+    
+    Returns:
+    list of dict containing the datastoreId and imageSetId as str type. eg. [{"datastoreId" : "xxxxx" , "imageSetId" : "xxxx"}]
+    """
+    datastoreIdAndImageSetIds = []
+    
+    for message in event['Records']:
+        datastoreIdAndImageSetIds.append(processMessage(message))
+        
+    return datastoreIdAndImageSetIds
+    
+    
+def processMessage(message):
+    datastoreIdAndImageSetId = {}
+    try:
+        print(f"Processing message {message['body']}")
+        Body = json.loads(message['body'])
+        datastoreId = Body['detail']['datastoreId']
+        imageSetId = Body['detail']['imageSetId']
+        datastoreIdAndImageSetId = {
+            "datastoreId": datastoreId,
+            "imageSetId": imageSetId
+        }
+    except Exception as err:
+        print("An error occurred: %s" % (err))
+    
+    return datastoreIdAndImageSetId
+    
+    
 def getImageSetIds(bucketsAndkeys : []):
     """Fetch the job-output-manifest.json file from the S3 bucket and returns the ImageSetIds in it.
 
