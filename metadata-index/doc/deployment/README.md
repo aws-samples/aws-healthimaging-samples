@@ -5,8 +5,8 @@ In this section, we walk through the following instructions:
 1. Create a deployment environment.
 2. Install prerequisite software packages.
 3. Create an HealthImaging data store.
-4. Configure the `metadata-index-v2` solution.
-5. Deploy the `metadata-index-v2` solution.
+4. Configure the `metadata-index` solution.
+5. Deploy the `metadata-index` solution.
 6. (Optional) Launch an Amazon EC2 Windows Server instance and install MySQL Workbench.
 
 We will use the EC2 Windows Server instance and MySQL Workbench to query the Aurora MySQL metadata store.
@@ -49,15 +49,15 @@ If you do not have an existing HealthImaging data store, you can create one by f
 [creating a data store](https://catalog.workshops.aws/introduction-to-medical-imaging/en-US/010-lab1/050-create-datastore) in
 the [Introduction to AWS HealthImaging](https://catalog.workshops.aws/introduction-to-medical-imaging/en-US) workshop.
 
-## Configure the `metadata-index-v2` solution
+## Configure the `metadata-index` solution
 
 In this section, we walk through the following instructions:
 
-1. Download `metadata-index-v2` solution directory.
+1. Download `metadata-index` solution directory.
 1. Edit `config.py` file: `[project root]/backend/config.py`.
 2. Edit `cdk.context.json` file: `[project root]/backend/cdk.context.json`.
 
-### Download `metadata-index-v2` solution directory
+### Download `metadata-index` solution directory
 
 1. From your deployment environment, clone the `aws-healthimaging-samples` repository:
 
@@ -65,10 +65,10 @@ In this section, we walk through the following instructions:
 git clone https://github.com/aws-samples/aws-healthimaging-samples.git 
 ```
 
-2. Change your working directory to the `metadata-index-v2` solution directory:
+2. Change your working directory to the `metadata-index` solution directory:
 
 ```
-cd aws-healthimaging-samples/metadata-index-v2/backend
+cd aws-healthimaging-samples/metadata-index/backend
 ```
 
 ### Edit `config.py` file
@@ -92,7 +92,7 @@ In addition, you can change the following parameters:
     <tr>
         <td>ROOT</td>
         <td>CDK_APP_NAME</td>
-        <td>metadata-index-v2</td>
+        <td>metadata-index</td>
         <td>Name of the solution. This name will be use to tag all the resources created by the solution. If you intend to deploy multiple instance of this solution on the same AWS account make sure to change this name for each deployment.</td>
     </tr>
     <tr>
@@ -207,9 +207,9 @@ In addition, you can change the following parameters:
     </tr>
 </table>
 
-## Deploy the `metadata-index-v2` solution
+## Deploy the `metadata-index` solution
 
-Perform the following instructions to deploy the `metadata-index-v2` solution.
+Perform the following instructions to deploy the `metadata-index` solution.
 
 The `cdk deploy` command in the last step takes about 25 to 30 minutes to complete.
 

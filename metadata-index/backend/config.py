@@ -1,5 +1,5 @@
 #CDK_APP_NAME = "[APP-STACK_NAME]"
-CDK_APP_NAME = "metadata-index-v2"
+CDK_APP_NAME = "metadata-index"
 
 #AHI settings: This should be set regardless of the mode.
 #The datstore ARN of the AHI datastore. You can find this value in the AHI Web console on your AWS account.
