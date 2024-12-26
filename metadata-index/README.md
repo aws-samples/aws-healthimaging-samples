@@ -1,4 +1,4 @@
-# AWS HealthImaging Metadata Indexing v2 Project
+# AWS HealthImaging Metadata Indexing Project
 
 A project that uses EventBridge events to trigger the indexing of metadata of DICOM studies stored in AWS HealthImaging to target data stores in Amazon Aurora MySQL, Amazon Simple Storage Service (Amazon S3) data lake, and OpenSearch.
 
