@@ -663,7 +663,7 @@ def get_content_type (transfer_syntax):
             uid.ExplicitVRBigEndian:            "application/octet-stream",
             uid.JPEGBaseline8Bit:               "image/jpeg",
             uid.JPEGExtended12Bit:              "image/jpeg",
-            uid.JPEGLosslessP14:                "image/jpeg",
+            uid.JPEGLossless:                   "image/jpeg",
             uid.JPEGLosslessSV1:                "image/jpeg",
             uid.RLELossless:                    "image/dicom-rle",
             uid.JPEGLSLossless:                 "image/jls",
@@ -783,8 +783,16 @@ def getFramePixels(datastore_id, imageset_id, imageframe_id , client = None ):
                 b = io.BytesIO()
                 b.write(res['imageFrameBlob'].read())
                 b.seek(0)
-                d = decode(b)
-                return d.tobytes()
+
+                if b.getvalue():
+                    d = decode(b)
+                    return d.tobytes()
+                else:
+                    with Image.open(b) as img:
+                        output = io.BytesIO()
+                        img.save(output, format='JPEG')
+                        output.seek(0)
+                        return output.getvalue()
             except Exception as e:
                 logging.error("[{__name__}] - Frame could not be decoded.")
                 logging.error(f"{datastore_id}/{imageset_id}/{imageframe_id}")
