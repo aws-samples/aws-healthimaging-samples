@@ -23,6 +23,7 @@ class mysqlConnectionFactory(object):
         pool_size = 32
       if pool_name is None:
         pool_name = "dicomweb-pool"
+      mysql.connector.pooling.CNX_POOL_MAXSIZE = 200
       cnxpool = mysql.connector.pooling.MySQLConnectionPool(pool_name = pool_name,pool_size = pool_size,**config)
     except mysql.connector.Error as err:
       if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
