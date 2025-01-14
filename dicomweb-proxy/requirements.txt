@@ -2,7 +2,7 @@ boto3
 botocore
 Flask
 flask-cors
-pydicom>=2.3.0
+pydicom>=3.0.1
 waitress
 mysql-connector-python>=8.0.33
 requests-toolbelt>=1.0.0

@@ -47,8 +47,8 @@ class InstanceDICOMizer():
             InstanceLevel=metadata["Study"]["Series"][series_key]["Instances"][SOPInstanceUID]["DICOM"] 
             self.getTags(InstanceLevel ,  ds , vrlist)
             ds.file_meta.TransferSyntaxUID = pydicom.uid.ExplicitVRLittleEndian
-            ds.is_little_endian = True
-            ds.is_implicit_VR = False
+            ds.little_endian = True
+            ds.implicit_vr = False
             file_meta.MediaStorageSOPInstanceUID = UID(SOPInstanceUID)
             pixels = bytearray()
             if self.header_only == False:
