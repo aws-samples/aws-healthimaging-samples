@@ -3,8 +3,6 @@ wado service entrypoint. Contains the business logic to configure the service pe
 
 SPDX-License-Identifier: Apache 2.0
 """
-import threading
-import time
 import numpy
 from PIL import Image
 import array
@@ -150,13 +148,9 @@ def SearchForInstances():
 def RetrieveStudies(StudyInstanceUID : str):
     logging.debug(request)
     parameters = _processParameters(level="STUDY")
-    print(parameters)
     parameters["StudyInstanceUID"] = StudyInstanceUID
     parameters["wherefields"]["0020000D"] = StudyInstanceUID
-    print(parameters)
     query , query_parameters = _constructQuery(parameters)
-    print(query)
-    print(query_parameters)
     field_names, db_results = _executeQuery(query , query_parameters)
     resp = _convertToJSON(field_names , db_results , parameters)
     httpstatus = 200
@@ -312,7 +306,6 @@ def RetrieveBulkDataURIReference(BulkDataURIReference : str):
 
 
 def _executeQuery(query : str , query_parameters : array):
-    start = time.time()
     sql_conn = sql_pool.get_connection()
     cursor = sql_conn.cursor()
     cursor.execute("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED")
@@ -323,9 +316,6 @@ def _executeQuery(query : str , query_parameters : array):
     cursor.execute("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ")
     cursor.close()
     sql_conn.close()
-    end = time.time()
-    res = end - start
-    #print(res)
     return field_names , db_results
 
 def instancesYield(results, boundary):
@@ -458,7 +448,6 @@ def _processParameters(level : str):
     return  return_obj
 
 def _constructQuery(params : dict):
-    print(params)
     level = params["queryLevel"]
     sql_where_params = [] # used to store the query params, the filter value and if the operator will be = or LIKE
     having_parameters = []
@@ -635,7 +624,7 @@ def _RetrievePixelData(query: str,  SeriesInstanceUID ,  InstanceUID : str , fra
             frame_id = metadata["Study"]["Series"][SeriesInstanceUID]["Instances"][InstanceUID]["ImageFrames"][frame_list[0]-1]["ID"] #This only honors the 1st entry of the frame list...
             
         except Exception as err:
-            print(err)
+            logging.error(err)
             continue
         frame = getFramePixels(datastore_id=datastore_id, imageset_id=imageset_id , imageframe_id=frame_id, client=ahi_client )
         if multipart:
@@ -738,9 +727,6 @@ def RetrieveMetadata(query, UID : str):
         study_dict = metadataCache.getJSONKeys(metadata["Study"]["DICOM"])
         seriesinstanceuid = next(iter(metadata["Study"]["Series"].keys()))
         series_dict = metadataCache.getJSONKeys(metadata["Study"]["Series"][seriesinstanceuid]["DICOM"])
-        # jpleger : 02/15/2024 : below are attempt to cache metadata and Frame Ids. Not satisfied with the result so far.
-        #cache_assigner_t =  threading.Thread(target = assignToCache, args = (metadata, ))# assignToCache(metadata=metadata) l - use to be sequential call to iterative function...
-        #cache_assigner_t.start()
         iteration = iter(metadata["Study"]["Series"][seriesinstanceuid]["Instances"].keys())
         for instance in iteration:
             if not instance in instance_array:
@@ -767,7 +753,6 @@ def RetrieveInstance(query, UID : str):
                 insDICOMizer.getFramePixels = getFramePixels #getFramePixels decodes HTJ2K data and return the bytes array.
             ds = insDICOMizer.DICOMize(UID, metadata )
             buffer = io.BytesIO()
-            #ds.save_as(buffer, write_like_original=False )
             ds.save_as(buffer, enforce_file_format=True)
             buffer.seek(0)
             return buffer.read()
@@ -777,7 +762,6 @@ def RetrieveInstance(query, UID : str):
 def _getSecret(secret_arn):
     session = boto3.session.Session()
     client = session.client(service_name='secretsmanager')
-    print(secret_arn)
     response = client.get_secret_value(SecretId=secret_arn)
     database_secrets = orjson.loads(response['SecretString'])
     return database_secrets
@@ -820,18 +804,10 @@ def getFrame(datastore_id, imageset_id, imageframe_id , client = None ):
 
 def getFramePixels(datastore_id, imageset_id, imageframe_id , client = None ):
     try:
-        #start = time.time()
         b = getFrame(datastore_id, imageset_id, imageframe_id , client)
-        #end = time.time()
-        #fetch_time = end - start
-        #print(f"AHI fetch : {fetch_time}")
-        #start = time.time()
         b = io.BytesIO(b)
         if b.getvalue():
             d = decode(b)
-            #end = time.time()
-            #decomp_time = end -start
-            #print(f"Frame decomp : {decomp_time}")
             return d.tobytes()
         else:
             with Image.open(b) as img:
@@ -845,31 +821,6 @@ def getFramePixels(datastore_id, imageset_id, imageframe_id , client = None ):
         logging.error(e)
         return None
 
-# def getFrameNumpy(datastore_id, imageset_id, imageframe_id , client = None ): ### jpleger - 01/08/2025 : Unused 
-#         #Let's try to get it from the cache 1st:
-#         try:
-#             frame_cache_file = open(f"./cache/{datastore_id}/{imageset_id}/{imageframe_id}.numpy.cache", 'rb')
-#             frame = frame_cache_file.read()
-#             frame_cache_file.close()
-#             logging.debug(f"cache HIT    : {datastore_id}/{imageset_id}/{imageframe_id}")
-#             return frame
-#         except:
-#             try:
-#                 logging.debug(f"cache MISSED : {datastore_id}/{imageset_id}/{imageframe_id}")
-#                 if client is None :
-#                     client = boto3.client('medical-imaging')
-#                 res = client.get_image_frame(
-#                     datastoreId=datastore_id,
-#                     imageSetId=imageset_id,
-#                     imageFrameInformation= {'imageFrameId' :imageframe_id})
-                
-#                 f = decode(res['imageFrameBlob'].read())
-#                 return f
-#             except Exception as e:
-#                 logging.error("[{__name__}] - Frame could not be decoded.")
-#                 logging.error(f"{datastore_id}/{imageset_id}/{imageframe_id}")
-#                 logging.error(e)
-#                 return None
 
 def assignToCache(metadata : object = None , frame_dict : object =None):
     frames_dict = frameFetcher.getFramesToCache(metadata=metadata)
@@ -908,7 +859,7 @@ if __name__ == '__main__':
         os.makedirs(cache_root,exist_ok=True)
         
     if config_good == True:    
-        ahi_client = boto3.client('medical-imaging', config=botocore.config.Config(max_pool_connections=1000))
+        ahi_client = boto3.client('medical-imaging', config=botocore.config.Config(max_pool_connections=100))
         metadatacache = metadataCache(ahi_client)
         framefetchers: list[frameFetcher] = []
         cpu_count = multiprocessing.cpu_count()
