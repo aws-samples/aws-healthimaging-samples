@@ -24,6 +24,7 @@ CREATE TABLE instance (
     `windowwidth` varchar(16) NULL,
     `observationtime` datetime NULL,
     `contentdescription` varchar(64) NULL,
+    `imageset_pkey` bigint NOT NULL,
 	PRIMARY KEY (`instance_pkey`),
     CONSTRAINT `instance_sopinstanceuid_cst` UNIQUE (`sopinstanceuid`),
     FOREIGN KEY (`series_pkey`) REFERENCES `series` (`series_pkey`) ON DELETE CASCADE);

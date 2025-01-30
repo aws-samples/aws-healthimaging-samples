@@ -1,0 +1,16 @@
+attrs==23.1.0
+aws-cdk-lib
+aws-cdk.asset-awscli-v1==2.2.200
+aws-cdk.aws-glue-alpha
+aws-cdk.aws-lambda-python-alpha
+cattrs==23.1.2
+cdk-nag==2.27.128
+constructs==10.2.70
+exceptiongroup==1.1.3
+importlib-resources==6.0.1
+jsii==1.88.0
+publication==0.0.3
+python-dateutil==2.8.2
+six==1.16.0
+typeguard==2.13.3
+typing_extensions==4.7.1
