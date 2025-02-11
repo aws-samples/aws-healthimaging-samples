@@ -71,9 +71,7 @@ def lambda_handler(event, context):
     # retrieve metadata based on datastore id and image set ids
     metadatas = getMetadatas(datastoreIdAndImageSetIds, ahi_client)
     print("metadatas: %s" % (metadatas))
-   
-    metadatas = getMetadatas(datastoreIdAndImageSetIds, ahi_client)
-
+    
     for metadata in metadatas:
         datastore_id = metadata["DatastoreID"]
         imageset_id = metadata["ImageSetID"]
