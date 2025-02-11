@@ -1,7 +1,0 @@
-DROP TABLE IF EXISTS issuer;
-CREATE TABLE issuer (
-	`issuer_pkey` bigint NOT NULL AUTO_INCREMENT,
-    `issuerofpatientid` varchar(64) NOT NULL,
-    `description` varchar(1024) NULL,
-	PRIMARY KEY (`issuer_pkey`),
-    CONSTRAINT `issuer_issuerofpatientid_cst` UNIQUE (`issuerofpatientid`));

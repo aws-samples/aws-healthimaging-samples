@@ -1,6 +1,0 @@
-DROP TABLE IF EXISTS imagetype;
-CREATE TABLE imagetype (
-	`imagetype_pkey` bigint NOT NULL AUTO_INCREMENT,
-    `type` varchar(16) NOT NULL,
-	PRIMARY KEY (`imagetype_pkey`));
-	
