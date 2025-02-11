@@ -10,3 +10,4 @@ highdicom>=0.21.1
 redis>=4.5.5
 orjson
 pillow
+pylibjpeg-openjpeg
