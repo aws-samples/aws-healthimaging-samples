@@ -260,7 +260,7 @@ cdk deploy
 
 ## (Optional) Launch an EC2 Windows Server and install MySQL Workbench
 
-In order to facilitate querying and testing on the Aurora MySQL metadata store, you can optionally deploy a m5.large EC2 Windows Server instance with 30 GB of gp3 storage, and install MySQL Workbench (version 8.0.39, client-only) on the EC2 instance.
+In order to facilitate querying and testing on the Aurora MySQL metadata store, you can optionally deploy a m5.large EC2 Windows Server 2022 instance with 30 GB of gp3 storage, and install MySQL Workbench (version 8.0.39, client-only) on the EC2 instance.
 
 For instructions, please refer to the
 [Get started with EC2](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html) and
