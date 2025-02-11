@@ -72,7 +72,7 @@ def lambda_handler(event, context):
     metadatas = getMetadatas(datastoreIdAndImageSetIds, ahi_client)
     print("metadatas: %s" % (metadatas))
    
-    metadatas = getMetadatas(datastoreidAndImagesetids, ahi_client)
+    metadatas = getMetadatas(datastoreIdAndImageSetIds, ahi_client)
 
     for metadata in metadatas:
         datastore_id = metadata["DatastoreID"]
