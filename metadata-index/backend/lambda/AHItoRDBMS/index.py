@@ -61,11 +61,17 @@ def lambda_handler(event, context):
         populateFrameLevel = True
         populateInstanceLevel = True
     else:
-        populateInstanceLevel = False
-    bucketsAndKeys = getBucketsAndKeysFromSns(event)
-    datastoreidAndImagesetids = getImageSetIds(bucketsAndKeys)
-    metadatas = getMetadatas(datastoreidAndImagesetids, ahi_client)
+        populateFrameLevel = False
+    # bucketsAndKeys = getBucketsAndKeysFromSns(event)
+    # datastoreidAndImagesetids = getImageSetIds(bucketsAndKeys)
+    print("event: %s" % (event))
+    datastoreIdAndImageSetIds = getDatastoreIdAndImageSetIds(event)
+    print("datastoreIdAndImageSetIds: %s" % (datastoreIdAndImageSetIds))
 
+    # retrieve metadata based on datastore id and image set ids
+    metadatas = getMetadatas(datastoreIdAndImageSetIds, ahi_client)
+    print("metadatas: %s" % (metadatas))
+    
     for metadata in metadatas:
         datastore_id = metadata["DatastoreID"]
         imageset_id = metadata["ImageSetID"]
@@ -89,24 +95,53 @@ def lambda_handler(event, context):
             imageset_pkey = InsertImageSet(series_pkey, imageset_id, datastore_id, cnx)
             instance_tags = getInstanceTags(metadata , series["SeriesInstanceUID"])
             if populateInstanceLevel == True:
+                entries_list = []
+                frame_list = {}
                 for instance in instance_tags:
                     instance["series_pkey"] = series_pkey
+                    instance["imageset_pkey"] = imageset_pkey
                     this_instance_values = generateSQLValues(instance, instance_datamodel)
-                    instance_pkey = InsertEntry(this_instance_values, cnx)
-                    #Get the Frames from the metadata and insert them in the frames table
+                    entries_list.append(this_instance_values)
                     if populateFrameLevel == True:
                         instance_frames =  getFrameInfo(metadata , series["SeriesInstanceUID"] , instance["SOPInstanceUID"] )
-                        sql_code = "INSERT INTO frame VALUES ( %s, %s, %s, %s, %s)"
-                        frame_number = 1
-                        for frame in instance_frames:
-                            sql_data = [ None, instance_pkey , imageset_pkey , frame_number, frame["ID"] ]
-                            ExecuteInsert(sql_code,sql_data , cnx , 1)
-                            frame_number = frame_number + 1
+                        print("Instance frames")
+                        print(instance_frames)
+
+                        frame_list[instance["SOPInstanceUID"]] = instance_frames  
+                        print(frame_list.keys())
+                        print(instance["SOPInstanceUID"])
+                InsertEntries(entries_list, cnx)
+                if populateFrameLevel == True:
+                    sql_query_in = ""
+                    for i in range(len(frame_list)):
+                        sql_query_in += "%s,"
+                    sql_query_in = sql_query_in[:-1]
+                    sql_values = list(frame_list.keys())
+                    sql_full_query = f"SELECT sopinstanceuid, instance_pkey from instance where sopinstanceuid in ({sql_query_in})"
+                    print(sql_full_query)
+                    print(sql_values)
+                    res = ExecuteSelect(sql_full_query, sql_values, cnx, False)
+                    print(res)
+                    frame_insert_list = []
+                    for instance_desc in res:
+                        sopinstanceuid = instance_desc[0]
+                        instance_pkey = instance_desc[1]
+                        frame_number = 1 
+                        for frame in frame_list[sopinstanceuid]:
+                            frame_insert_list.append((None, instance_pkey, imageset_pkey , frame_number , frame["ID"]))
+                            frame_number+=1
+                    cursor = cnx.cursor(buffered=True)
+                    sql_code = "INSERT INTO frame VALUES ( %s, %s, %s, %s, %s) AS new_row ON DUPLICATE KEY UPDATE imageset_pkey = new_row.imageset_pkey, frameid = new_row.frameid"
+                    cursor.executemany(sql_code, frame_insert_list)
+                    cursor.close()
+                    cnx.commit()
             UpdateNumberOfSeriesRelatedInstances(series_pkey, cnx)
             UpdateNumberOfStudyRelatedSeriesInstances(study_pkey, cnx)
+            cnx.close()
             
 
 def InsertImageSet(series_pkey : int, imageset_id : str, datastore_id :  str, cnx):
+    print("InsertImageSet:IN")
     """ Insert the ImagesetId and datastoreId in the imageset table, like to the series_pkey. If more than 1 entry for the same series_pkey is found in this table the function
     also creates an entry in the table "conflict"  so that an external processs can reconcilitate to 1 series : 1 Imageset.
     
@@ -118,23 +153,22 @@ def InsertImageSet(series_pkey : int, imageset_id : str, datastore_id :  str, cn
     Returns:
     imaget_pkey : the primary key of the imagetset entry created.
     """
-    sql_code = "INSERT INTO imageset VALUES ( %s, %s, %s, %s ) ON DUPLICATE KEY UPDATE imageset_pkey = LAST_INSERT_ID(imageset_pkey)"
+    sql_code = "INSERT INTO imageset VALUES ( %s, %s, %s, %s ) AS new_row ON DUPLICATE KEY UPDATE imageset_pkey = LAST_INSERT_ID(imageset.imageset_pkey)"
     sql_data = [None, series_pkey , imageset_id , datastore_id] 
     imageset_pkey = ExecuteInsert(sql_code,sql_data, cnx, False)
     
     sql_code  = "SELECT imageset_pkey FROM imageset WHERE series_pkey = %s"
     sql_data = [series_pkey]
     res = ExecuteSelect(sql_code, sql_data, cnx, False)
-    if len(res) == 2:   #if there are 2 entries for the same sries then we add the 2 imagesets in the conflict table
+    if len(res) == 2:   #if there are 2 entries for the same series then we add the 2 imagesets in the conflict table
         for result in res:
-            sql_code = "INSERT INTO conflict VALUES (%s , %s , %s , %s)"
-            sql_data = [None, series_pkey , result[0] , 1 ]
+            sql_code = "INSERT INTO conflict VALUES (%s , %s , %s , %s , %s)"
+            sql_data = [None, series_pkey , result[0] , 1  , None ]
             ExecuteInsert(sql_code,sql_data, cnx, True)
 
-
     if len(res) > 2: #If there are already more than 2, than we know that the original imageset is already in the conflict table. So we add the new one.
-        sql_code = "INSERT INTO conflict VALUES (%s , %s , %s , %s)"
-        sql_data = [None, series_pkey , imageset_pkey , 1 ] # The 1 as last variable is the priority. assuming 1 is the lowest.
+        sql_code = "INSERT INTO conflict VALUES (%s , %s , %s , %s , %s)"
+        sql_data = [None, series_pkey , imageset_pkey , 1 , None] # The 1 as last variable is the priority. assuming 1 is the lowest.
         ExecuteInsert(sql_code,sql_data, cnx, True)
     else:
         cnx.commit()
@@ -173,17 +207,51 @@ def InsertEntry(data_values , cnx) -> int :
         insert_data_list += "%s, " 
         insert_sql_data.append( column_data["data"])
         if column_data["data_key"] == "PRI":
-            update_list += column_data["column"]+" = LAST_INSERT_ID(`"+column_data["column"]+"`),"
+            update_list += "`"+column_data["column"]+"` = LAST_INSERT_ID("+column_data["table"]+"."+column_data["column"]+"),"
         else:
-            update_list += "`"+column_data["column"]+"` = VALUES(`"+column_data["column"]+"`),"
-    sql_code = "INSERT INTO `"+column_data["table"]+"` ("+insert_column_list[:-2]+") VALUES ( "+insert_data_list[:-2]+" ) ON DUPLICATE KEY UPDATE "+update_list[:-1]
+            update_list += "`"+column_data["column"]+"` = new_row."+column_data["column"]+","
+    sql_code = "INSERT INTO `"+column_data["table"]+"` ("+insert_column_list[:-2]+") VALUES ( "+insert_data_list[:-2]+" ) AS new_row ON DUPLICATE KEY UPDATE "+update_list[:-1]
     cursor = cnx.cursor(buffered=True)
     cursor.execute(sql_code, insert_sql_data)
     cursor.close()
-    #print("Last row insert/update in table "+column_data["table"]+" : "+ str(cursor.lastrowid))
+    print("Last row insert/update in table "+column_data["table"]+" : "+ str(cursor.lastrowid))
     cnx.commit()
     return cursor.lastrowid
 
+def InsertEntries(entries_list , cnx) -> int :
+    insert_entries = []
+    insert_column_list = ""
+    insert_data_list = ""
+    update_list = ""
+    first_time = True
+    for entry in entries_list:
+
+        insert_sql_data = []
+        update_sql_data = []
+
+        for column_data in entry:
+            #A special fix for the PatientId and IssuerOfPatientID : These fields can be NULL in DICOM but rerquired as value in MYSQL since they are primary keys.
+            if column_data["column"] == 'patientid' and column_data["data"] is None:
+                    column_data["data"] = "NO_PID"
+            if column_data["column"]  == 'issuerofpatientid' and column_data["data"] is None:
+                    column_data["data"] = "DEFAULT_DOMAIN"
+            if first_time == True :
+                insert_column_list += "`"+column_data["column"]+"`, "
+                insert_data_list += "%s, " 
+                if column_data["data_key"] == "PRI":
+                    update_list += "`"+column_data["column"]+"` = LAST_INSERT_ID("+column_data["table"]+"."+column_data["column"]+"),"
+                else:
+                    update_list += "`"+column_data["column"]+"` = new_row."+column_data["column"]+","
+            insert_sql_data.append( column_data["data"])
+        insert_entries.append(tuple(insert_sql_data))
+        sql_code = "INSERT INTO `"+column_data["table"]+"` ("+insert_column_list[:-2]+") VALUES ( "+insert_data_list[:-2]+" ) AS new_row ON DUPLICATE KEY UPDATE "+update_list[:-1]
+        first_time = False
+    cursor = cnx.cursor(buffered=True)
+    cursor.executemany(sql_code, insert_entries)
+    cursor.close()
+    print("Last row insert/update in table "+column_data["table"]+" : "+ str(cursor.lastrowid))
+    cnx.commit()
+    return cursor.lastrowid
 
 def getPatientTags(metadata):
     return  metadata["Patient"]["DICOM"]
@@ -239,21 +307,55 @@ def getFrameInfo(metadata, seriesinstanceuid , sopinstanceuid):
     return frame_info
 
 
-def getMetadatas(bucketsdatastoreidAndImagesetidsAndkeys : [], ahi_client):
+def getMetadatas(datastoreIdAndImageSetIds : [], ahi_client):
     """Fetch the metadata from AHI service and returns it as an array of json objects.
 
     Parameters:
-    event (dict): The list of dict containing the datastoreId and imageSetId for each metadata to fetch.
+    datastoreIdAndImageSetIds (dict): The list of dict containing the datastoreId and imageSetId for each metadata to fetch.
 
     Returns:
     list of metadata json objects
     """
     metadatas = []
-    for dIdandIId in bucketsdatastoreidAndImagesetidsAndkeys:
-        metadata = getMetadata(datastore_id=dIdandIId["datastoreid"] , imageset_id=dIdandIId["imagesetid"] , ahi_client=ahi_client)
+    for dIdandIId in datastoreIdAndImageSetIds:
+        metadata = getMetadata(datastore_id=dIdandIId["datastoreId"] , imageset_id=dIdandIId["imageSetId"] , ahi_client=ahi_client)
         metadatas.append(metadata)
     return metadatas
+
+
+
+def getDatastoreIdAndImageSetIds(event):
+    """Fetch the data ImageSetIds in it.
+
+    Parameters:
+    event (dict): list of SQS messages
+    
+    Returns:
+    list of dict containing the datastoreId and imageSetId as str type. eg. [{"datastoreId" : "xxxxx" , "imageSetId" : "xxxx"}]
+    """
+    datastoreIdAndImageSetIds = []
+    
+    for message in event['Records']:
+        datastoreIdAndImageSetIds.append(processMessage(message))
         
+    return datastoreIdAndImageSetIds
+    
+    
+def processMessage(message):
+    datastoreIdAndImageSetId = {}
+    try:
+        print(f"Processing message {message['body']}")
+        Body = json.loads(message['body'])
+        datastoreId = Body['detail']['datastoreId']
+        imageSetId = Body['detail']['imageSetId']
+        datastoreIdAndImageSetId = {
+            "datastoreId": datastoreId,
+            "imageSetId": imageSetId
+        }
+    except Exception as err:
+        print("An error occurred: %s" % (err))
+    
+    return datastoreIdAndImageSetId
 
 
 def getImageSetIds(bucketsAndkeys : []):
