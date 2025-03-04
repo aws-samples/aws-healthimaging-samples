@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation template for creating ECR private repository.'
+    
+Resources:
+
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Sub ${AWS::StackName}-repo
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      ImageTagMutability: MUTABLE
+      EncryptionConfiguration:
+        EncryptionType: AES256
+        
+Outputs:
+  ECRRepositoryURI:
+    Description: The URI of the ECR repository
+    Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepository}
+  ECRRepositoryName:
+    Description: The name of the ECR repository
+    Value: !Ref ECRRepository
