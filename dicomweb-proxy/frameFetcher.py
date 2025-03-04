@@ -56,6 +56,7 @@ class frameFetcher:
         datastore_id = cache_object["datastore_id"]
         imageset_id = cache_object["imageset_id"]
         imageframe_id = cache_object["imageframe_id"]
+        self.logger.debug(f"[{self.frameFetcherName}] - {datastore_id+imageset_id+imageframe_id } Evaluating cache need.")
         if not datastore_id+"/"+imageset_id+"/"+imageframe_id in frameFetcher.cached_items: #let's not add it if this is already there...
             frameFetcher.cached_items.add(datastore_id+"/"+imageset_id+"/"+imageframe_id ) #At this point this is not  hard disk cached yet... This merely prevent an exisiting item to re-enter the processing queue 
             self.cacheQueue.put(cache_object)
@@ -79,11 +80,11 @@ class frameFetcher:
     
     @staticmethod
     def fetchAndStore(getFramePixels, datastore_id, imageset_id, imageframe_id , ahi_client, cache_root):
-        franm_file_path =f"{cache_root}/{datastore_id}/{imageset_id}/{imageframe_id}.cache"
-        if not os.path.isfile(franm_file_path):
+        frame_file_path =f"{cache_root}/{datastore_id}/{imageset_id}/{imageframe_id}.cache"
+        if not os.path.isfile(frame_file_path):
             frame = getFramePixels(datastore_id, imageset_id, imageframe_id , ahi_client)
             os.makedirs(f"{cache_root}/{datastore_id}/{imageset_id}",exist_ok=True)
-            frame_file = open(franm_file_path,'wb')
+            frame_file = open(frame_file_path,'wb')
             frame_file.write(frame)
             frame_file.close()
 
