@@ -39,7 +39,7 @@ import multiprocessing
 
 app = Flask(__name__)
 cors = CORS(app)
-
+sql_pool = None
 @app.before_request
 def handle_preflight():
     if request.method == "OPTIONS":
@@ -783,16 +783,18 @@ def getFramePixels(datastore_id, imageset_id, imageframe_id , client = None ):
                 b = io.BytesIO()
                 b.write(res['imageFrameBlob'].read())
                 b.seek(0)
-
                 if b.getvalue():
-                    d = decode(b)
-                    return d.tobytes()
+                    try:
+                        d = decode(b)
+                        return d.tobytes()
+                    except Exception as e:
+                        with Image.open(b) as img:
+                            output = io.BytesIO()
+                            img.save(output, format='JPEG')
+                            output.seek(0)
+                            return output.getvalue()
                 else:
-                    with Image.open(b) as img:
-                        output = io.BytesIO()
-                        img.save(output, format='JPEG')
-                        output.seek(0)
-                        return output.getvalue()
+                    return None
             except Exception as e:
                 logging.error("[{__name__}] - Frame could not be decoded.")
                 logging.error(f"{datastore_id}/{imageset_id}/{imageframe_id}")
