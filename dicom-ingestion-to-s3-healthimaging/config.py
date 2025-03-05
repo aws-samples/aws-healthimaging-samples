@@ -37,9 +37,8 @@ S3_CONFIG = {
 
 DB_CONFIG = {
     "db_name" : "iep",
-    "db_engine_pause" : 20,
-    "min_acu_capacity" : "ACU_8",
-    "max_acu_capacity" : "ACU_64"
+    "min_acu_capacity" : 1,
+    "max_acu_capacity" : 16    
 }
 
 LAMBDA_CONFIG = {

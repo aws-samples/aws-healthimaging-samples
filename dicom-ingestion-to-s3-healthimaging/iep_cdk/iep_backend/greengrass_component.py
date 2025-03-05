@@ -33,7 +33,7 @@ class GreenGrassComponent(Construct):
         recipe = f"""{{
                         "RecipeFormatVersion": "2020-01-25",
                         "ComponentName": "{stack_name}-DIMSEtoS3",
-                        "ComponentVersion": "1.0.54",
+                        "ComponentVersion": "1.0.55",
                         "ComponentType": "aws.greengrass.generic",
                         "ComponentDescription": "Edge device component for DICOM data ingestion in S3 and Amazon HealthImaging.",
                         "ComponentPublisher": "Amazon Web Services",
@@ -55,7 +55,7 @@ class GreenGrassComponent(Construct):
                             }},
                             "Lifecycle": {{
                                 "Install": {{
-                                    "Script": "apt-get update && apt-get install -y python3-pip && pip3 install -r {{artifacts:decompressedPath}}/{asset_path}/requirements.txt",
+                                    "Script": "apt-get update && apt-get install -y python3-pip && pip3 install --break-system-packages -r {{artifacts:decompressedPath}}/{asset_path}/requirements.txt",
                                     "RequiresPrivilege": true
                                     }},
                                 "Run": {{

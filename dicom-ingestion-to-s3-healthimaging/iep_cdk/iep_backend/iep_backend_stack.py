@@ -37,7 +37,6 @@ class IepBackend(Stack):
         stack_name = Stack.of(self).stack_name.lower()
         vpc_cidr = config.VPC_CIDR
         db_name = config.DB_CONFIG["db_name"]
-        db_engine_pause = config.DB_CONFIG["db_engine_pause"]
         db_min_acu_capacity = config.DB_CONFIG["min_acu_capacity"]
         db_max_acu_capacity = config.DB_CONFIG["max_acu_capacity"]
         lambda_config = config.LAMBDA_CONFIG
@@ -55,7 +54,7 @@ class IepBackend(Stack):
         sqs_queues = SQSQueues(self,"IEP-SQS")
     
         #Aurora Serverless creation.
-        self.AuroraDB = AuroraServerlessDB(self,"IEP-Aurora-DB", vpc=vpc.getVpc(), db_name=db_name, aurora_security_group=sec_groups.getAuroraSecGroup() , pause_timeout=db_engine_pause , min_acu_capacity=db_min_acu_capacity , max_acu_capacity=db_max_acu_capacity )
+        self.AuroraDB = AuroraServerlessDB(self,"IEP-Aurora-DB", vpc=vpc.getVpc(), db_name=db_name, aurora_security_group=sec_groups.getAuroraSecGroup() , min_acu_capacity=db_min_acu_capacity , max_acu_capacity=db_max_acu_capacity )
         self.db_secret_arn = self.AuroraDB.getDbCluster().secret.secret_arn
 
         #MySql DBInit Lambda creation.
