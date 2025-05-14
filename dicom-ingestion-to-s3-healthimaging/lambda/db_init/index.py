@@ -71,7 +71,7 @@ def IterateandCreate(cnx, folderpath):
       cursor = cnx.cursor()
       try:
         print("Creating {}: ".format(filename), end='')
-        results = cursor.execute(content, multi=True)
+        results = cursor.execute(content)
         try:
             for result in results:
                 pass
