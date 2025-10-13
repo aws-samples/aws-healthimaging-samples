@@ -1,0 +1,9 @@
+{
+  "name": "build-trigger",
+  "version": "1.0.0",
+  "description": "Lambda function to trigger CodeBuild projects",
+  "main": "build-trigger.js",
+  "dependencies": {
+    "@aws-sdk/client-codebuild": "^3.0.0"
+  }
+}

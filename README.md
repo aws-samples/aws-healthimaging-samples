@@ -55,6 +55,10 @@ This AWS CDK project allows you to retrieve image frames from [Amazon CloudFront
 
 ## Front-End
 
+### [OHIF Viewer integrated to AWS HealthImaging via OIDC](AHI-OIDC-OHIF-installer/) ![CDK](https://img.shields.io/badge/cdk-ff9900?style=for-the-badge)
+This [AWS CDK](https://aws.amazon.com/cdk/) project deploys [OHIF viewer](https://github.com/OHIF/Viewers) on [Amazon CloudFront](https://aws.amazon.com/cloudfront). The viewer is integrated to an AWS HealthImaging datastore as data source, and with [Amazon Cognito](https://aws.amazon.com/pm/cognito/) as the identity provider for authentication via OIDC.
+
+
 ### [AWS HealthImaging Viewer UI](imaging-viewer-ui/) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![Amplify](https://img.shields.io/badge/Amplify-ff9900?style=for-the-badge&logo=awsamplify&logoColor=FFFFFF)
 
 This [AWS Amplify](https://aws.amazon.com/amplify/) project deploys a frontend UI with backend authentication that allows you to view imageset metadata and image frames stored in AWS HealthImaging using progressive decoding. You can optionally integrate the [Tile Level Marker (TLM) Proxy](tile-level-marker-proxy/) and/or [Amazon CloudFront Delivery](amazon-cloudfront-delivery/) projects above to load image frames using an alternative method.
