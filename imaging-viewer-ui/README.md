@@ -19,7 +19,7 @@ The [Tile Level Marker (TLM) Proxy](../tile-level-marker-proxy/) and/or [Amazon 
 
 ## Architecture
 
-![AWS HealthImaging Viewer UI](./images/AWS-Health-Imaging-Viewer-UI.png)
+![AWS HealthImaging Viewer UI](./images/Amazon-HealthLake-Imaging-Viewer-UI.png)
 
 ## Deployment Requirements
 
