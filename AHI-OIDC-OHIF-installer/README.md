@@ -8,7 +8,7 @@ A complete AWS CDK solution that deploys the OHIF (Open Health Imaging Foundatio
 
 This solution provides a production-ready medical imaging platform that combines:
 
-- **OHIF Viewer v3.11.0**: Modern web-based DICOM viewer with advanced imaging capabilities
+- **OHIF Viewer v3.12.0**: Modern web-based DICOM viewer with advanced imaging capabilities
 - **OIDC Authentication**: Standards-based authentication using AWS Cognito
 - **AWS HealthImaging**: Scalable, cloud-native DICOM storage with DICOMweb API compatibility
 - **Automated CI/CD**: Complete infrastructure as code with automated OHIF compilation and deployment
@@ -151,7 +151,7 @@ npx cdk deploy
    - HealthImaging datastore with authorizer
 
 2. **OHIF Compilation** (10-15 minutes):
-   - Downloads OHIF v3.11.0 from GitHub
+   - Downloads OHIF v3.12.0 from GitHub
    - Applies AWS HealthImaging compatibility patches
    - Configures OIDC settings dynamically
    - Builds and deploys to S3
@@ -203,7 +203,7 @@ Edit `lib/ohif-oidc-stack.ts` to change OHIF version:
 
 ```typescript
 // Change this line in the buildSpec
-'wget -O ohif.zip https://github.com/OHIF/Viewers/archive/refs/tags/v3.11.0.zip'
+'wget -O ohif.zip https://github.com/OHIF/Viewers/archive/refs/tags/v3.12.0.zip'
 ```
 
 ### Custom Build Configuration

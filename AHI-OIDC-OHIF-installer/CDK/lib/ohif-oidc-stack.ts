@@ -445,10 +445,10 @@ export class OhifOidcStack extends cdk.Stack {
               'node --version',
               'npm --version',
               'yarn --version',
-              'echo "Downloading OHIF v3.11.0..."',
-              'wget -O ohif.zip https://github.com/OHIF/Viewers/archive/refs/tags/v3.11.0.zip 1> NUL 2> NUL',
+              'echo "Downloading OHIF v3.12.0..."',
+              'wget -O ohif.zip https://github.com/OHIF/Viewers/archive/refs/tags/v3.12.0.zip 1> NUL 2> NUL',
               'unzip -qq ohif.zip',
-              'mv Viewers-3.11.0 ohif',
+              'mv Viewers-3.12.0 ohif',
               'cd ohif'
             ]
           },
@@ -501,7 +501,7 @@ export class OhifOidcStack extends cdk.Stack {
               'echo "      wadoUriRoot: \\"https://dicom-medical-imaging.$AWS_DEFAULT_REGION.amazonaws.com/datastore/$HEALTHIMAGING_DATASTORE_ID\\"," >> platform/app/public/config/default.js',
               'echo "      qidoRoot: \\"https://dicom-medical-imaging.$AWS_DEFAULT_REGION.amazonaws.com/datastore/$HEALTHIMAGING_DATASTORE_ID\\"," >> platform/app/public/config/default.js',
               'echo "      wadoRoot: \\"https://dicom-medical-imaging.$AWS_DEFAULT_REGION.amazonaws.com/datastore/$HEALTHIMAGING_DATASTORE_ID\\"," >> platform/app/public/config/default.js',
-              'echo \'      acceptHeader: ["*/*"],\' >> platform/app/public/config/default.js',
+              'echo \'      acceptHeader: ["multipart/related; type=image/jphc; transfer-syntax=1.2.840.10008.1.2.4.202, multipart/related; type=image/jp2; transfer-syntax=1.2.840.10008.1.2.4.90, multipart/related; type=image/jpeg; transfer-syntax=1.2.840.10008.1.2.4.50, multipart/related; type=application/octet-stream; transfer-syntax=1.2.840.10008.1.2.1"],\' >> platform/app/public/config/default.js',
               'echo "      qidoSupportsIncludeField: false," >> platform/app/public/config/default.js',
               'echo "      supportsReject: false," >> platform/app/public/config/default.js',
               'echo "      imageRendering: \\"wadors\\"," >> platform/app/public/config/default.js',
