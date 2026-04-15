@@ -1,4 +1,4 @@
 pydicom>=2.3.0
 boto3>=1.24.70
-pynetdicom>=2.0.2
+pynetdicom>=2.4.5
 sqs-extended-client
