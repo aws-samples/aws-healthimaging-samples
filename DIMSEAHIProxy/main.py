@@ -24,6 +24,7 @@ import atexit
 
 from pynetdicom import AE, evt, AllStoragePresentationContexts
 from pynetdicom.sop_class import (
+    Verification,
     StudyRootQueryRetrieveInformationModelFind,
     StudyRootQueryRetrieveInformationModelMove,
     StudyRootQueryRetrieveInformationModelGet,
@@ -185,6 +186,7 @@ class DICOMProxy:
         self.ae.maximum_associations = self.config.max_associations
         self.ae._server_socket_options = [(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)]
 
+        self.ae.add_supported_context(Verification)
         for context in QR_CONTEXTS:
             self.ae.add_supported_context(context)
         for context in STORAGE_CONTEXTS:
