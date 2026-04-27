@@ -1,4 +1,4 @@
-pydicom>=3.0.0
+pydicom>=3.0.2
 boto3>=1.24.70
 pynetdicom>=3.0.0
 requests>=2.28.0
