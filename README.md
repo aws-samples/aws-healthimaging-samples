@@ -40,9 +40,13 @@ This repository contains a C++ library and command line tool that performs high 
 
 ## Proxies
 
+### [DIMSE to AHI Proxy](DIMSEAHIProxy/) ![Python](https://img.shields.io/badge/Python-python?style=for-the-badge&logo=python&logoColor=white)
+
+This Python service allows DICOM clients to store, query and fetch data stored in AWS HealthImaging via DIMSE protocol with DICOM client clients or tools such as [Weasis](https://weasis.org/en/index.html) , [Osirix](https://www.osirix-viewer.com/) and [DCMTK](https://dicom.offis.de/dcmtk.php.en)
+
 ### [DICOMWeb QIDO/WADO-RS Proxy](dicomweb-proxy/) ![Python](https://img.shields.io/badge/Python-python?style=for-the-badge&logo=python&logoColor=white)
 
-This Python service allows to query and fetch data store in AWS HealthImaging
+This Python service allows to query and fetch data stored in AWS HealthImaging
  via QIDO-RS and WADO-RS, allowing integration with DICOMWeb clients such as [Weasis](https://weasis.org/en/index.html) , [Osirix](https://www.osirix-viewer.com/),  [KiteWare Volview](https://volview.kitware.com/), [3DSlicer](https://www.slicer.org/) and more...
 
 ### [Tile Level Marker (TLM) Proxy](tile-level-marker-proxy/) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![CDK](https://img.shields.io/badge/cdk-ff9900?style=for-the-badge)

@@ -1,0 +1,34 @@
+{
+  "ae_title": "DICOM_PROXY",
+  "port": 11112,
+  "max_associations": 20,
+  "log_level": "WARNING",
+  "datastore_id": "your-datastore-id-here",
+  "aws_region": "us-east-1",
+  "authorized_ae_titles": [
+    {
+      "ae_title": "WEASIS_AE",
+      "permissions": ["query", "retrieve"],
+      "scu_hostname": "127.0.0.1",
+      "scu_port": 11113
+    },
+    {
+      "ae_title": "MODALITY_AE",
+      "permissions": ["store"],
+      "stow_mode": "sync"
+    },
+    {
+      "ae_title": "PACS_AE",
+      "permissions": ["query", "retrieve", "store"],
+      "scu_hostname": "192.168.1.50",
+      "scu_port": 104,
+      "stow_mode": "buffered"
+    }
+  ],
+  "tls": {
+    "enabled": false,
+    "cert_file": "/path/to/server.crt",
+    "key_file": "/path/to/server.key",
+    "ca_file": "/path/to/ca.crt"
+  }
+}
