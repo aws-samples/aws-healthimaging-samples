@@ -114,7 +114,7 @@ class BackendStack(Stack):
             if config.DATALAKE_CONFIG["destination_bucket_name"] == "":
                 bucket_name=None
             else:
-                bucket_name=config.DESTINATION_BUCKET_NAME
+                bucket_name=config.DATALAKE_CONFIG["destination_bucket_name"]
             datalake_lambda_role  = LambdaRoles(self, 'ahi-to-datalake-lambda-role', datastore_arn=ahi_datastore_arn)
             access_log_lambda_role = iam.Role(self, "Role",assumed_by=iam.ServicePrincipal("logging.s3.amazonaws.com"),description="Grants S3 service to put access logs.")
             access_log_bucket = s3.Bucket(self, "ahi-to-datalake-access_log-bucket", bucket_name=None, block_public_access=s3.BlockPublicAccess.BLOCK_ALL, removal_policy=cdk.RemovalPolicy.RETAIN , enforce_ssl=True , encryption=s3.BucketEncryption.S3_MANAGED)
